@@ -65,6 +65,17 @@ void muxTest(){
 
 void loop(){
   sCmd.readSerial();
+  
+  //dontMove();
+  int POWER = 100;
+  motorForward(0,POWER);
+  motorForward(1,POWER);
+  motorForward(2,POWER);
+  motorForward(3,POWER);
+  motorBackward(4,POWER);
+  motorBackward(5,POWER);
+  motorForward(6,POWER);
+  
 }
 
 
@@ -73,6 +84,14 @@ void dontMove(){
   motorControl(BACK, 0);
   motorControl(LEFT, 0);
   motorControl(RIGHT, 0);
+  
+  motorForward(0,0);
+  motorForward(1,0);
+  motorForward(2,0);
+  motorForward(3,0);
+  motorForward(4,0);
+  motorForward(5,0);
+  motorForward(6,0);
 }
 
 void spinmotor(){
@@ -171,5 +190,6 @@ void printMotorPositions() {
   Serial.println();
   delay(PRINT_DELAY);  // Delay to avoid flooding serial out
 }
+
 
 
