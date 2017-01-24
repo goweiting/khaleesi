@@ -66,16 +66,29 @@ void muxTest(){
 void loop(){
   sCmd.readSerial();
   
-  //dontMove();
-  int POWER = 100;
-  motorForward(0,POWER);
-  motorForward(1,POWER);
-  motorForward(2,POWER);
-  motorForward(3,POWER);
-  motorBackward(4,POWER);
-  motorBackward(5,POWER);
-  motorForward(6,POWER);
-  
+    dontMove();
+ 
+   int POWER = 100;
+ // moveMotor(0,POWER);
+ //  moveMotor(1,POWER);
+//  moveMotor(2,POWER);
+ //   moveMotor(3,POWER);
+ //   moveMotor(4,POWER);
+ //   moveMotor(5,POWER);
+//  moveMotor(7,POWER);
+
+}
+
+void moveMotor(int motor, int power) {
+  if (power == 0) {
+     motorForward(motor,0); 
+  }
+  else if (power > 0) {
+     motorForward(motor, power); 
+  }
+  else {
+     motorBackward(motor, -power);
+  }
 }
 
 
