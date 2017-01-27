@@ -2,7 +2,7 @@
 #include "SDPArduino.h"
 #include <Wire.h>
 #include <Arduino.h>
-#include <I2CPort.h>
+//#include <I2CPort.h>
 
 
 //Kickers in back
@@ -69,7 +69,9 @@ void loop(){
 
 }
 
-void moveMotor(int motor, int power) {
+void moveMotor() {
+        int motor = atoi(sCmd.next());
+        int power = atoi(sCmd.next());
         if (power == 0) {
                 motorForward(motor,0);
         }
@@ -174,7 +176,7 @@ void setup(){
         Wire.begin();
         sCmd.addCommand("f", dontMove);
         sCmd.addCommand("h", completeHalt);
-        sCmd.addCommand("motor", spinmotor);
+        sCmd.addCommand("motor", moveMotor);
         sCmd.addCommand("r", rationalMotors);
         sCmd.addCommand("ping", pingMethod);
         sCmd.addCommand("kick", kicker);
