@@ -6,18 +6,18 @@
 
 
 //Kickers in back
-//define FRONT 1
-//define RIGHT 7
+//define FRONLEFT 1
+//define FRONTRIGHT 7
 //define BACK 5
-//define LEFT 3
+//define DRIBLER 3
 
 //Kickers in front
-#define FRONT 7
-#define RIGHT 3
-#define BACK 5
-#define LEFT 1
+#define FRONLEFT 3
+#define FRONTRIGHT 5
+#define BACK 4
+#define DRIBLER 0
 
-#define KICKERS 0
+#define KICKERS 1
 #define SPEAKER 1
 
 #define OPADDR 0x5A
@@ -65,39 +65,29 @@ void muxTest(){
 
 void loop(){
   sCmd.readSerial();
-  
-    dontMove();
- 
-   int POWER = 100;
- // moveMotor(0,POWER);
- //  moveMotor(1,POWER);
-//  moveMotor(2,POWER);
- //   moveMotor(3,POWER);
- //   moveMotor(4,POWER);
- //   moveMotor(5,POWER);
-//  moveMotor(7,POWER);
+
 
 }
 
 void moveMotor(int motor, int power) {
   if (power == 0) {
-     motorForward(motor,0); 
+    motorForward(motor,0);
   }
   else if (power > 0) {
-     motorForward(motor, power); 
+    motorForward(motor, power);
   }
   else {
-     motorBackward(motor, -power);
+    motorBackward(motor, -power);
   }
 }
 
 
 void dontMove(){
-  motorControl(FRONT, 0);
+  motorControl(FRONLEFT, 0);
   motorControl(BACK, 0);
-  motorControl(LEFT, 0);
-  motorControl(RIGHT, 0);
-  
+  motorControl(DRIBLER, 0);
+  motorControl(FRONTRIGHT, 0);
+
   motorForward(0,0);
   motorForward(1,0);
   motorForward(2,0);
@@ -115,28 +105,28 @@ void spinmotor(){
 
 void motorControl(int motor, int power){
   if(power == 0){
-      Wire.beginTransmission(OPADDR);
-      Wire.write(motor);
-      Wire.write(0);
-      Wire.endTransmission();
+    Wire.beginTransmission(OPADDR);
+    Wire.write(motor);
+    Wire.write(0);
+    Wire.endTransmission();
   } else if(power > 0){
-      Wire.beginTransmission(OPADDR);
-      Wire.write(motor);
-      Wire.write(1);
-      Wire.endTransmission();
-      Wire.beginTransmission(OPADDR);
-      Wire.write(motor + 1);
-      Wire.write(power);
-      Wire.endTransmission();
+    Wire.beginTransmission(OPADDR);
+    Wire.write(motor);
+    Wire.write(1);
+    Wire.endTransmission();
+    Wire.beginTransmission(OPADDR);
+    Wire.write(motor + 1);
+    Wire.write(power);
+    Wire.endTransmission();
   } else {
-      Wire.beginTransmission(OPADDR);
-      Wire.write(motor);
-      Wire.write(2);
-      Wire.endTransmission();
-      Wire.beginTransmission(OPADDR);
-      Wire.write(motor + 1);
-      Wire.write(-power);
-      Wire.endTransmission();
+    Wire.beginTransmission(OPADDR);
+    Wire.write(motor);
+    Wire.write(2);
+    Wire.endTransmission();
+    Wire.beginTransmission(OPADDR);
+    Wire.write(motor + 1);
+    Wire.write(-power);
+    Wire.endTransmission();
   }
 }
 
@@ -146,10 +136,10 @@ void rationalMotors(){
   int back  = atoi(sCmd.next());
   int left  = atoi(sCmd.next());
   int right = atoi(sCmd.next());
-  motorControl(FRONT, -front);
+  motorControl(FRONLEFT, -front);
   motorControl(BACK, -back);
-  motorControl(LEFT, left);
-  motorControl(RIGHT, -right);
+  motorControl(DRIBLER, left);
+  motorControl(FRONTRIGHT, -right);
 }
 
 void pingMethod(){
@@ -173,22 +163,22 @@ void kicker(){
 
 void completeHalt(){
   motorAllStop();
-  motorControl(FRONT, 0);
+  motorControl(FRONLEFT, 0);
   motorControl(BACK, 0);
-  motorControl(LEFT, 0);
-  motorControl(RIGHT, 0);
+  motorControl(DRIBLER, 0);
+  motorControl(FRONTRIGHT, 0);
 }
 
 
 void setup(){
   Wire.begin();
-  sCmd.addCommand("f", dontMove); 
-  sCmd.addCommand("h", completeHalt); 
-  sCmd.addCommand("motor", spinmotor); 
-  sCmd.addCommand("r", rationalMotors); 
-  sCmd.addCommand("ping", pingMethod); 
-  sCmd.addCommand("kick", kicker); 
-  sCmd.addCommand("mux", muxTest); 
+  sCmd.addCommand("f", dontMove);
+  sCmd.addCommand("h", completeHalt);
+  sCmd.addCommand("motor", spinmotor);
+  sCmd.addCommand("r", rationalMotors);
+  sCmd.addCommand("ping", pingMethod);
+  sCmd.addCommand("kick", kicker);
+  sCmd.addCommand("mux", muxTest);
   SDPsetup();
   helloWorld();
 }
@@ -203,6 +193,3 @@ void printMotorPositions() {
   Serial.println();
   delay(PRINT_DELAY);  // Delay to avoid flooding serial out
 }
-
-
-
