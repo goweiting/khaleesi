@@ -10,13 +10,13 @@ import vision.tools.VectorGeometry;
  * Edited by Wildfire
  */
 
-public class ThreeWheelHolonomicDrive implements DriveInterface{
+public class ThreeWheelHolonomicDrive implements DriveInterface {
 
-    public int MAX_ROTATION = 30;
-    public int MAX_MOTION = 200;
+    public int MAX_ROTATION = 70;
+    public int MAX_MOTION = 100;
 
-    public void move(RobotPort port, DirectedPoint location, VectorGeometry force, double rotation, double factor){
-        assert(port instanceof ThreeWheelHolonomicRobotPort);
+    public void move(RobotPort port, DirectedPoint location, VectorGeometry force, double rotation, double factor) {
+        assert (port instanceof ThreeWheelHolonomicRobotPort);
 
 
         /**
@@ -29,23 +29,39 @@ public class ThreeWheelHolonomicDrive implements DriveInterface{
         force.copyInto(dir).coordinateRotation(force.angle() - location.direction);
         factor = Math.min(1, factor);
 
-        double lim = this.MAX_MOTION - Math.abs(rotation* this.MAX_ROTATION *factor);
+        //double lim = this.MAX_MOTION - Math.abs(rotation* this.MAX_ROTATION *factor);
 
-        double frontLeft = dir.y;
-        double back = -dir.x;
-        double frontRight = -dir.y;
-        double right = dir.x;
-        double normalizer = Math.max(Math.max(Math.abs(back), Math.abs(right)), Math.max(Math.abs(frontLeft), Math.abs(frontRight)));
 
-        normalizer = lim/normalizer*factor;
-        frontLeft = frontLeft*normalizer + rotation * this.MAX_ROTATION;
-        frontRight  = frontRight*normalizer + rotation * this.MAX_ROTATION;
-        back  = back*normalizer + rotation * this.MAX_ROTATION;
+        double actual_x = location.x;
+        double actual_y = location.y;
+
+        double goal_x = dir.x;
+        double goal_y = dir.y;
+
+        double diff_x = goal_x - actual_x;
+        double diff_y = goal_y - actual_y;
+
+        double frontLeft = MAX_ROTATION + diff_x;
+        double frontRight = MAX_ROTATION + diff_x;
+
+
+        frontLeft -= diff_y;
+        frontRight += diff_y;
+
+        //double back = -dir.x;
+        //double frontRight = -dir.y;
+        //double right = dir.x;
+        //double normalizer = Math.max(Math.max(Math.abs(back), Math.abs(right)), Math.max(Math.abs(frontLeft), Math.abs(frontRight)));
+
+        //normalizer = lim / normalizer * factor;
+        //frontLeft = frontLeft * normalizer + rotation * this.MAX_ROTATION;
+        //frontRight  = frontRight*normalizer + rotation * this.MAX_ROTATION;
+        //back = back * normalizer + rotation * this.MAX_ROTATION;
         // right motor is no longer user (as we have only 3) thus all logic has to be either replaced
         // or modified, but I just don't get it yet
-        right = right*normalizer + rotation * this.MAX_ROTATION;
+        //right = right * normalizer + rotation * this.MAX_ROTATION;
 
-        ((ThreeWheelHolonomicRobotPort) port).threeWheelHolonomicMotion(frontLeft, frontRight, back);
+        ((ThreeWheelHolonomicRobotPort) port).threeWheelHolonomicMotion(frontLeft, frontRight, 0);
 
     }
 }
