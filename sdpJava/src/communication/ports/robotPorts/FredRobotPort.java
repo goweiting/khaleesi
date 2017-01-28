@@ -9,13 +9,18 @@ import communication.ports.interfaces.RobotPort;
  */
 public class FredRobotPort extends RobotPort implements PropellerEquipedRobotPort, FourWheelHolonomicRobotPort {
 
-    public FredRobotPort(){
+    public FredRobotPort() {
         super("pang");
     }
 
     @Override
-    public void fourWheelHolonomicMotion(double front, double back, double left, double right) {
-        this.sdpPort.commandSender("r", (int) front, (int) back, (int) left, (int) right);
+    public void fourWheelHolonomicMotion(double frontLeft, double frontRight, double back) {
+        this.sdpPort.commandSender("r", (int) frontLeft, (int) frontRight, (int) back);
+    }
+
+
+    public void dribblerKicker(double dribbler, double kicker) {
+        this.sdpPort.commandSender("dk", (int) dribbler, (int) kicker);
     }
 
     @Override

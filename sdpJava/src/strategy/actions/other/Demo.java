@@ -24,9 +24,9 @@ public class Demo extends ActionBase {
     public void enterState(int newState) {
         this.robot.MOTION_CONTROLLER.setActive(false);
         if(newState == 0){
-            ((FourWheelHolonomicRobotPort)this.robot.port).fourWheelHolonomicMotion(255,255,255,255);
+            ((FourWheelHolonomicRobotPort)this.robot.port).fourWheelHolonomicMotion(255,255,255);
         } else {
-            ((FourWheelHolonomicRobotPort)this.robot.port).fourWheelHolonomicMotion(-255,-255,-255,-255);
+            ((FourWheelHolonomicRobotPort)this.robot.port).fourWheelHolonomicMotion(-255,-255,-255);
         }
         this.state = newState;
     }

@@ -15,10 +15,11 @@
 #define FRONTLEFT 3
 #define FRONTRIGHT 5
 #define BACK 4
-#define DRIBLER 0
 
+#define DRIBLER 0
 #define KICKERS 1
-#define SPEAKER 2
+
+//#define SPEAKER 2
 
 #define OPADDR 0x5A
 #define REGADDR 0x04
@@ -133,15 +134,22 @@ void motorControl(int motor, int power){
 }
 
 
+void dribblerKick(){
+  int dribbler = atoi(sCmd.next());
+  int kickPower = atoi(sCmd.next());
+
+  motorControl(DRIBLER, dribbler);
+  motorControl(KICKERS, kickPower);
+}
+
 void rationalMotors(){
-        int front = atoi(sCmd.next());
+        int frontLeft = atoi(sCmd.next());
+        int frontRight = atoi(sCmd.next());
         int back  = atoi(sCmd.next());
-        int left  = atoi(sCmd.next());
-        int right = atoi(sCmd.next());
-        motorControl(FRONTLEFT, -front);
+
+        motorControl(FRONTLEFT, -frontLeft);
+        motorControl(FRONTRIGHT, -frontRight);
         motorControl(BACK, -back);
-        motorControl(DRIBLER, left);
-        motorControl(FRONTRIGHT, -right);
 }
 
 void pingMethod(){
@@ -178,6 +186,7 @@ void setup(){
         sCmd.addCommand("h", completeHalt);
         sCmd.addCommand("motor", moveMotor);
         sCmd.addCommand("r", rationalMotors);
+        sCmd.addCommand("dk", dribblerKick);
         sCmd.addCommand("ping", pingMethod);
         sCmd.addCommand("kick", kicker);
         sCmd.addCommand("mux", muxTest);
