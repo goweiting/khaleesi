@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 
 /**
  * Created by Simon Rovder
+ * Edited by Wildfire
  */
 public class Strategy implements VisionListener, PortListener, ActionListener {
 
@@ -184,11 +185,25 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
                     fred.MOTION_CONTROLLER.setDestination(new EnemyGoal());
                     fred.MOTION_CONTROLLER.perform();
                     break;
-                case "driveF":
-                    ((FredRobotPort) fred.port).fourWheelHolonomicMotion(100, 100,100);
+
+                //drives 2 front wheels forward
+                case "driveForward":
+                    ((FredRobotPort) fred.port).threeWheelHolonomicMotion(100, 100, 0);
+                    ((FredRobotPort) fred.port).threeWheelHolonomicMotion(100, 100, 0);
+                    ((FredRobotPort) fred.port).threeWheelHolonomicMotion(100, 100, 0);
                     break;
-                case "drive0":
-                    ((FredRobotPort) fred.port).fourWheelHolonomicMotion(0, 0, 0);
+                case "driveStop":
+                    ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
+                    ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
+                    ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
+                    break;
+
+                // spins dribbler and kicker
+                case "dk":
+                    ((FredRobotPort) fred.port).dribblerKicker(100, 100);
+                    break;
+                case "dkStop":
+                    ((FredRobotPort) fred.port).dribblerKicker(0, 0);
                     break;
             }
         }
