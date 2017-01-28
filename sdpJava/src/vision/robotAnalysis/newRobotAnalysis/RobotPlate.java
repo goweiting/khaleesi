@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class RobotPlate {
 
 
-    private static double MAGIC_ANGLE_NUMBER_PLEASE_CHANGE_ME = 0.6;
+    private static double MAGIC_ANGLE_NUMBER_PLEASE_CHANGE_ME = 0;
 
 
     private XYCumulativeAverage location = new XYCumulativeAverage();
