@@ -84,9 +84,9 @@ public class RobotPlate {
     }
 
     private double getHeading(){
-        double radians = this.actualDeterminer.angle() - Math.PI + MAGIC_ANGLE_NUMBER_PLEASE_CHANGE_ME;
-        double deg = Math.toDegrees(radians % 360);
-        return Math.abs(deg);
+        return this.actualDeterminer.angle() - Math.PI + MAGIC_ANGLE_NUMBER_PLEASE_CHANGE_ME;
+        //double deg = Math.toDegrees(radians % 360);
+        //  return Math.abs(deg);
     }
 
     private void addSpot(Spot s){

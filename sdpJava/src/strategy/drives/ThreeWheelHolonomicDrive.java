@@ -12,7 +12,7 @@ import vision.tools.VectorGeometry;
 
 public class ThreeWheelHolonomicDrive implements DriveInterface {
 
-    public int MAX_ROTATION = 70;
+    public int MAX_ROTATION = 55;
     public int MAX_MOTION = 100;
 
     public void move(RobotPort port, DirectedPoint location, VectorGeometry force, double rotation, double factor) {
@@ -26,12 +26,24 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
          */
 
         VectorGeometry dir = new VectorGeometry();
+        double angle = force.angle();
         force.copyInto(dir).coordinateRotation(force.angle() - location.direction);
         factor = Math.min(1, factor);
 
         //double lim = this.MAX_MOTION - Math.abs(rotation* this.MAX_ROTATION *factor);
 
+        // gets the degrees towards the goal (multiply by 2 to get more power, might need to calibrate)
+        rotation = Math.toDegrees(rotation) * 2;
 
+        double backmotor = 0;
+        if (rotation > 0) {
+            // rotate back motor to the right
+            backmotor -= rotation;
+            if (backmotor < -100) backmotor = -100;
+        } else {
+            backmotor += rotation;
+            if (backmotor > 100) backmotor = 100;
+        }
         double actual_x = location.x;
         double actual_y = location.y;
 
@@ -61,7 +73,7 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
         // or modified, but I just don't get it yet
         //right = right * normalizer + rotation * this.MAX_ROTATION;
 
-        ((ThreeWheelHolonomicRobotPort) port).threeWheelHolonomicMotion(frontLeft, frontRight, 0);
+        ((ThreeWheelHolonomicRobotPort) port).threeWheelHolonomicMotion(0, 0, backmotor);
 
     }
 }
