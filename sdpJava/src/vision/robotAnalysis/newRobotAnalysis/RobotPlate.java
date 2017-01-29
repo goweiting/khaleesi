@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class RobotPlate {
 
 
-    private static double MAGIC_ANGLE_NUMBER_PLEASE_CHANGE_ME = 0;
+    private static double MAGIC_ANGLE_NUMBER_PLEASE_CHANGE_ME = 0.6;
 
 
     private XYCumulativeAverage location = new XYCumulativeAverage();
@@ -84,7 +84,9 @@ public class RobotPlate {
     }
 
     private double getHeading(){
-        return this.actualDeterminer.angle() - Math.PI + MAGIC_ANGLE_NUMBER_PLEASE_CHANGE_ME;
+        double radians = this.actualDeterminer.angle() - Math.PI + MAGIC_ANGLE_NUMBER_PLEASE_CHANGE_ME;
+        double deg = Math.toDegrees(radians % 360);
+        return Math.abs(deg);
     }
 
     private void addSpot(Spot s){
