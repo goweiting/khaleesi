@@ -18,6 +18,7 @@
 
 #define DRIBLER 0
 #define KICKERS 1
+#define KICKERS2 2
 
 //#define SPEAKER 2
 
@@ -140,6 +141,7 @@ void dribblerKick(){
 
   motorControl(DRIBLER, dribbler);
   motorControl(KICKERS, kickPower);
+  motorConteol(KICKERS2, -kickpower);
 }
 
 void rationalMotors(){
