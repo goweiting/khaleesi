@@ -33,9 +33,9 @@ public class DribblerKickerController extends ControllerBase {
     private static final int MAX_KICKER_RETRACT_POWER = 80;
     // A couple of other constants
     // How long to pause once having kicked the ball
-    private static final int KICKER_PEAK_PAUSE_MSEC = 300;
+    private static final int KICKER_PEAK_PAUSE_MSEC = 2000;
     // How long do we expect the kicking OR retracting actions to take
-    private static final int KICKER_MOVE_DURATION_MSEC = 500;
+    private static final int KICKER_MOVE_DURATION_MSEC = 5000;
 
 
     // We need some way to track the time, in order to retract the kicker after
@@ -62,9 +62,6 @@ public class DribblerKickerController extends ControllerBase {
     private void doAction(double dribblerPower, double kickerPower) {
         // Update status before doing anything.
         dribblerWorking = (dribblerPower != 0);
-        //if (kickerPower == 0) kickerStatus = KickerStatus.OFF;
-        //else if (kickerPower > 0) kickerStatus = KickerStatus.KICKING;
-        //else kickerStatus = KickerStatus.RETRACTING;
 
         // Clamp kicker retracting force if necessary
         kickerPower = (kickerPower < -MAX_KICKER_RETRACT_POWER) ? -MAX_KICKER_RETRACT_POWER : kickerPower;
@@ -89,36 +86,36 @@ public class DribblerKickerController extends ControllerBase {
         long currentTime = System.currentTimeMillis();
         if (currentTime < nextStateChangeTime) return;
 
-        //return; // FIXME: remove once complete
+        return; // FIXME: remove once complete
 
-        // TODO: Perhaps include break condition if ball not in correct location?
-
-        // This will continue working even if we're inactive, in case a kick is in progress.
-        switch (kickerStatus) { // could've done it using methods inside an interface inside the enum.. .awwww yeaaaah
-            // Nothing yet, we want to kick
-            case OFF:
-                kickerStatus = KickerStatus.KICKING;
-                nextStateChangeTime = currentTime + KICKER_MOVE_DURATION_MSEC;
-                doAction(0, 100); // Stop dribbling and perform kick
-                break;
-            // Kicking up, and we've been pushing up for a while now. Time to hold for a bit.
-            case KICKING:
-                kickerStatus = KickerStatus.PEAK_PAUSE;
-                nextStateChangeTime = currentTime + KICKER_PEAK_PAUSE_MSEC;
-                doAction(0, 0); // Stop motors
-                break;
-            // We've been paused at the top of the motion for a while now. We should start going down
-            case PEAK_PAUSE:
-                kickerStatus = KickerStatus.RETRACTING;
-                nextStateChangeTime = currentTime + KICKER_MOVE_DURATION_MSEC;
-                doAction(0, -100); // Keep dribbler stopped. Should be safer like this?
-                break;
-            // Retracting has taken place now. Restart motors and be prepared to kick again.
-            case RETRACTING:
-                kickerStatus = KickerStatus.OFF;
-                nextStateChangeTime = currentTime + 5; // Just to be safe, I guess
-                doAction(100, 0);
-                break;
-        }
+//        // TODO: Perhaps include break condition if ball not in correct location?
+//
+//        // This will continue working even if we're inactive, in case a kick is in progress.
+//        switch (kickerStatus) { // could've done it using methods inside an interface inside the enum.. .awwww yeaaaah
+//            // Nothing yet, we want to kick
+//            case OFF:
+//                kickerStatus = KickerStatus.KICKING;
+//                nextStateChangeTime = currentTime + KICKER_MOVE_DURATION_MSEC;
+//                doAction(0, 100); // Stop dribbling and perform kick
+//                break;
+//            // Kicking up, and we've been pushing up for a while now. Time to hold for a bit.
+//            case KICKING:
+//                kickerStatus = KickerStatus.PEAK_PAUSE;
+//                nextStateChangeTime = currentTime + KICKER_PEAK_PAUSE_MSEC;
+//                doAction(0, 0); // Stop motors
+//                break;
+//            // We've been paused at the top of the motion for a while now. We should start going down
+//            case PEAK_PAUSE:
+//                kickerStatus = KickerStatus.RETRACTING;
+//                nextStateChangeTime = currentTime + KICKER_MOVE_DURATION_MSEC;
+//                doAction(0, -100); // Keep dribbler stopped. Should be safer like this?
+//                break;
+//            // Retracting has taken place now. Restart motors and be prepared to kick again.
+//            case RETRACTING:
+//                kickerStatus = KickerStatus.OFF;
+//                nextStateChangeTime = currentTime + 5; // Just to be safe, I guess
+//                doAction(100, 0);
+//                break;
+//        }
     }
 }
