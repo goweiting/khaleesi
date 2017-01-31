@@ -71,7 +71,7 @@ void loop(){
 
 }
 
-void moveMotor() {
+void moveMotor(int motor, int power) {
         int motor = atoi(sCmd.next());
         int power = atoi(sCmd.next());
         if (power == 0) {
