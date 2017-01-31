@@ -25,10 +25,10 @@ public class FredRobotPort extends RobotPort implements
    * @param back is going clockwise
    *
    */
-  public void threeWheelHolonomicMotion(double frontRight, double frontLeft, double back) {
+  public void threeWheelHolonomicMotion(double frontLeft, double frontRight, double back) {
     // we have to change the sign of the frontRight:
     frontRight = -1 * frontRight;
-    this.sdpPort.commandSender("r", (int) frontRight, (int) frontLeft, (int) back);
+    this.sdpPort.commandSender("r", (int) frontLeft, (int) frontRight, (int) back);
   }
 
   // command to spin dribbler and kicker

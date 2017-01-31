@@ -25,8 +25,8 @@ public class RobotKinematic {
 //  private final double beta = 0; // because the wheels are tangent to the robot's circular body
 
   private DenseMatrix64F m = new DenseMatrix64F(3, 3, true,
-      Math.cos(frontRight + pi / 2), Math.cos(frontLeft + pi / 2), Math.cos(backWheel + pi / 2),
-      Math.sin(frontRight + pi / 2), Math.sin(frontLeft + pi / 2), Math.sin(backWheel + pi / 2),
+      Math.cos(frontLeft + pi / 2), Math.cos(frontRight + pi / 2), Math.cos(backWheel + pi / 2),
+      Math.sin(frontLeft + pi / 2), Math.sin(frontRight + pi / 2), Math.sin(backWheel + pi / 2),
       1, 1, 1
   );
 
@@ -66,7 +66,7 @@ public class RobotKinematic {
     if (solver.setA(m)) {
       solver.solve(v, s);
     }
-    System.out.print(s.toString());
+//    System.out.print(s.toString());
     return (s);
   }
 
