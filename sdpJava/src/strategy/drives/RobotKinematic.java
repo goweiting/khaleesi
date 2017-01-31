@@ -19,15 +19,11 @@ public class RobotKinematic {
   private final double frontRight = pi / 6;
   private final double frontLeft = 5 * pi / 6;
   private final double backWheel = 9 * pi / 6;
-//  private final double distL = 1; // assume distance between wheels and P is 1
-//  private final double radius = 1; // assume that the radius of the wheels is r
-//  private final double gamma = 0; // the roller are 90-degrees to the wheel
-//  private final double beta = 0; // because the wheels are tangent to the robot's circular body
 
   private DenseMatrix64F m = new DenseMatrix64F(3, 3, true,
       Math.cos(frontLeft + pi / 2), Math.cos(frontRight + pi / 2), Math.cos(backWheel + pi / 2),
       Math.sin(frontLeft + pi / 2), Math.sin(frontRight + pi / 2), Math.sin(backWheel + pi / 2),
-      1, 1, 1
+      1, 0, 1
   );
 
 //  public FixedMatrix3x3_64F J_2 = new FixedMatrix3x3_64F(
@@ -76,7 +72,27 @@ public class RobotKinematic {
         (int) s.get(2) * 100
     };
 
-    return (wheelSpeeds);
+    return (checkValue(wheelSpeeds));
+  }
+
+
+  private static int[]checkValue(int[] wheelSpeeds) {
+    int maxV = getMaxValue(wheelSpeeds);
+    for (int i:wheelSpeeds){
+      wheelSpeeds[i] = wheelSpeeds[i]/maxV * 100;
+    }
+    return wheelSpeeds;
+  }
+
+  private static int getMaxValue(int[] array) {
+    int maxValue = array[0];
+    for (int i = 1; i < array.length; i++) {
+      if (array[i] > maxValue) {
+        maxValue = array[i];
+      }
+    }
+    return maxValue;
   }
 
 }
+
