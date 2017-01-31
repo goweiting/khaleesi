@@ -141,7 +141,7 @@ void dribblerKick(){
 
   motorControl(DRIBLER, dribbler);
   motorControl(KICKERS, kickPower);
-  motorConteol(KICKERS2, -kickpower);
+  motorControl(KICKERS2, -kickPower);
 }
 
 void rationalMotors(){
