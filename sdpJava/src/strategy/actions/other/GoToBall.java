@@ -52,7 +52,7 @@ public class GoToBall extends ActionBase {
                 this.robot.ACTION_CONTROLLER.setAction(new OffensiveKick(this.robot));
                 throw new ActionException(true, false);
             } else {
-                this.robot.
+                ((Fred)this.robot).DK_CONTROLLER.setActive(false);
             }
 
         }
