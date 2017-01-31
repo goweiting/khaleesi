@@ -2,7 +2,6 @@ package strategy.drives;
 
 import communication.ports.interfaces.RobotPort;
 import communication.ports.interfaces.ThreeWheelHolonomicRobotPort;
-import org.ejml.data.DenseMatrix64F;
 import vision.tools.DirectedPoint;
 import vision.tools.VectorGeometry;
 
@@ -15,7 +14,8 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
 
   public int MAX_ROTATION = 55;
   public int MAX_MOTION = 100;
-    private final double MIN_MOTOR = 60;
+  private final double MIN_MOTOR = 60;
+
   /**
    * Moving the three wheel holonomic robot to a desired location.
    *
@@ -28,20 +28,16 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
    * @param factor scaling factor for todo:idk what!
    */
   public void move(
-      RobotPort port, DirectedPoint location, VectorGeometry force, double rotation, double factor) {
+      RobotPort port, DirectedPoint location, VectorGeometry force, double rotation,
+      double factor) {
     assert (port instanceof ThreeWheelHolonomicRobotPort);
 
     RobotKinematic kinematics = new RobotKinematic();
-    DenseMatrix64F v = kinematics.inverseKinematic(location, force, rotation);
-
-    double frontLeft, frontRight, backWheel;
-      frontLeft = v.get(0) * 100;
-      frontRight = (v.get(1) * 100);
-      backWheel = (v.get(2) * 100);
-
+    int[] wheelSpeeds = kinematics.inverseKinematic(location, force, rotation);
 
     // Instructs the robot to to the desired location with that amount of "speed"
-    ((ThreeWheelHolonomicRobotPort)port).threeWheelHolonomicMotion(frontLeft, frontRight, backWheel);
+    ((ThreeWheelHolonomicRobotPort) port)
+        .threeWheelHolonomicMotion(wheelSpeeds[0], wheelSpeeds[1], wheelSpeeds[2]);
   }
 
 }
