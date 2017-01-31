@@ -139,9 +139,9 @@ void dribblerKick(){
   int dribbler = atoi(sCmd.next());
   int kickPower = atoi(sCmd.next());
 
-  motorControl(DRIBLER, dribbler);
-  motorControl(KICKERS, kickPower);
-  motorControl(KICKERS2, -kickPower);
+  moveMotor(DRIBLER, dribbler);
+  moveMotor(KICKERS, kickPower);
+  moveMotor(KICKERS2, -kickPower);
 }
 
 void rationalMotors(){
@@ -149,9 +149,9 @@ void rationalMotors(){
         int frontRight = atoi(sCmd.next());
         int back  = atoi(sCmd.next());
 
-        motorControl(FRONTLEFT, -frontLeft);
-        motorControl(FRONTRIGHT, -frontRight);
-        motorControl(BACK, -back);
+        moveMotor(FRONTLEFT, -frontLeft);
+        moveMotor(FRONTRIGHT, -frontRight);
+        moveMotor(BACK, -back);
 }
 
 void pingMethod(){
