@@ -5,5 +5,5 @@ package communication.ports.interfaces;
  * Edited by Wildfire
  */
 public interface ThreeWheelHolonomicRobotPort {
-    void threeWheelHolonomicMotion(double frontLeft, double frontRight, double back);
+    void threeWheelHolonomicMotion(double frontRight, double frontLeft, double backWheel);
 }
