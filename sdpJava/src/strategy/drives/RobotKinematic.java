@@ -1,7 +1,8 @@
 package strategy.drives;
 
-import org.ejml.alg.dense.linsol.LinearSolverSafe;
+import org.ejml.factory.LinearSolverFactory;
 import org.ejml.data.DenseMatrix64F;
+import org.ejml.interfaces.linsol.LinearSolver;
 import vision.tools.DirectedPoint;
 import vision.tools.VectorGeometry;
 
@@ -61,11 +62,9 @@ public class RobotKinematic {
         force.getX(), force.getY(), rotation);
     DenseMatrix64F s = new DenseMatrix64F(3, 1);
     // Calculate the inverse of the designed matrix
-    LinearSolverSafe<DenseMatrix64F> solver = new LinearSolverSafe<DenseMatrix64F>();
+    LinearSolver<DenseMatrix64F> solver = LinearSolverFactory.qr(3,3);
     if (solver.setA(m)) {
       solver.solve(v, s);
-    } else {
-      throw new IllegalArgument("Check Matrix");
     }
     System.out.print(s.toString());
     return (s);

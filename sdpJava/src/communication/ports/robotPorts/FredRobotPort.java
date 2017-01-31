@@ -1,7 +1,6 @@
 package communication.ports.robotPorts;
 
 import communication.ports.interfaces.DribblerKickerEquippedRobotPort;
-import communication.ports.interfaces.ThreeWheelHolonomicRobotPort;
 import communication.ports.interfaces.PropellerEquipedRobotPort;
 import communication.ports.interfaces.RobotPort;
 import communication.ports.interfaces.ThreeWheelHolonomicRobotPort;
@@ -9,8 +8,8 @@ import communication.ports.interfaces.ThreeWheelHolonomicRobotPort;
 /**
  * Created by Simon Rovder
  */
-public class FredRobotPort extends RobotPort implements PropellerEquipedRobotPort,
-        ThreeWheelHolonomicRobotPort, DribblerKickerEquippedRobotPort {
+public class FredRobotPort extends RobotPort implements
+    PropellerEquipedRobotPort, ThreeWheelHolonomicRobotPort, DribblerKickerEquippedRobotPort {
 
   public FredRobotPort() {
     super("pang");
@@ -26,10 +25,10 @@ public class FredRobotPort extends RobotPort implements PropellerEquipedRobotPor
    * @param back is going clockwise
    *
    */
-  public void threeWheelHolonomicMotion(double frontLeft, double frontRight, double back) {
+  public void threeWheelHolonomicMotion(double frontRight, double frontLeft, double back) {
     // we have to change the sign of the frontRight:
     frontRight = -1 * frontRight;
-    this.sdpPort.commandSender("r", (int) frontLeft, (int) frontRight, (int) back);
+    this.sdpPort.commandSender("r", (int) frontRight, (int) frontLeft, (int) back);
   }
 
   // command to spin dribbler and kicker
@@ -37,21 +36,21 @@ public class FredRobotPort extends RobotPort implements PropellerEquipedRobotPor
     this.sdpPort.commandSender("dk", (int) dribbler, (int) kickerL, (int) kickerR);
   }
 
-    // command to spin dribbler and kicker
-    @Override
-    public void dribblerKicker(double dribbler, double kicker) {
-        this.sdpPort.commandSender("dk", (int) dribbler, (int) kicker);
-    }
+  // command to spin dribbler and kicker
+  @Override
+  public void dribblerKicker(double dribbler, double kicker) {
+    this.sdpPort.commandSender("dk", (int) dribbler, (int) kicker);
+  }
 
   public void kicker(double kickerL, double kickerR) {
     this.sdpPort.commandSender("kicker", (int) kickerL, (int) kickerR);
   }
 
-  // will keep it for reference, there is some extra login in arduino code for this
-  //  @Override
-  //  public void propeller(int spin) {
-  //    this.sdpPort.commandSender("kick", spin);
-  //  }
+//   will keep it for reference, there is some extra login in arduino code for this
+    @Override
+    public void propeller(int spin) {
+      this.sdpPort.commandSender("kick", spin);
+    }
 
 
 }
