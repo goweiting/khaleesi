@@ -1,5 +1,6 @@
 package communication.ports.robotPorts;
 
+import communication.ports.interfaces.DribblerKickerEquippedRobotPort;
 import communication.ports.interfaces.ThreeWheelHolonomicRobotPort;
 import communication.ports.interfaces.PropellerEquipedRobotPort;
 import communication.ports.interfaces.RobotPort;
@@ -7,7 +8,8 @@ import communication.ports.interfaces.RobotPort;
 /**
  * Created by Simon Rovder
  */
-public class FredRobotPort extends RobotPort implements PropellerEquipedRobotPort, ThreeWheelHolonomicRobotPort {
+public class FredRobotPort extends RobotPort implements PropellerEquipedRobotPort,
+        ThreeWheelHolonomicRobotPort, DribblerKickerEquippedRobotPort {
 
     public FredRobotPort() {
         super("pang");
@@ -20,6 +22,7 @@ public class FredRobotPort extends RobotPort implements PropellerEquipedRobotPor
 
 
     // command to spin dribbler and kicker
+    @Override
     public void dribblerKicker(double dribbler, double kicker) {
         this.sdpPort.commandSender("dk", (int) dribbler, (int) kicker);
     }

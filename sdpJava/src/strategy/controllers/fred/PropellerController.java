@@ -5,42 +5,28 @@ import strategy.Strategy;
 import strategy.controllers.ControllerBase;
 import strategy.robots.RobotBase;
 import vision.Robot;
-import vision.constants.Constants;
-import vision.tools.VectorGeometry;
 
 /**
  * Created by Simon Rovder
  */
+// Adapting for ad-hoc use with the "kick" command. Don't use this!
 public class PropellerController extends ControllerBase {
-    private int propellerTracker;
+    private int kickerStatus;
 
     public PropellerController(RobotBase robot) {
         super(robot);
-        this.propellerTracker = 0;
+        this.kickerStatus = 0;
     }
 
     @Override
     public void setActive(boolean active) {
         super.setActive(active);
-        this.propellerTracker = 0;
+        this.kickerStatus = 0;
     }
 
-    private void propell(int dir){
+    private void propell(int newStatus){
         PropellerEquipedRobotPort port = (PropellerEquipedRobotPort) this.robot.port;
-        if(dir < 0){
-            if(this.propellerTracker < -4) return;
-            this.propellerTracker--;
-        }
-        if(dir > 0){
-            if(this.propellerTracker > 4) return;
-            this.propellerTracker++;
-        }
-        if (dir == 0){
-            if(this.propellerTracker == 0) return;
-            if(this.propellerTracker > 0) this.propellerTracker--;
-            else this.propellerTracker++;
-        }
-        port.propeller(-dir);
+        port.propeller(newStatus);
     }
 
     @Override
@@ -50,22 +36,12 @@ public class PropellerController extends ControllerBase {
         Robot us = Strategy.world.getRobot(this.robot.robotType);
         if(us != null){
             if(this.isActive()){
-                boolean danger = false;
-                if(Math.abs(us.location.x) > Constants.PITCH_WIDTH/2 - 20 && VectorGeometry.angle(VectorGeometry.fromAngular(us.location.direction, 10, null), new VectorGeometry(1,0)) > 1) danger = true;
-                if(Math.abs(us.location.y) > Constants.PITCH_HEIGHT/2 - 20 && VectorGeometry.angle(VectorGeometry.fromAngular(us.location.direction, 10, null), new VectorGeometry(0,1)) > 1) danger = true;
-                for(Robot r : Strategy.world.getRobots()){
-                    if(r.type != us.type && us.location.distance(r.location) < 30){
-                        danger = true;
-                    }
-                }
-                if(danger){
-                    this.propell(0);
-                } else {
-                    VectorGeometry toEnemy = new VectorGeometry(Constants.PITCH_WIDTH/2, 0);
-                    VectorGeometry direct = VectorGeometry.fromAngular(us.location.direction, 10, null);
-                    int newDir = VectorGeometry.crossProductDirection(toEnemy, direct) ? 1 : -1;
-                    this.propell(newDir);
-                }
+                // The current Arduino file knows the following when it comes to status:
+                // Works only on one of the motors, too
+                // 0 = full stop (kickers)
+                // -1 = negative 100 => do the kick
+                // 1 = positive 100 => retract (not ideal, should use less force for that)
+                propell(0); // Do nothing. Do not use this command. (FIXME?)
             }
         }
     }

@@ -18,6 +18,7 @@
 
 #define DRIBLER 0
 #define KICKERS 1
+#define KICKERS2 2
 
 //#define SPEAKER 2
 
@@ -70,7 +71,7 @@ void loop(){
 
 }
 
-void moveMotor() {
+void moveMotor(int motor, int power) {
         int motor = atoi(sCmd.next());
         int power = atoi(sCmd.next());
         if (power == 0) {
@@ -138,8 +139,9 @@ void dribblerKick(){
   int dribbler = atoi(sCmd.next());
   int kickPower = atoi(sCmd.next());
 
-  motorControl(DRIBLER, dribbler);
-  motorControl(KICKERS, kickPower);
+  moveMotor(DRIBLER, dribbler);
+  moveMotor(KICKERS, kickPower);
+  moveMotor(KICKERS2, -kickPower);
 }
 
 void rationalMotors(){
@@ -147,9 +149,9 @@ void rationalMotors(){
         int frontRight = atoi(sCmd.next());
         int back  = atoi(sCmd.next());
 
-        motorControl(FRONTLEFT, -frontLeft);
-        motorControl(FRONTRIGHT, -frontRight);
-        motorControl(BACK, -back);
+        moveMotor(FRONTLEFT, -frontLeft);
+        moveMotor(FRONTRIGHT, -frontRight);
+        moveMotor(BACK, -back);
 }
 
 void pingMethod(){
