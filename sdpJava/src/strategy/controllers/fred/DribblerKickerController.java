@@ -62,9 +62,9 @@ public class DribblerKickerController extends ControllerBase {
     private void doAction(double dribblerPower, double kickerPower) {
         // Update status before doing anything.
         dribblerWorking = (dribblerPower != 0);
-        if (kickerPower == 0) kickerStatus = KickerStatus.OFF;
-        else if (kickerPower > 0) kickerStatus = KickerStatus.KICKING;
-        else kickerStatus = KickerStatus.RETRACTING;
+        //if (kickerPower == 0) kickerStatus = KickerStatus.OFF;
+        //else if (kickerPower > 0) kickerStatus = KickerStatus.KICKING;
+        //else kickerStatus = KickerStatus.RETRACTING;
 
         // Clamp kicker retracting force if necessary
         kickerPower = (kickerPower < -MAX_KICKER_RETRACT_POWER) ? -MAX_KICKER_RETRACT_POWER : kickerPower;
