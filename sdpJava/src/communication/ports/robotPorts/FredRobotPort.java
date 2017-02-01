@@ -16,18 +16,9 @@ public class FredRobotPort extends RobotPort implements
   }
 
   @Override
-  /**
-   * We need to be clear as to how the wheels are spinning due to the awkward and
-   * counter-intuitive ways the motors are being placed in our robot
-   * To be exact:
-   * @param frontLeft is going clockwise
-   * @param frontRight is going counter clockwise
-   * @param back is going clockwise
-   *
-   */
   public void threeWheelHolonomicMotion(double frontLeft, double frontRight, double back) {
-    // we have to change the sign of the frontRight:
-    frontRight = -1 * frontRight;
+    // for debugging
+    System.out.printf("frontleft : %d\nfrontRight : %d\nback: %d", frontLeft, frontRight, back);
     this.sdpPort.commandSender("r", (int) frontLeft, (int) frontRight, (int) back);
   }
 

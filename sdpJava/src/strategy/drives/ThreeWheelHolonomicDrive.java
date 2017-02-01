@@ -33,7 +33,7 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
     assert (port instanceof ThreeWheelHolonomicRobotPort);
 
     RobotKinematic kinematics = new RobotKinematic();
-    int[] wheelSpeeds = kinematics.inverseKinematic(location, force, rotation);
+    double[] wheelSpeeds = kinematics.inverseKinematic(location, force, rotation);
 
     // Instructs the robot to to the desired location with that amount of "speed"
     ((ThreeWheelHolonomicRobotPort) port)
