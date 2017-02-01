@@ -2,6 +2,7 @@ package strategy.drives;
 
 import communication.ports.interfaces.RobotPort;
 import communication.ports.interfaces.ThreeWheelHolonomicRobotPort;
+import vision.gui.SDPConsole;
 import vision.tools.DirectedPoint;
 import vision.tools.VectorGeometry;
 
@@ -12,8 +13,13 @@ import vision.tools.VectorGeometry;
 
 public class ThreeWheelHolonomicDrive implements DriveInterface {
 
-  public int MAX_ROTATION = 55;
+  public int MAX_ROTATION = 55; // todo: what is these for?
   public int MAX_MOTION = 100;
+  public double[][] FORCE_DECOUPLING = new double[][]{
+      {-.3333, -.5774, .3333},
+      {-.3333, .5774, .3333},
+      {.6667, 0, .3333}
+  };
 
   /**
    * Moving the three wheel holonomic robot to a desired location.
@@ -31,73 +37,40 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
       double factor) {
     assert (port instanceof ThreeWheelHolonomicRobotPort);
 
-    // Some debug print out:
-    System.out.println("My current location" + location.toString());
-    System.out.println("My desired location" + force.toString() + " at angle of :" + rotation);
+    VectorGeometry dir = new VectorGeometry();
+    force.copyInto(dir).coordinateRotation(force.angle() - location.direction);
+    factor = Math.min(1, factor); // this is basically the P_controller bit
+
+//    double lim = this.MAX_MOTION - Math.abs(rotation * this.MAX_ROTATION * factor); // todo:
+// not exactly sure what this does so just leaving it here for now
+
+    double frontRight = FORCE_DECOUPLING[0][0] * dir.x + FORCE_DECOUPLING[0][1] * dir.y
+        + FORCE_DECOUPLING[0][3] * force.angle();
+    double frontLeft = FORCE_DECOUPLING[1][0] * dir.x + FORCE_DECOUPLING[1][1] * dir.y +
+        FORCE_DECOUPLING[1][3] * force.angle();
+    double backWheel = FORCE_DECOUPLING[2][0] * dir.x + FORCE_DECOUPLING[2][1] * dir.y +
+        FORCE_DECOUPLING[2][3] * force.angle();
+
+    // find the largest speed required and normalise each of the wheel's speed:
+    double normalizer = Math.max(Math.abs(frontRight),
+        Math.max(Math.abs(frontLeft), Math.abs(backWheel)));
+
+//    normalizer = lim / normalizer * factor;
+//    frontRight = frontRight * normalizer + rotation * this.MAX_ROTATION;
+//    frontLeft = frontLeft * normalizer + rotation * this.MAX_ROTATION;
+//    backWheel = backWheel * normalizer + rotation * this.MAX_ROTATION;
+
+    // SIMPLE NORMALISER FOR SCALING THE SPEED; USAGE OF FACTOR TO SEE WHAT HAPPENS
+    frontRight = frontRight / normalizer * 100 * factor;
+    frontLeft = frontLeft / normalizer * 100 * factor;
+    backWheel = backWheel / normalizer * 100 * factor;
+
+    // DEBUG
+    System.out
+        .printf("FL: " + frontLeft + " FR: " + frontRight + "Back: " + backWheel);
 
     // Instructs the robot to to the desired location with that amount of "speed"
-    ((ThreeWheelHolonomicRobotPort) port).threeWheelHolonomicMotion();
+    ((ThreeWheelHolonomicRobotPort) port)
+        .threeWheelHolonomicMotion(frontLeft, frontRight, backWheel);
   }
-
-  /**
-   * Apply the inverse kinematic model to derieved the speed required to drive the robot
-   * from current location to the desired vector v = (force, rotation).T
-   *
-   * @param location the current location of the robot
-   * @param force the desired location in (x,y)
-   * @param rotation difference between the the heading of the robot and the desired location
-   */
-  public double[] inverseKinematic(
-      DirectedPoint location, VectorGeometry force, double rotation) {
-
-    // The desired vector to return (the speed of each wheels)
-    double new_x = force.getX() - location.getX();
-    double new_y = force.getY() - location.getY();
-    double theta = rotation - location.getDirection();
-
-    // Check that theta does not exceed 180degrees (pi), because there's always a simpler way
-    // to get there if that happens
-
-    double[] wheelSpeeds = new double[3];
-    // its frontLeft, frontRight then backWheel!!
-    wheelSpeeds[0] = (-0.3333) * new_x + (-.5774) * new_y + .3333 * theta;
-    wheelSpeeds[1] = (-0.3333) * new_x + (.5774) * new_y + .3333 * theta;
-    wheelSpeeds[2] = (0.6667) * new_x + 0 + 0.3333 * theta;
-
-    // Added Debug:
-    System.out
-        .printf("FL: " + wheelSpeeds[0] + " FR: " + wheelSpeeds[1] + "Back: " + wheelSpeeds[2]);
-    return checkValue(wheelSpeeds);
-  }
-
-  private static double[] checkValue(double[] wheelSpeeds) {
-    double maxV = getMaxValue(wheelSpeeds);
-    if (maxV == 0) {
-      return new double[]{0.0, 0.0, 0.0};
-    } else {
-      for (int i = 0; i < wheelSpeeds.length; i++) {
-        double tmp = wheelSpeeds[i] / maxV * 100;
-        if (tmp > 100) {
-          wheelSpeeds[i] = 100;
-        } else if (tmp < -100) {
-          wheelSpeeds[i] = -100;
-        } else {
-          wheelSpeeds[i] = tmp;
-        }
-      }
-    }
-    return wheelSpeeds;
-  }
-
-  private static double getMaxValue(double[] array) {
-    double maxValue = array[0];
-    for (int i = 1; i < array.length; i++) {
-      if (Math.abs(array[i]) > maxValue) {
-        maxValue = array[i];
-      }
-    }
-    return maxValue;
-  }
-
-
 }
