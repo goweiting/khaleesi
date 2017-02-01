@@ -11,8 +11,14 @@ import communication.ports.interfaces.ThreeWheelHolonomicRobotPort;
 public class FredRobotPort extends RobotPort implements
         PropellerEquipedRobotPort, ThreeWheelHolonomicRobotPort, DribblerKickerEquippedRobotPort {
 
+    // Retain state for dribbling and kicking (allow single-var updates)
+    private double curDribblerPower = 0;
+    private double curKickerPower = 0;
+
     public FredRobotPort() {
         super("pang");
+        curDribblerPower = 0;
+        curKickerPower = 0;
     }
 
     @Override
@@ -21,18 +27,20 @@ public class FredRobotPort extends RobotPort implements
     }
 
     // command to spin dribbler and kicker
-    public void dribblerKicker(double dribbler, double kickerL, double kickerR) {
-        this.sdpPort.commandSender("dk", (int) dribbler, (int) kickerL, (int) kickerR);
+    @Override
+    public void updateDribbler(double dribblerPower) {
+        curDribblerPower = dribblerPower;
+        this.sdpPort.commandSender("dk", (int) dribblerPower, (int) curKickerPower);
     }
-
-    // command to spin dribbler and kicker
+    @Override
+    public void updateKicker(double kickerPower) {
+        curKickerPower = kickerPower;
+        this.sdpPort.commandSender("dk", (int) curDribblerPower, (int) kickerPower);
+    }
     @Override
     public void dribblerKicker(double dribbler, double kicker) {
+        curDribblerPower = dribbler; curKickerPower = kicker;
         this.sdpPort.commandSender("dk", (int) dribbler, (int) kicker);
-    }
-
-    public void kicker(double kickerL, double kickerR) {
-        this.sdpPort.commandSender("kicker", (int) kickerL, (int) kickerR);
     }
 
     //   will keep it for reference, there is some extra login in arduino code for this

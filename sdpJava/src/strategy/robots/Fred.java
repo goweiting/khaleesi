@@ -1,6 +1,7 @@
 package strategy.robots;
 
-import strategy.controllers.fred.DribblerKickerController;
+import strategy.controllers.fred.DribblerController;
+import strategy.controllers.fred.KickerController;
 import strategy.controllers.fred.PropellerController;
 import strategy.drives.ThreeWheelHolonomicDrive;
 import communication.ports.robotPorts.FredRobotPort;
@@ -13,12 +14,14 @@ public class Fred extends RobotBase {
 
     public final PropellerController PROPELLER_CONTROLLER = new PropellerController(this);
 
-    public final DribblerKickerController DK_CONTROLLER = new DribblerKickerController(this);
+    public final DribblerController DRIBBLER_CONTROLLER = new DribblerController(this);
+    public final KickerController KICKER_CONTROLLER = new KickerController(this);
 
     public Fred(RobotType robotType){
         super(robotType, new FredRobotPort(), new ThreeWheelHolonomicDrive());
-        this.controllers.add(this.PROPELLER_CONTROLLER); // TODO: Decide on this line. Remove it?
-        this.controllers.add(this.DK_CONTROLLER);
+        //this.controllers.add(this.PROPELLER_CONTROLLER);
+        this.controllers.add(this.DRIBBLER_CONTROLLER);
+        this.controllers.add(this.KICKER_CONTROLLER);
     }
 
 

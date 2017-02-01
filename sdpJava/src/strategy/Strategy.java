@@ -200,10 +200,10 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
 
                 // spins dribbler and kicker
                 case "dk":
-                    ((FredRobotPort) fred.port).dribblerKicker(100, 100);
+                    ((FredRobotPort)fred.port).dribblerKicker(100, 100);
                     break;
                 case "dkStop":
-                    ((FredRobotPort) fred.port).dribblerKicker(0, 0);
+                    ((FredRobotPort)fred.port).dribblerKicker(0, 0);
                     break;
             }
         }

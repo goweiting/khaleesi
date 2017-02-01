@@ -23,7 +23,7 @@ public class GoToBall extends ActionBase {
     Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
     public GoToBall(RobotBase robot) {
         super(robot);
-        this.rawDescription = " Go To safe location";
+        this.rawDescription = " Go To Ball";
     }
 
     @Override
@@ -41,6 +41,7 @@ public class GoToBall extends ActionBase {
                 this.robot.MOTION_CONTROLLER.setDestination(new ConstantPoint(new BallPoint().getX(), new BallPoint().getY()));
                 this.robot.MOTION_CONTROLLER.setHeading(new BallPoint());
                 this.robot.MOTION_CONTROLLER.setTolerance(-1);
+                ((Fred) this.robot).DRIBBLER_CONTROLLER.setActive(true);
 
             }
         }
@@ -52,7 +53,7 @@ public class GoToBall extends ActionBase {
                 this.robot.ACTION_CONTROLLER.setAction(new OffensiveKick(this.robot));
                 throw new ActionException(true, false);
             } else {
-                ((Fred)this.robot).DK_CONTROLLER.setActive(false);
+                ((Fred)this.robot).KICKER_CONTROLLER.setActive(false);
             }
 
         }
