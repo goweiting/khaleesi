@@ -177,6 +177,7 @@ public class SDPPort extends JFrame implements PortListener, ActionListener{
             }
         }
         String toSend = sb.toString();
+        System.out.println(toSend); // added debug!!
         this.outbound.append(toSend);
         this.serialPortWrapper.sendCommand(toSend);
     }

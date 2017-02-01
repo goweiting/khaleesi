@@ -17,8 +17,6 @@ public class FredRobotPort extends RobotPort implements
 
     @Override
     public void threeWheelHolonomicMotion(double frontLeft, double frontRight, double back) {
-        // for debugging
-        System.out.printf("frontleft : " + frontLeft + " \nfrontRight : " + frontRight + "\nback: " + back + "\n");
         this.sdpPort.commandSender("r", (int) frontLeft, (int) frontRight, (int) back);
     }
 
