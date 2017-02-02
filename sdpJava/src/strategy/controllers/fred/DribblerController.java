@@ -11,18 +11,20 @@ import vision.Robot;
  */
 public class DribblerController extends ControllerBase {
 
-    private boolean dribblerWorking = true;
+    private boolean dribblerWorking = false;
     private boolean defaultDribblerDirectionNegative = true;
 
     public DribblerController(RobotBase robot) {
         super(robot);
-        this.dribblerWorking = false;
-        this.defaultDribblerDirectionNegative = false;
     }
+
 
     @Override
     public void setActive(boolean active) {
         super.setActive(active);
+
+        // Turn off dribbler when the component deactivates
+        if (!active) doAction(0);
     }
 
     // (Why are we using doubles?)

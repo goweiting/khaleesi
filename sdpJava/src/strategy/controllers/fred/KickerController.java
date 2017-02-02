@@ -29,12 +29,12 @@ public class KickerController extends ControllerBase {
     }
 
     // Prevent kicker from slamming back into the robot by clamping the power
-    private static final int MAX_KICKER_RETRACT_POWER = 80;
+    private static final int MAX_KICKER_RETRACT_POWER = 70;
     // A couple of other constants
     // How long to pause once having kicked the ball
-    private static final int KICKER_PEAK_PAUSE_MSEC = 2000;
+    private static final int KICKER_PEAK_PAUSE_MSEC = 500;
     // How long do we expect the kicking OR retracting actions to take
-    private static final int KICKER_MOVE_DURATION_MSEC = 5000;
+    private static final int KICKER_MOVE_DURATION_MSEC = 1000;
 
 
     // We need some way to track the time, in order to retract the kicker after
@@ -82,13 +82,15 @@ public class KickerController extends ControllerBase {
 
         //return; // FIXME: remove once complete
 
+        System.out.println("DEBUG: KICKER PERFORMING; Status = " + kickerStatus.toString());
+
         // This will continue working even if we're inactive, in case a kick is in progress.
         switch (kickerStatus) { // could've done it using methods inside an interface inside the enum.. .awwww yeaaaah
             // Nothing yet, we want to kick
             case OFF:
                 kickerStatus = KickerStatus.KICKING;
                 nextStateChangeTime = currentTime + KICKER_MOVE_DURATION_MSEC;
-                doAction(100); // Stop dribbling and perform kick
+                doAction(100); // Perform kick
                 break;
             // Kicking up, and we've been pushing up for a while now. Time to hold for a bit.
             case KICKING:

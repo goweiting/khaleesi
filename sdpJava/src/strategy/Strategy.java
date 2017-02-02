@@ -198,13 +198,28 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
                     ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
                     break;
 
-                // spins dribbler and kicker
+                // spins dribbler and kickerfffff
                 case "dk":
                     ((FredRobotPort)fred.port).dribblerKicker(100, 100);
                     break;
                 case "dkStop":
                     ((FredRobotPort)fred.port).dribblerKicker(0, 0);
                     break;
+                case "attemptKick":
+                    fred.KICKER_CONTROLLER.setActive(true);
+                    fred.KICKER_CONTROLLER.perform();
+                    break;
+                case "stopKick":
+                    fred.KICKER_CONTROLLER.setActive(false);
+                    break;
+
+                case "fullstop":
+                    ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
+                    ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
+                    ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
+                    fred.KICKER_CONTROLLER.setActive(false);
+                    fred.DRIBBLER_CONTROLLER.setActive(false);
+
             }
         }
 
