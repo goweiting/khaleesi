@@ -15,10 +15,6 @@ import vision.RobotType;
  */
 public class CleverDefend extends StatefulActionBase<CleverDefend.Holder> {
 
-    public enum Holder {
-        JEFFREY, VENUS, OTHER
-    }
-
     public CleverDefend(RobotBase robot, DynamicPoint point) {
         super(robot, point);
         this.rawDescription = "Clever Defend";
@@ -38,7 +34,7 @@ public class CleverDefend extends StatefulActionBase<CleverDefend.Holder> {
 
     @Override
     public void enterState(int newState) {
-        if (newState == 1){
+        if (newState == 1) {
             this.enterAction(new DefendGoal(this.robot), 0, 0);
         }
         this.state = newState;
@@ -46,7 +42,7 @@ public class CleverDefend extends StatefulActionBase<CleverDefend.Holder> {
 
     @Override
     public void tok() throws ActionException {
-        switch (this.nextState){
+        switch (this.nextState) {
             case JEFFREY:
                 // TODO: Add Jeffrey Defence
                 break;
@@ -57,5 +53,9 @@ public class CleverDefend extends StatefulActionBase<CleverDefend.Holder> {
                 this.enterState(1);
                 break;
         }
+    }
+
+    public enum Holder {
+        JEFFREY, VENUS, OTHER
     }
 }

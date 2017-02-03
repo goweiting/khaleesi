@@ -1,9 +1,10 @@
 package strategy.actions.other;
 
-import strategy.actions.ActionException;
 import strategy.actions.ActionBase;
+import strategy.actions.ActionException;
 import strategy.points.DynamicPoint;
 import strategy.robots.RobotBase;
+
 /**
  * Created by Simon Rovder
  */

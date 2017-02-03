@@ -9,24 +9,24 @@ import java.util.LinkedList;
 public class ObstacleGroup {
     private LinkedList<AStarObstacle> lines;
 
-    public ObstacleGroup(){
+    public ObstacleGroup() {
         this.lines = new LinkedList<AStarObstacle>();
     }
 
-    public void addSource(AStarObstacle line){
+    public void addSource(AStarObstacle line) {
         this.lines.add(line);
     }
 
-    public void addToField(ObstacleField field){
-        for(AStarObstacle s : this.lines){
+    public void addToField(ObstacleField field) {
+        for (AStarObstacle s : this.lines) {
             field.addAStarObstacle(s);
         }
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String res = "";
-        for(AStarObstacle s : this.lines){
+        for (AStarObstacle s : this.lines) {
             res = res + s + "\n";
         }
         return res;

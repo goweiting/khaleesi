@@ -2,7 +2,7 @@ package strategy.navigation.potentialFieldNavigation;
 
 /**
  * Created by Simon Rovder
- *
+ * <p>
  * SDP is our world, we decide how to Physics in it. :)
  */
 public enum FieldFormula {

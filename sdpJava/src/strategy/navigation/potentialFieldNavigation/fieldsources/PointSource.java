@@ -11,9 +11,9 @@ public class PointSource extends PotentialSource {
 
     private final VectorGeometry point;
 
-    public PointSource(VectorGeometry point, boolean attract, FieldFormula formula){
+    public PointSource(VectorGeometry point, boolean attract, FieldFormula formula) {
         super(formula, attract);
-        this.point   = point;
+        this.point = point;
     }
 
 //    public PointSource(VectorGeometry point, double xStart, double xFactor, boolean attract, double xCutoff, double yIntercept){

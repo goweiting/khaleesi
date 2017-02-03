@@ -7,8 +7,8 @@ import strategy.robots.RobotBase;
  */
 public abstract class ControllerBase implements ControllerInterface {
 
-    private boolean active;
     public final RobotBase robot;
+    private boolean active;
 
     public ControllerBase(RobotBase robot) {
         this.active = true;

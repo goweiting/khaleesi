@@ -5,5 +5,5 @@ package vision;
  */
 
 public interface VisionListener {
-	public void nextWorld(DynamicWorld staticWorld);
+    public void nextWorld(DynamicWorld staticWorld);
 }

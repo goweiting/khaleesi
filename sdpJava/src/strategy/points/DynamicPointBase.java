@@ -12,7 +12,7 @@ public abstract class DynamicPointBase implements DynamicPoint {
     protected int x;
     protected int y;
 
-    public static DynamicPoint getEnemyGoalPoint(){
-        return new ConstantPoint(Constants.PITCH_WIDTH/2, 0);
+    public static DynamicPoint getEnemyGoalPoint() {
+        return new ConstantPoint(Constants.PITCH_WIDTH / 2, 0);
     }
 }

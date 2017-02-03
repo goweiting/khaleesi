@@ -17,20 +17,20 @@ public class SerialPortWrapper implements SerialPortEventListener {
     private SDPPort creator;
     private StringBuilder builder;
 
-    public SerialPortWrapper(SDPPort creator){
+    public SerialPortWrapper(SDPPort creator) {
         this.creator = creator;
         this.builder = new StringBuilder();
     }
 
     public void close() throws SerialPortException {
-        if(this.port == null) return;
+        if (this.port == null) return;
         this.port.closePort();
     }
 
-    public void setSerialPort(SerialPort port){
-        if(port == null) return;
+    public void setSerialPort(SerialPort port) {
+        if (port == null) return;
         try {
-            if(this.port != null) this.port.removeEventListener();
+            if (this.port != null) this.port.removeEventListener();
             this.port = port;
             this.port.addEventListener(this);
         } catch (SerialPortException e) {
@@ -38,8 +38,8 @@ public class SerialPortWrapper implements SerialPortEventListener {
         }
     }
 
-    public void sendCommand(String command){
-        if(this.port == null){
+    public void sendCommand(String command) {
+        if (this.port == null) {
             return;
         }
         try {
@@ -50,33 +50,31 @@ public class SerialPortWrapper implements SerialPortEventListener {
         }
     }
 
-    private void nextString(String s){
+    private void nextString(String s) {
         this.creator.receivedStringHandler(s);
     }
 
-    private void nextPacket(String s){
+    private void nextPacket(String s) {
         this.nextString(s);
     }
 
     @Override
     public void serialEvent(SerialPortEvent event) {
-        if(event.isRXCHAR() && event.getEventValue() > 0){
+        if (event.isRXCHAR() && event.getEventValue() > 0) {
             try {
                 byte buffer[] = this.port.readBytes();
-                for (byte b: buffer) {
+                for (byte b : buffer) {
                     if (b == '\r' || b == '\n') {
-                        if(this.builder.length() > 0){
+                        if (this.builder.length() > 0) {
                             String toProcess = this.builder.toString();
                             nextString(toProcess);
                             this.builder.setLength(0);
                         }
-                    }
-                    else {
-                        this.builder.append((char)b);
+                    } else {
+                        this.builder.append((char) b);
                     }
                 }
-            }
-            catch (SerialPortException ex) {
+            } catch (SerialPortException ex) {
                 ex.printStackTrace();
                 System.out.println("serialEvent");
             }

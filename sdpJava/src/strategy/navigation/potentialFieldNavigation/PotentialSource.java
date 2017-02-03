@@ -5,7 +5,7 @@ import vision.tools.VectorGeometry;
 /**
  * Created by Simon Rovder
  */
-public abstract class PotentialSource implements PotentialSourceInterface{
+public abstract class PotentialSource implements PotentialSourceInterface {
 
     protected double minX;
     protected double yFactor;
@@ -15,7 +15,7 @@ public abstract class PotentialSource implements PotentialSourceInterface{
     protected double size;
     protected FieldFormula formula;
 
-    public PotentialSource(FieldFormula formula, boolean attract){
+    public PotentialSource(FieldFormula formula, boolean attract) {
         this.formula = formula;
         this.minX = 0.1;
         this.yFactor = 1;
@@ -25,34 +25,34 @@ public abstract class PotentialSource implements PotentialSourceInterface{
         this.size = 0;
     }
 
-    public PotentialSource(double minX, double yFactor, boolean attract, double xCutoff, double yShift, double size){
+    public PotentialSource(double minX, double yFactor, boolean attract, double xCutoff, double yShift, double size) {
         this.minX = Math.max(minX, 0.1);
         this.yFactor = yFactor;
         this.attract = attract;
         this.xCutoff = xCutoff;
-        this.yShift  = yShift;
-        this.size    = size;
+        this.yShift = yShift;
+        this.size = size;
     }
 
-    public VectorGeometry relativePointToForce(VectorGeometry relativePoint){
+    public VectorGeometry relativePointToForce(VectorGeometry relativePoint) {
         return relativePoint.setLength(this.getPotentialAtPoint(relativePoint));
     }
 
     @Override
-    public double getPotentialAtPoint(VectorGeometry relativePoint){
+    public double getPotentialAtPoint(VectorGeometry relativePoint) {
 
         double adjustedDistance = Math.max(this.minX, relativePoint.length() - this.size);
-        if(adjustedDistance > xCutoff) return 0;
+        if (adjustedDistance > xCutoff) return 0;
         double funcRes = 0;
-        switch(this.formula){
+        switch (this.formula) {
             case ONE_OVER_X:
-                funcRes = 1/adjustedDistance;
+                funcRes = 1 / adjustedDistance;
                 break;
             case ONE_OVER_X2:
-                funcRes = 1/(adjustedDistance*adjustedDistance);
+                funcRes = 1 / (adjustedDistance * adjustedDistance);
                 break;
             case ONE_OVER_X3:
-                funcRes = 1/(adjustedDistance*adjustedDistance*adjustedDistance);
+                funcRes = 1 / (adjustedDistance * adjustedDistance * adjustedDistance);
                 break;
             case E_TO_MINUS_X:
                 funcRes = Math.pow(Math.E, -adjustedDistance);
@@ -61,7 +61,7 @@ public abstract class PotentialSource implements PotentialSourceInterface{
                 funcRes = -Math.log(adjustedDistance);
                 break;
         }
-        funcRes = yFactor*funcRes + yShift;
+        funcRes = yFactor * funcRes + yShift;
         return Math.max(funcRes, 0) * (attract ? -1 : 1);
     }
 

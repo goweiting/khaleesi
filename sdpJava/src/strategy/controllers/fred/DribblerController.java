@@ -38,7 +38,7 @@ public class DribblerController extends ControllerBase {
         if (defaultDribblerDirectionNegative) dribblerPower *= -1;
 
         // Send command
-        ((DribblerKickerEquippedRobotPort)this.robot.port).updateDribbler(dribblerPower);
+        ((DribblerKickerEquippedRobotPort) this.robot.port).updateDribbler(dribblerPower);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package strategy.actions.other;
 
-import strategy.actions.ActionException;
 import strategy.actions.ActionBase;
+import strategy.actions.ActionException;
 import strategy.robots.RobotBase;
 
 /**
@@ -15,7 +15,7 @@ public class Waiting extends ActionBase {
 
     @Override
     public void enterState(int newState) {
-        if(newState == 0){
+        if (newState == 0) {
             this.robot.MOTION_CONTROLLER.clearObstacles();
             this.robot.MOTION_CONTROLLER.setHeading(null);
         }

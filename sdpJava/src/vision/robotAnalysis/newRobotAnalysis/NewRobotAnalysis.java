@@ -3,9 +3,9 @@ package vision.robotAnalysis.newRobotAnalysis;
 import vision.Ball;
 import vision.DynamicWorld;
 import vision.Robot;
+import vision.RobotType;
 import vision.colorAnalysis.SDPColor;
 import vision.robotAnalysis.RobotAnalysisBase;
-import vision.RobotType;
 import vision.robotAnalysis.RobotColorSettings;
 import vision.spotAnalysis.approximatedSpotAnalysis.Spot;
 import vision.tools.DirectedPoint;
@@ -24,7 +24,7 @@ public class NewRobotAnalysis extends RobotAnalysisBase {
 //    private SDPColor[] spotColor = {SDPColor.GREEN, SDPColor.PINK};
 
 
-    public NewRobotAnalysis(){
+    public NewRobotAnalysis() {
         super();
     }
 
@@ -48,8 +48,8 @@ public class NewRobotAnalysis extends RobotAnalysisBase {
         DynamicWorld world = new DynamicWorld(time);
         Robot r;
 
-        for(RobotPlate plate : plates){
-            if(!plate.hasTeam()){
+        for (RobotPlate plate : plates) {
+            if (!plate.hasTeam()) {
                 plate.setTeam(RobotColorSettings.ASSUME_YELLOW ? SDPColor.YELLOW : SDPColor.BLUE);
             }
             r = plate.toRobot();
@@ -58,9 +58,9 @@ public class NewRobotAnalysis extends RobotAnalysisBase {
 
         spotList = spots.get(SDPColor._BALL);
 
-        for(int i = 0; i < spotList.size(); i++){
+        for (int i = 0; i < spotList.size(); i++) {
             Spot s = spotList.get(i);
-            if(PatternMatcher.isBotPart(plates, s)){
+            if (PatternMatcher.isBotPart(plates, s)) {
                 spotList.remove(i);
                 i--;
             }
@@ -73,46 +73,46 @@ public class NewRobotAnalysis extends RobotAnalysisBase {
         Ball ball;
         Ball oldBall = null;
         long timeDelta = 0;
-        if(lastKnownWorld != null){
+        if (lastKnownWorld != null) {
             oldBall = lastKnownWorld.getBall();
-            timeDelta = (time - lastKnownWorld.getTime())/1000000;
+            timeDelta = (time - lastKnownWorld.getTime()) / 1000000;
         }
 
-        if(timeDelta == 0) timeDelta = 1;
+        if (timeDelta == 0) timeDelta = 1;
 
-        if(spotList.size() > 0){
+        if (spotList.size() > 0) {
             ball = new Ball();
             ball.location = spotList.get(0);
             world.setBall(ball);
         }
         ball = world.getBall();
 
-        if(lastKnownWorld != null && world.robotChangeDelay != 0 && lastKnownWorld.getProbableBallHolder() != null){
+        if (lastKnownWorld != null && world.robotChangeDelay != 0 && lastKnownWorld.getProbableBallHolder() != null) {
 
             world.setBall(null);
             world.setProbableBallHolder(lastKnownWorld.getProbableBallHolder());
             world.setLastKnownBall(lastKnownWorld.getLastKnownBall());
-            if(world.robotCount == lastKnownWorld.robotCount){
+            if (world.robotCount == lastKnownWorld.robotCount) {
                 world.robotChangeDelay = lastKnownWorld.robotChangeDelay - 1;
             } else {
                 world.robotChangeDelay = 20;
             }
         } else {
-            if(this.lastKnownWorld != null){
+            if (this.lastKnownWorld != null) {
                 Ball lastKnownBall = this.lastKnownWorld.getBall();
-                if(lastKnownBall != null){
-                    if(ball == null){
+                if (lastKnownBall != null) {
+                    if (ball == null) {
                         Robot closest = null;
-                        for(Robot robot : world.getRobots()){
-                            if(closest == null) closest = robot;
+                        for (Robot robot : world.getRobots()) {
+                            if (closest == null) closest = robot;
                             else {
-                                if(lastKnownBall.location.distance(closest.location) > lastKnownBall.location.distance(robot.location)){
+                                if (lastKnownBall.location.distance(closest.location) > lastKnownBall.location.distance(robot.location)) {
                                     closest = robot;
                                 }
                             }
                         }
 
-                        if(closest != null && closest.location.distance(lastKnownBall.location) < 30){
+                        if (closest != null && closest.location.distance(lastKnownBall.location) < 30) {
                             Ball newBall = new Ball();
                             newBall.location = closest.location.clone();
                             world.setBall(newBall);
@@ -125,26 +125,26 @@ public class NewRobotAnalysis extends RobotAnalysisBase {
             }
         }
 
-        if(lastKnownWorld != null && world.getBall() != null && lastKnownWorld.getBall() != null){
+        if (lastKnownWorld != null && world.getBall() != null && lastKnownWorld.getBall() != null) {
             VectorGeometry velocity = VectorGeometry.fromTo(lastKnownWorld.getBall().location, world.getBall().location);
-            velocity.setLength(velocity.length()/timeDelta);
+            velocity.setLength(velocity.length() / timeDelta);
             world.getBall().velocity = velocity;
         } else {
-            if(world.getBall() != null) world.getBall().velocity = new VectorGeometry(0,0);
+            if (world.getBall() != null) world.getBall().velocity = new VectorGeometry(0, 0);
         }
 
-        if(lastKnownWorld != null){
-            for(RobotType rt : RobotType.values()){
+        if (lastKnownWorld != null) {
+            for (RobotType rt : RobotType.values()) {
                 Robot old = lastKnownWorld.getRobot(rt);
                 Robot newR = world.getRobot(rt);
-                if(newR != null){
-                    if(old != null){
+                if (newR != null) {
+                    if (old != null) {
                         newR.velocity = newR.location.clone();
                         newR.velocity.minus(old.location);
-                        newR.velocity.direction = (newR.location.direction - old.location.direction)/timeDelta;
+                        newR.velocity.direction = (newR.location.direction - old.location.direction) / timeDelta;
                         newR.velocity.setLength(newR.velocity.length() / timeDelta);
                     } else {
-                        newR.velocity = new DirectedPoint(0,0,0);
+                        newR.velocity = new DirectedPoint(0, 0, 0);
                     }
 //                    System.out.println(newR.velocity);
                 }
@@ -152,11 +152,11 @@ public class NewRobotAnalysis extends RobotAnalysisBase {
         }
 
 
-        for(Robot toUndistort : world.getRobots()){
-            if(toUndistort != null){
+        for (Robot toUndistort : world.getRobots()) {
+            if (toUndistort != null) {
                 // This part moves the strategy.robots closer to the center of the pitch. It compensates for the height
                 // of the robot (15 cm)
-                toUndistort.location.setLength(toUndistort.location.length() * (1 - 20.0/250));
+                toUndistort.location.setLength(toUndistort.location.length() * (1 - 20.0 / 250));
             }
         }
         this.informListeners(world);

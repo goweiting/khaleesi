@@ -1,7 +1,7 @@
 package strategy.actions;
 
-import strategy.Strategy;
 import strategy.Status;
+import strategy.Strategy;
 import strategy.actions.other.Goto;
 import strategy.actions.other.HoldPosition;
 import strategy.actions.other.Stop;
@@ -31,7 +31,7 @@ public class Attack extends StatefulActionBase<Status.BallState> {
 
     @Override
     public void tok() throws ActionException {
-        switch(Strategy.status.ballState){
+        switch (Strategy.status.ballState) {
             case THEM:
                 this.enterAction(new HoldPosition(this.robot, new MidFoePoint()), 0, 0);
                 break;

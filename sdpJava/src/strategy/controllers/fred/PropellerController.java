@@ -24,18 +24,18 @@ public class PropellerController extends ControllerBase {
         this.kickerStatus = 0;
     }
 
-    private void propell(int newStatus){
+    private void propell(int newStatus) {
         PropellerEquipedRobotPort port = (PropellerEquipedRobotPort) this.robot.port;
         port.propeller(newStatus);
     }
 
     @Override
-    public void perform(){
+    public void perform() {
         assert (this.robot.port instanceof PropellerEquipedRobotPort);
 
         Robot us = Strategy.world.getRobot(this.robot.robotType);
-        if(us != null){
-            if(this.isActive()){
+        if (us != null) {
+            if (this.isActive()) {
                 // The current Arduino file knows the following when it comes to status:
                 // Works only on one of the motors, too
                 // 0 = full stop (kickers)

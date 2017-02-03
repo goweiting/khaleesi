@@ -1,21 +1,15 @@
 package strategy.actions;
 
-import strategy.GUI;
 import strategy.Strategy;
-import strategy.WorldTools;
+import strategy.actions.offense.OffensiveKick;
+import strategy.actions.offense.ShuntKick;
 import strategy.actions.other.DefendGoal;
 import strategy.actions.other.GoToBall;
 import strategy.actions.other.GoToSafeLocation;
-import strategy.actions.offense.OffensiveKick;
-import strategy.actions.offense.ShuntKick;
-import strategy.actions.other.Goto;
-import strategy.points.basicPoints.BallPoint;
-import strategy.points.basicPoints.ConstantPoint;
 import strategy.robots.Fred;
 import strategy.robots.RobotBase;
 import vision.Ball;
 import vision.Robot;
-import vision.RobotType;
 import vision.constants.Constants;
 import vision.tools.VectorGeometry;
 
@@ -87,7 +81,7 @@ public class Behave extends StatefulActionBase<BehaviourEnum> {
                 if (us.location.distance(ourGoal) > ball.location.distance(ourGoal)) {
                     this.nextState = BehaviourEnum.SAFE;
                 } else {
-                    if (us.location.distance(ball.location) > 10){
+                    if (us.location.distance(ball.location) > 10) {
                         this.nextState = BehaviourEnum.GO_TO_BALL;
                     }
                 }

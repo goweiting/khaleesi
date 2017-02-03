@@ -8,16 +8,16 @@ import java.util.LinkedList;
 
 /**
  * Created by Simon Rovder
- *
+ * <p>
  * This is a special action class. The basic ActionBase class implementations function similarly to finite state
  * machines. This class allows an action to manually terminate it's subaction before the subaction has terminated.
- *
+ * <p>
  * This is useful because not all actions necessarily terminate at all (example would be the HoldPosition action)
- *
+ * <p>
  * This class uses generics to allow you to write code that calculates and compares states, and only allows subactions
  * to proceed if the two states are the same or equivalent. If they are not, the subaction is terminated and tok()
  * gets called.
- *
+ * <p>
  * Note that these states do not interfere with the ActionBase.state variable. So you can still use enterState() here.
  */
 public abstract class StatefulActionBase<A> extends ActionBase {
@@ -44,12 +44,13 @@ public abstract class StatefulActionBase<A> extends ActionBase {
 
     /**
      * Makes the two states equivalent.
+     *
      * @param a Some State
      * @param b Some other state
      */
-    protected void addEquivalence(A a, A b){
-        for(HashSet<A> set : this.equivalenceSets){
-            if(set.contains(a) || set.contains(b)){
+    protected void addEquivalence(A a, A b) {
+        for (HashSet<A> set : this.equivalenceSets) {
+            if (set.contains(a) || set.contains(b)) {
                 set.add(a);
                 set.add(b);
                 return;
@@ -63,14 +64,15 @@ public abstract class StatefulActionBase<A> extends ActionBase {
 
     /**
      * Checks if the two states are equivalent.
+     *
      * @param a Some state.
      * @param b Some other state.
      * @return
      */
-    protected boolean checkEquivalent(A a, A b){
-        if(a == b) return true;
-        for(HashSet<A> set : this.equivalenceSets){
-            if(set.contains(a) && set.contains(b)) return true;
+    protected boolean checkEquivalent(A a, A b) {
+        if (a == b) return true;
+        for (HashSet<A> set : this.equivalenceSets) {
+            if (set.contains(a) && set.contains(b)) return true;
         }
         return false;
     }
@@ -78,13 +80,14 @@ public abstract class StatefulActionBase<A> extends ActionBase {
 
     /**
      * Slightly extends the functionality of the ActionBase.tik method to also check for equivalent states.
+     *
      * @throws ActionException If this action has completed.
      */
     @Override
     public void tik() throws ActionException {
         A current = this.getState();
-        if(checkEquivalent(current, this.lastState)){
-            if(this.action != null) super.tik();
+        if (checkEquivalent(current, this.lastState)) {
+            if (this.action != null) super.tik();
             return;
         }
         this.tok();
@@ -94,10 +97,10 @@ public abstract class StatefulActionBase<A> extends ActionBase {
     @Override
     public String description() {
         String description = this.rawDescription;
-        if(description == null){
+        if (description == null) {
             description = this.getClass().getName();
         }
-        if(this.action != null) description = description + this.action.description();
+        if (this.action != null) description = description + this.action.description();
         return description;
     }
 }

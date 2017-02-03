@@ -6,6 +6,8 @@ package strategy.points;
  */
 public interface DynamicPoint {
     void recalculate();
+
     int getX();
+
     int getY();
 }

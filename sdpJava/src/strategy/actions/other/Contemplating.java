@@ -1,12 +1,12 @@
 package strategy.actions.other;
 
-import strategy.actions.ActionException;
 import strategy.actions.ActionBase;
+import strategy.actions.ActionException;
 import strategy.robots.RobotBase;
 
 /**
  * Created by Simon Rovder
- *
+ * <p>
  * When the robot fails, it shall Contemplate...
  */
 public class Contemplating extends ActionBase {
@@ -21,5 +21,6 @@ public class Contemplating extends ActionBase {
     }
 
     @Override
-    public void tok() throws ActionException {}
+    public void tok() throws ActionException {
+    }
 }

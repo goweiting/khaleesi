@@ -4,8 +4,8 @@ import strategy.Strategy;
 import strategy.points.DynamicPointBase;
 import vision.Ball;
 import vision.Robot;
-import vision.constants.Constants;
 import vision.RobotType;
+import vision.constants.Constants;
 import vision.tools.VectorGeometry;
 
 /**
@@ -19,34 +19,34 @@ public class DangerousPoint extends DynamicPointBase {
     @Override
     public void recalculate() {
         Ball ball = Strategy.world.getBall();
-        if(ball != null){
-            this.x = (int)ball.location.x;
-            this.y = (int)ball.location.y;
+        if (ball != null) {
+            this.x = (int) ball.location.x;
+            this.y = (int) ball.location.y;
         } else {
             VectorGeometry dangerous = null;
             Robot foe1 = Strategy.world.getRobot(RobotType.FOE_1);
-            if(foe1 != null){
+            if (foe1 != null) {
                 dangerous = foe1.location.clone();
             }
             Robot foe2 = Strategy.world.getRobot(RobotType.FOE_2);
-            if(foe2 != null && (foe1 == null || Strategy.world.getProbableBallHolder() != foe1.type)){
+            if (foe2 != null && (foe1 == null || Strategy.world.getProbableBallHolder() != foe1.type)) {
                 VectorGeometry goal = new VectorGeometry(-Constants.PITCH_WIDTH, 0);
-                if(FAR){
-                    if(foe1 == null || (VectorGeometry.distance(goal, foe1.location) < VectorGeometry.distance(foe2.location, goal))){
+                if (FAR) {
+                    if (foe1 == null || (VectorGeometry.distance(goal, foe1.location) < VectorGeometry.distance(foe2.location, goal))) {
                         dangerous = foe2.location.clone();
                     }
                 } else {
-                    if(foe1 == null || (VectorGeometry.distance(goal, foe1.location) > VectorGeometry.distance(foe2.location, goal))){
+                    if (foe1 == null || (VectorGeometry.distance(goal, foe1.location) > VectorGeometry.distance(foe2.location, goal))) {
                         dangerous = foe2.location.clone();
                     }
                 }
             }
-            if(dangerous == null){
-                this.x = - Constants.PITCH_WIDTH/2 + 20;
+            if (dangerous == null) {
+                this.x = -Constants.PITCH_WIDTH / 2 + 20;
                 this.y = 0;
             } else {
-                this.x = (int)dangerous.x;
-                this.y = (int)dangerous.y;
+                this.x = (int) dangerous.x;
+                this.y = (int) dangerous.y;
             }
         }
     }

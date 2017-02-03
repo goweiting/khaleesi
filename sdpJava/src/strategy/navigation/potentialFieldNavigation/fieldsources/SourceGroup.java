@@ -11,24 +11,24 @@ import java.util.LinkedList;
 public class SourceGroup {
     private LinkedList<PotentialSource> lines;
 
-    public SourceGroup(){
+    public SourceGroup() {
         this.lines = new LinkedList<PotentialSource>();
     }
 
-    public void addSource(PotentialSource line){
+    public void addSource(PotentialSource line) {
         this.lines.add(line);
     }
 
-    public void addToField(PotentialField field){
-        for(PotentialSource s : this.lines){
+    public void addToField(PotentialField field) {
+        for (PotentialSource s : this.lines) {
             field.addSource(s);
         }
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String res = "";
-        for(PotentialSource s : this.lines){
+        for (PotentialSource s : this.lines) {
             res = res + s + "\n";
         }
         return res;

@@ -11,20 +11,20 @@ import java.util.LinkedList;
 /**
  * Created by Simon Rovder
  */
-public abstract class SpotAnalysisBase implements RawInputListener{
+public abstract class SpotAnalysisBase implements RawInputListener {
 
     private LinkedList<NextSpotsListener> listeners;
 
-    public SpotAnalysisBase(){
+    public SpotAnalysisBase() {
         this.listeners = new LinkedList<NextSpotsListener>();
     }
 
-    public void addSpotListener(NextSpotsListener listener){
+    public void addSpotListener(NextSpotsListener listener) {
         this.listeners.add(listener);
     }
 
-    protected void informListeners(HashMap<SDPColor, ArrayList<Spot>> spots, long time){
-        for(NextSpotsListener listener : this.listeners){
+    protected void informListeners(HashMap<SDPColor, ArrayList<Spot>> spots, long time) {
+        for (NextSpotsListener listener : this.listeners) {
             listener.nextSpots(spots, time);
         }
     }

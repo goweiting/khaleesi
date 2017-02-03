@@ -15,16 +15,16 @@ public class BallPoint extends DynamicPointBase {
     @Override
     public void recalculate() {
         Ball ball = Strategy.world.getBall();
-        if(ball != null){
-            this.x = (int)ball.location.x;
-            this.y = (int)ball.location.y;
+        if (ball != null) {
+            this.x = (int) ball.location.x;
+            this.y = (int) ball.location.y;
         } else {
             RobotType probableHolder = Strategy.world.getProbableBallHolder();
-            if(probableHolder != null){
+            if (probableHolder != null) {
                 Robot p = Strategy.world.getRobot(probableHolder);
-                if(p != null){
-                    this.x = (int)p.location.x;
-                    this.y = (int)p.location.y;
+                if (p != null) {
+                    this.x = (int) p.location.x;
+                    this.y = (int) p.location.y;
                 }
             }
         }

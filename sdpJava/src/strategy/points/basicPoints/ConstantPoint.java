@@ -7,7 +7,7 @@ import strategy.points.DynamicPointBase;
  */
 public class ConstantPoint extends DynamicPointBase {
 
-    public ConstantPoint(int x, int y){
+    public ConstantPoint(int x, int y) {
         this.x = x;
         this.y = y;
     }

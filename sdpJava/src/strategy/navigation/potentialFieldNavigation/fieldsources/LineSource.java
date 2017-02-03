@@ -12,7 +12,7 @@ public class LineSource extends PotentialSource {
     private final VectorGeometry a;
     private final VectorGeometry b;
 
-    public LineSource(VectorGeometry a, VectorGeometry b, boolean attract, FieldFormula formula){
+    public LineSource(VectorGeometry a, VectorGeometry b, boolean attract, FieldFormula formula) {
         super(formula, attract);
         this.a = a;
         this.b = b;

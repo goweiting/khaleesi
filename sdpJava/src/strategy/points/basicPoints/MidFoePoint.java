@@ -14,9 +14,9 @@ public class MidFoePoint extends DynamicPointBase {
         Robot foe1Pos = Strategy.world.getRobot(RobotType.FOE_1);
         Robot foe2Pos = Strategy.world.getRobot(RobotType.FOE_2);
 
-        if(foe1Pos != null && foe2Pos != null){
-            this.x = ((int)foe1Pos.location.x + (int)foe2Pos.location.x)/2;
-            this.y = ((int)foe1Pos.location.y + (int)foe2Pos.location.y)/2;
+        if (foe1Pos != null && foe2Pos != null) {
+            this.x = ((int) foe1Pos.location.x + (int) foe2Pos.location.x) / 2;
+            this.y = ((int) foe1Pos.location.y + (int) foe2Pos.location.y) / 2;
         }
     }
 

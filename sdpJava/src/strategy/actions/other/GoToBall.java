@@ -1,29 +1,34 @@
 package strategy.actions.other;
 
 import strategy.Strategy;
-import strategy.actions.ActionException;
 import strategy.actions.ActionBase;
+import strategy.actions.ActionException;
 import strategy.actions.offense.OffensiveKick;
 import strategy.points.basicPoints.BallPoint;
-import strategy.navigation.Obstacle;
 import strategy.points.basicPoints.ConstantPoint;
-import communication.ports.robotPorts.FredRobotPort;
 import strategy.robots.Fred;
 import strategy.robots.RobotBase;
 import vision.Ball;
 import vision.Robot;
 import vision.RobotType;
-import vision.constants.Constants;
-import vision.tools.VectorGeometry;
 
 /**
  * Created by Simon Rovder
  */
 public class GoToBall extends ActionBase {
     Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
+
     public GoToBall(RobotBase robot) {
         super(robot);
         this.rawDescription = " Go To Ball";
+    }
+
+    public static boolean haveBall() {
+        Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
+        if (us.location.distance(new BallPoint().getX(), new BallPoint().getY()) < 20) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -47,23 +52,15 @@ public class GoToBall extends ActionBase {
         }
     }
 
-        @Override
-        public void tok () throws ActionException {
-            if (haveBall()) {
-                this.robot.ACTION_CONTROLLER.setAction(new OffensiveKick(this.robot));
-                throw new ActionException(true, false);
-            } else {
-                ((Fred)this.robot).KICKER_CONTROLLER.setActive(false);
-            }
-
+    @Override
+    public void tok() throws ActionException {
+        if (haveBall()) {
+            this.robot.ACTION_CONTROLLER.setAction(new OffensiveKick(this.robot));
+            throw new ActionException(true, false);
+        } else {
+            ((Fred) this.robot).KICKER_CONTROLLER.setActive(false);
         }
 
-    public static boolean haveBall() {
-        Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
-        if (us.location.distance(new BallPoint().getX(), new BallPoint().getY()) < 20) {
-            return true;
-        }
-        return false;
     }
 
 }

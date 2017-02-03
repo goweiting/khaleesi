@@ -12,7 +12,7 @@ public class MidPoint extends DynamicPointBase {
     private final DynamicPoint point1;
     private final DynamicPoint point2;
 
-    public MidPoint(DynamicPoint point1, DynamicPoint point2){
+    public MidPoint(DynamicPoint point1, DynamicPoint point2) {
         this.point1 = point1;
         this.point2 = point2;
     }

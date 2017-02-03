@@ -8,10 +8,12 @@ import vision.tools.VectorGeometry;
 public class Ball {
     public VectorGeometry location;
     public VectorGeometry velocity;
-    public Ball(){ }
+
+    public Ball() {
+    }
 
     @Override
-    public Ball clone(){
+    public Ball clone() {
         Ball ball = new Ball();
         ball.location = this.location == null ? null : this.location.clone();
         ball.velocity = this.velocity == null ? null : this.velocity.clone();

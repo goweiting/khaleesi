@@ -11,19 +11,19 @@ import vision.tools.VectorGeometry;
  */
 public class Rotate extends DynamicPointBase {
 
-    public Rotate(){
+    public Rotate() {
         super();
     }
 
     @Override
     public void recalculate() {
         Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
-        if(us != null){
+        if (us != null) {
             VectorGeometry location = us.location.clone();
             location.setLength(50);
             location.rotate(0.3);
-            this.x = (int)location.x;
-            this.y = (int)location.y;
+            this.x = (int) location.x;
+            this.y = (int) location.y;
         }
     }
 

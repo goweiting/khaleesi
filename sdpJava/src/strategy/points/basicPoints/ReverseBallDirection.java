@@ -16,11 +16,11 @@ public class ReverseBallDirection extends DynamicPointBase {
     public void recalculate() {
         this.point.recalculate();
         Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
-        if(us != null){
+        if (us != null) {
             VectorGeometry ballDir = VectorGeometry.fromTo(us.location.x, us.location.y, this.point.getX(), this.point.getY()).multiply(-1);
             ballDir.plus(us.location);
-            this.x = (int)ballDir.x;
-            this.y = (int)ballDir.y;
+            this.x = (int) ballDir.x;
+            this.y = (int) ballDir.y;
         }
     }
 

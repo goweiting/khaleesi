@@ -10,24 +10,6 @@ import vision.Robot;
  * Created by s1452923 on 31/01/17.
  */
 public class KickerController extends ControllerBase {
-    private enum KickerStatus {
-        OFF,        // Motors off, kicker in lowest position.
-        KICKING,    // Motors on, kicker moving upwards.
-        PEAK_PAUSE, // Motors off, kicker at peak position.
-        RETRACTING  // Motors on, kicker moving downwards.
-
-        // The lifetime of a kick:
-        // Off -> Kicking -> Peak_Pause -> Retracting -> Off
-    }
-
-    private boolean shutDownAfterKick = false;
-
-    private KickerStatus kickerStatus = KickerStatus.OFF;
-    // Ideally, we SHOULDN'T attempt to kick whilst already kicking, and OFF is the only state where kicking should be OK
-    public boolean isKickInProgress() {
-        return kickerStatus != KickerStatus.OFF;
-    }
-
     // Prevent kicker from slamming back into the robot by clamping the power
     private static final int MAX_KICKER_RETRACT_POWER = 70;
     // A couple of other constants
@@ -35,14 +17,19 @@ public class KickerController extends ControllerBase {
     private static final int KICKER_PEAK_PAUSE_MSEC = 500;
     // How long do we expect the kicking OR retracting actions to take
     private static final int KICKER_MOVE_DURATION_MSEC = 1000;
-
-
+    private boolean shutDownAfterKick = false;
+    private KickerStatus kickerStatus = KickerStatus.OFF;
     // We need some way to track the time, in order to retract the kicker after
     private long nextStateChangeTime = 0;
 
     public KickerController(RobotBase robot) {
         super(robot);
         this.kickerStatus = KickerStatus.OFF;
+    }
+
+    // Ideally, we SHOULDN'T attempt to kick whilst already kicking, and OFF is the only state where kicking should be OK
+    public boolean isKickInProgress() {
+        return kickerStatus != KickerStatus.OFF;
     }
 
     @Override
@@ -52,8 +39,7 @@ public class KickerController extends ControllerBase {
         // Ergo, we need to delay the deactivation process until the kick has completed.
         if (isKickInProgress()) {
             shutDownAfterKick = !active;
-        }
-        else super.setActive(active);
+        } else super.setActive(active);
     }
 
     // (Why are we using doubles?)
@@ -64,7 +50,7 @@ public class KickerController extends ControllerBase {
         kickerPower = (kickerPower < -MAX_KICKER_RETRACT_POWER) ? -MAX_KICKER_RETRACT_POWER : kickerPower;
 
         // Send command
-        ((DribblerKickerEquippedRobotPort)this.robot.port).updateKicker(kickerPower);
+        ((DribblerKickerEquippedRobotPort) this.robot.port).updateKicker(kickerPower);
     }
 
     @Override
@@ -116,5 +102,15 @@ public class KickerController extends ControllerBase {
                 }
                 break;
         }
+    }
+
+    private enum KickerStatus {
+        OFF,        // Motors off, kicker in lowest position.
+        KICKING,    // Motors on, kicker moving upwards.
+        PEAK_PAUSE, // Motors off, kicker at peak position.
+        RETRACTING  // Motors on, kicker moving downwards.
+
+        // The lifetime of a kick:
+        // Off -> Kicking -> Peak_Pause -> Retracting -> Off
     }
 }

@@ -7,7 +7,6 @@ import vision.Ball;
 import vision.Robot;
 import vision.RobotType;
 import vision.constants.Constants;
-import vision.robotAnalysis.newRobotAnalysis.PatternMatcher;
 import vision.tools.VectorGeometry;
 
 /**
@@ -19,7 +18,7 @@ public class MidDangerPoint extends DynamicPointBase {
 
     private RobotType usType;
 
-    public MidDangerPoint(RobotType robotType){
+    public MidDangerPoint(RobotType robotType) {
         this.usType = robotType;
     }
 

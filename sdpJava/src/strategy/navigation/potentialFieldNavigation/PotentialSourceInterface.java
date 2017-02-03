@@ -7,6 +7,8 @@ import vision.tools.VectorGeometry;
  */
 public interface PotentialSourceInterface {
     VectorGeometry getForce(VectorGeometry point);
+
     VectorGeometry getRelativePoint(VectorGeometry point);
-    double getPotentialAtPoint (VectorGeometry relativePoint);
+
+    double getPotentialAtPoint(VectorGeometry relativePoint);
 }

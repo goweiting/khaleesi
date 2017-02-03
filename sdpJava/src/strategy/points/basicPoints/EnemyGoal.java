@@ -14,7 +14,7 @@ public class EnemyGoal extends DynamicPointBase {
 
     @Override
     public int getX() {
-        return Constants.PITCH_WIDTH/2;
+        return Constants.PITCH_WIDTH / 2;
     }
 
     @Override

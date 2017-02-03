@@ -1,11 +1,12 @@
 package strategy.controllers.essentials;
 
+import strategy.GUI;
 import strategy.actions.ActionException;
 import strategy.actions.ActionInterface;
-import strategy.actions.other.*;
+import strategy.actions.other.Contemplating;
+import strategy.actions.other.Waiting;
 import strategy.controllers.ControllerBase;
 import strategy.robots.RobotBase;
-import strategy.GUI;
 import vision.tools.DirectedPoint;
 
 /**

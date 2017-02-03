@@ -1,8 +1,8 @@
 package strategy.actions.other;
 
 import communication.ports.interfaces.ThreeWheelHolonomicRobotPort;
-import strategy.actions.ActionException;
 import strategy.actions.ActionBase;
+import strategy.actions.ActionException;
 import strategy.robots.Fred;
 import strategy.robots.RobotBase;
 
@@ -15,26 +15,26 @@ public class Demo extends ActionBase {
 
     public Demo(RobotBase robot) {
         super(robot);
-        assert(robot instanceof Fred);
+        assert (robot instanceof Fred);
         this.rawDescription = " Demo Action";
     }
 
     @Override
     public void enterState(int newState) {
         this.robot.MOTION_CONTROLLER.setActive(false);
-        if(newState == 0){
-            ((ThreeWheelHolonomicRobotPort)this.robot.port).threeWheelHolonomicMotion(255,255,255);
+        if (newState == 0) {
+            ((ThreeWheelHolonomicRobotPort) this.robot.port).threeWheelHolonomicMotion(255, 255, 255);
         } else {
-            ((ThreeWheelHolonomicRobotPort)this.robot.port).threeWheelHolonomicMotion(-255,-255,-255);
+            ((ThreeWheelHolonomicRobotPort) this.robot.port).threeWheelHolonomicMotion(-255, -255, -255);
         }
         this.state = newState;
     }
 
     @Override
     public void tok() throws ActionException {
-        if(count > 3) throw new ActionException(true, false);
+        if (count > 3) throw new ActionException(true, false);
         count++;
-        if(this.state == 0) this.enterState(1);
+        if (this.state == 0) this.enterState(1);
         else this.enterState(0);
         this.delay(2000);
     }

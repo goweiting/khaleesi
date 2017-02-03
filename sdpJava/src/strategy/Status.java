@@ -10,19 +10,10 @@ import vision.RobotType;
  */
 public class Status {
 
-    public enum Behaviour{
-        DEFEND, ATTACK
-    }
-    public enum BallState{
-        ME, FRIEND, THEM, FREE, LOST
-    }
-
-    private static Behaviour lastBehaviour = null;
     public static Behaviour fixedBehaviour = null;
-
+    private static Behaviour lastBehaviour = null;
     public final Behaviour behaviour;
     public final BallState ballState;
-
     public final boolean ourDefence;
 
     public Status(DynamicWorld world) {
@@ -59,7 +50,7 @@ public class Status {
         Robot us = world.getRobot(RobotType.FRIEND_2);
         Robot friend = world.getRobot(RobotType.FRIEND_1);
 //        if(ball != null) System.out.println("BALL VELOCITY: " + ball.velocity.length());
-        if(fixedBehaviour == null){
+        if (fixedBehaviour == null) {
             if (us != null) {
                 if (ball != null && WorldTools.isPointInFriendDefenceArea(ball.location) && ball.velocity.length() < 0.5) {
                     chosen = Behaviour.ATTACK;
@@ -74,7 +65,7 @@ public class Status {
                 chosen = Behaviour.ATTACK;
             }
 
-            if(chosen != lastBehaviour){
+            if (chosen != lastBehaviour) {
                 this.behaviour = chosen;
             } else {
                 this.behaviour = lastBehaviour;
@@ -89,5 +80,13 @@ public class Status {
 
         this.ourDefence = friend != null && WorldTools.isPointInFriendDefenceArea(friend.location) && us != null && !WorldTools.isPointInFriendDefenceArea(us.location);
 
+    }
+
+    public enum Behaviour {
+        DEFEND, ATTACK
+    }
+
+    public enum BallState {
+        ME, FRIEND, THEM, FREE, LOST
     }
 }

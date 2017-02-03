@@ -8,25 +8,25 @@ public class CumulativeAverage {
     private int count;
     private double average;
 
-    public CumulativeAverage(){
+    public CumulativeAverage() {
         this.reset();
     }
 
-    public void add(double d){
-        this.average = (d + this.count*this.average)/(this.count + 1);
+    public void add(double d) {
+        this.average = (d + this.count * this.average) / (this.count + 1);
         this.count++;
     }
 
-    public double getAverage(){
+    public double getAverage() {
         return this.average;
     }
 
-    public int getCount(){
+    public int getCount() {
         return this.count;
     }
 
-    public void reset(){
-        this.count   = 0;
+    public void reset() {
+        this.count = 0;
         this.average = 0;
     }
 }

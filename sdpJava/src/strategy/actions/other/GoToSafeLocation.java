@@ -1,12 +1,12 @@
 package strategy.actions.other;
 
-import strategy.Strategy;
-import strategy.actions.ActionException;
-import strategy.actions.ActionBase;
-import strategy.points.basicPoints.BallPoint;
-import strategy.navigation.Obstacle;
-import strategy.points.basicPoints.ConstantPoint;
 import communication.ports.robotPorts.FredRobotPort;
+import strategy.Strategy;
+import strategy.actions.ActionBase;
+import strategy.actions.ActionException;
+import strategy.navigation.Obstacle;
+import strategy.points.basicPoints.BallPoint;
+import strategy.points.basicPoints.ConstantPoint;
 import strategy.robots.Fred;
 import strategy.robots.RobotBase;
 import vision.Ball;
@@ -24,23 +24,31 @@ public class GoToSafeLocation extends ActionBase {
         this.rawDescription = " Go To safe location";
     }
 
+    public static boolean safe() {
+        Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
+        Ball ball = Strategy.world.getLastKnownBall();
+        if (us == null || ball == null) return false;
+        VectorGeometry ourGoal = new VectorGeometry(-Constants.PITCH_WIDTH / 2, 0);
+        return us.location.distance(ourGoal) < ball.location.distance(ourGoal);
+    }
+
     @Override
     public void enterState(int newState) {
-        if(newState == 0){
-            if(this.robot instanceof Fred) {
-                ((Fred)this.robot).PROPELLER_CONTROLLER.setActive(false);
-                ((FredRobotPort)this.robot.port).propeller(0);
-                ((FredRobotPort)this.robot.port).propeller(0);
-                ((FredRobotPort)this.robot.port).propeller(0);
+        if (newState == 0) {
+            if (this.robot instanceof Fred) {
+                ((Fred) this.robot).PROPELLER_CONTROLLER.setActive(false);
+                ((FredRobotPort) this.robot.port).propeller(0);
+                ((FredRobotPort) this.robot.port).propeller(0);
+                ((FredRobotPort) this.robot.port).propeller(0);
             }
 
 
             Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
             Ball ball = Strategy.world.getBall();
-            if(us == null || ball == null) return;
+            if (us == null || ball == null) return;
 
-            this.robot.MOTION_CONTROLLER.addObstacle(new Obstacle((int)ball.location.x, (int)ball.location.y, 30));
-            this.robot.MOTION_CONTROLLER.setDestination(new ConstantPoint(-Constants.PITCH_WIDTH/2, 0));
+            this.robot.MOTION_CONTROLLER.addObstacle(new Obstacle((int) ball.location.x, (int) ball.location.y, 30));
+            this.robot.MOTION_CONTROLLER.setDestination(new ConstantPoint(-Constants.PITCH_WIDTH / 2, 0));
             this.robot.MOTION_CONTROLLER.setHeading(new BallPoint());
             this.robot.MOTION_CONTROLLER.setTolerance(-1);
         }
@@ -48,18 +56,10 @@ public class GoToSafeLocation extends ActionBase {
 
     @Override
     public void tok() throws ActionException {
-        if(safe()){
+        if (safe()) {
             this.robot.MOTION_CONTROLLER.clearObstacles();
             throw new ActionException(true, false);
         }
 
-    }
-
-    public static boolean safe(){
-        Robot us  = Strategy.world.getRobot(RobotType.FRIEND_2);
-        Ball ball = Strategy.world.getLastKnownBall();
-        if(us == null || ball == null) return false;
-        VectorGeometry ourGoal = new VectorGeometry(-Constants.PITCH_WIDTH/2, 0);
-        return us.location.distance(ourGoal) < ball.location.distance(ourGoal);
     }
 }

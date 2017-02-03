@@ -1,9 +1,9 @@
 package strategy.actions.other;
 
-import strategy.actions.ActionException;
-import strategy.actions.ActionBase;
-import strategy.points.DynamicPoint;
 import strategy.Strategy;
+import strategy.actions.ActionBase;
+import strategy.actions.ActionException;
+import strategy.points.DynamicPoint;
 import strategy.robots.RobotBase;
 import vision.Robot;
 import vision.RobotType;
@@ -20,7 +20,7 @@ public class Goto extends ActionBase {
 
     @Override
     public void enterState(int newState) {
-        if(newState == 1){
+        if (newState == 1) {
             this.robot.MOTION_CONTROLLER.setDestination(this.point);
             this.robot.MOTION_CONTROLLER.setHeading(this.point);
         } else {
@@ -33,18 +33,18 @@ public class Goto extends ActionBase {
     @Override
     public void tok() throws ActionException {
         Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
-        if(us == null){
+        if (us == null) {
             this.enterState(0);
             return;
         }
-        if(VectorGeometry.distance(this.point.getX(), this.point.getY(), us.location.x, us.location.y) < 10){
+        if (VectorGeometry.distance(this.point.getX(), this.point.getY(), us.location.x, us.location.y) < 10) {
             this.enterState(2);
         } else {
-            if(this.state == 0){
+            if (this.state == 0) {
                 this.enterState(1);
             }
         }
-        if(this.state == 2){
+        if (this.state == 2) {
             throw new ActionException(true, false);
         }
     }

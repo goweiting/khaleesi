@@ -1,9 +1,7 @@
 package strategy.points.basicPoints;
 
 import strategy.Strategy;
-import strategy.points.DynamicPoint;
 import strategy.points.DynamicPointBase;
-import vision.DynamicWorld;
 import vision.Robot;
 import vision.RobotAlias;
 import vision.RobotType;
@@ -17,11 +15,11 @@ public class InFrontOfRobot extends DynamicPointBase {
     private RobotType type = null;
     private RobotAlias alias = null;
 
-    public InFrontOfRobot(RobotType type){
+    public InFrontOfRobot(RobotType type) {
         this.type = type;
     }
 
-    public InFrontOfRobot(RobotAlias alias){
+    public InFrontOfRobot(RobotAlias alias) {
         this.alias = alias;
     }
 
@@ -29,10 +27,10 @@ public class InFrontOfRobot extends DynamicPointBase {
     public void recalculate() {
         Robot r;
 
-        if(this.alias == null) r = Strategy.world.getRobot(this.type);
+        if (this.alias == null) r = Strategy.world.getRobot(this.type);
         else r = Strategy.world.getRobot(this.alias);
 
-        if(r != null){
+        if (r != null) {
             VectorGeometry v = r.location.clone();
             v.add((new VectorGeometry()).fromAngular(r.location.direction, 40));
             this.x = (int) v.x;

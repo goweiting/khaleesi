@@ -11,10 +11,17 @@ public class Circle implements AStarObstacle {
     private final int centerX;
     private final int centerY;
 
-    public Circle(int centerX, int centerY, int radius){
+    public Circle(int centerX, int centerY, int radius) {
         this.centerX = centerX;
         this.centerY = centerY;
-        this.radius  = radius;
+        this.radius = radius;
+    }
+
+    public static void main(String[] args) {
+//        Circle c = new Circle(5,5,3);
+//        System.out.println(c.contains(5,5));
+//        System.out.println(c.contains(5,6));
+//        System.out.println(c.contains(8,6));
     }
 
     @Override
@@ -22,12 +29,5 @@ public class Circle implements AStarObstacle {
 
         return VectorGeometry.distance(x, y, this.centerX, this.centerY) < radius &&
                 VectorGeometry.distance(x, y, this.centerX, this.centerY) < VectorGeometry.distance(lastX, lastY, this.centerX, this.centerY);
-    }
-
-    public static void main(String [] args){
-//        Circle c = new Circle(5,5,3);
-//        System.out.println(c.contains(5,5));
-//        System.out.println(c.contains(5,6));
-//        System.out.println(c.contains(8,6));
     }
 }

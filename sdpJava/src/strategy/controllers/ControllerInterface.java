@@ -5,6 +5,8 @@ package strategy.controllers;
  */
 public interface ControllerInterface {
     void perform();
+
     boolean isActive();
+
     void setActive(boolean active);
 }

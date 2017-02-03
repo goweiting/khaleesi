@@ -12,12 +12,12 @@ public class Robot {
     public RobotAlias alias;
 
 
-    public Robot(){
+    public Robot() {
 
     }
 
     @Override
-    public Robot clone(){
+    public Robot clone() {
         Robot r = new Robot();
         r.location = this.location.clone();
         r.velocity = this.velocity.clone();

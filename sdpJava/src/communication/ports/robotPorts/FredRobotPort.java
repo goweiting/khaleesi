@@ -15,23 +15,24 @@ public class FredRobotPort extends RobotPort implements
     private double curDribblerPower = 0;
     private double curKickerPower = 0;
 
-  @Override
-  /**
-   * We need to be clear as to how the wheels are spinning due to the awkward and
-   * counter-intuitive ways the motors are being placed in our robot
-   * To be exact:
-   * @param frontLeft is going clockwise
-   * @param frontRight is going counter clockwise
-   * @param back is going clockwise
-   *
-   */
-  public void threeWheelHolonomicMotion(double frontRight, double frontLeft, double back) {
-    this.sdpPort.commandSender("r", (int) frontRight, (int) frontLeft, (int) back);
-  }
     public FredRobotPort() {
         super("pang");
         curDribblerPower = 0;
         curKickerPower = 0;
+    }
+
+    @Override
+    /**
+     * We need to be clear as to how the wheels are spinning due to the awkward and
+     * counter-intuitive ways the motors are being placed in our robot
+     * To be exact:
+     * @param frontLeft is going clockwise
+     * @param frontRight is going counter clockwise
+     * @param back is going clockwise
+     *
+     */
+    public void threeWheelHolonomicMotion(double frontRight, double frontLeft, double back) {
+        this.sdpPort.commandSender("r", (int) frontRight, (int) frontLeft, (int) back);
     }
 
     @Override
@@ -45,14 +46,17 @@ public class FredRobotPort extends RobotPort implements
         curDribblerPower = dribblerPower;
         this.sdpPort.commandSender("dk", (int) dribblerPower, (int) curKickerPower);
     }
+
     @Override
     public void updateKicker(double kickerPower) {
         curKickerPower = kickerPower;
         this.sdpPort.commandSender("dk", (int) curDribblerPower, (int) kickerPower);
     }
+
     @Override
     public void dribblerKicker(double dribbler, double kicker) {
-        curDribblerPower = dribbler; curKickerPower = kicker;
+        curDribblerPower = dribbler;
+        curKickerPower = kicker;
         this.sdpPort.commandSender("dk", (int) dribbler, (int) kicker);
     }
 

@@ -5,7 +5,10 @@ package strategy.robots;
  */
 interface RobotInterface {
     void perform();
+
     void performAutomatic();
+
     void performManual();
+
     void setControllersActive(boolean active);
 }
