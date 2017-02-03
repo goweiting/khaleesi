@@ -45,11 +45,11 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
 // not exactly sure what this does so just leaving it here for now
 
     double frontRight = FORCE_DECOUPLING[0][0] * dir.x + FORCE_DECOUPLING[0][1] * dir.y
-        + FORCE_DECOUPLING[0][3] * force.angle();
+        + FORCE_DECOUPLING[0][2] * force.angle();
     double frontLeft = FORCE_DECOUPLING[1][0] * dir.x + FORCE_DECOUPLING[1][1] * dir.y +
-        FORCE_DECOUPLING[1][3] * force.angle();
+        FORCE_DECOUPLING[1][2] * force.angle(); // todo: USE FIRMWARE CHANGES HERE?? OR MANUAL CHANGES?
     double backWheel = FORCE_DECOUPLING[2][0] * dir.x + FORCE_DECOUPLING[2][1] * dir.y +
-        FORCE_DECOUPLING[2][3] * force.angle();
+        FORCE_DECOUPLING[2][2] * force.angle();
 
     // find the largest speed required and normalise each of the wheel's speed:
     double normalizer = Math.max(Math.abs(frontRight),
@@ -61,16 +61,15 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
 //    backWheel = backWheel * normalizer + rotation * this.MAX_ROTATION;
 
     // SIMPLE NORMALISER FOR SCALING THE SPEED; USAGE OF FACTOR TO SEE WHAT HAPPENS
-    frontRight = frontRight / normalizer * 100 * factor;
-    frontLeft = frontLeft / normalizer * 100 * factor;
-    backWheel = backWheel / normalizer * 100 * factor;
+    frontRight = (frontRight / normalizer) * (100 * factor);
+    frontLeft = (frontLeft / normalizer) * (100 * factor);
+    backWheel = (backWheel / normalizer) * (100 * factor);
 
     // DEBUG
-    System.out
-        .printf("FL: " + frontLeft + " FR: " + frontRight + "Back: " + backWheel);
+    SDPConsole.writeln("FL: " + frontLeft + " FR: " + frontRight + "Back: " + backWheel);
 
     // Instructs the robot to to the desired location with that amount of "speed"
     ((ThreeWheelHolonomicRobotPort) port)
-        .threeWheelHolonomicMotion(frontLeft, frontRight, backWheel);
+        .threeWheelHolonomicMotion(100, 100, 100);
   }
 }

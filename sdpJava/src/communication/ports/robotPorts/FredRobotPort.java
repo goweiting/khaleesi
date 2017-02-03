@@ -26,8 +26,6 @@ public class FredRobotPort extends RobotPort implements
    *
    */
   public void threeWheelHolonomicMotion(double frontRight, double frontLeft, double back) {
-    // we have to change the sign of the frontRight:
-    frontRight = -1 * frontRight;
     this.sdpPort.commandSender("r", (int) frontRight, (int) frontLeft, (int) back);
   }
 
