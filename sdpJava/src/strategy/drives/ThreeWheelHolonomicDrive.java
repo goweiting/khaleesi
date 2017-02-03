@@ -47,7 +47,7 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
     double frontRight = FORCE_DECOUPLING[0][0] * dir.x + FORCE_DECOUPLING[0][1] * dir.y
         + FORCE_DECOUPLING[0][2] * force.angle();
     double frontLeft = FORCE_DECOUPLING[1][0] * dir.x + FORCE_DECOUPLING[1][1] * dir.y +
-        FORCE_DECOUPLING[1][2] * force.angle(); // todo: USE FIRMWARE CHANGES HERE?? OR MANUAL CHANGES?
+        FORCE_DECOUPLING[1][2] * force.angle();
     double backWheel = FORCE_DECOUPLING[2][0] * dir.x + FORCE_DECOUPLING[2][1] * dir.y +
         FORCE_DECOUPLING[2][2] * force.angle();
 
@@ -70,6 +70,6 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
 
     // Instructs the robot to to the desired location with that amount of "speed"
     ((ThreeWheelHolonomicRobotPort) port)
-        .threeWheelHolonomicMotion(100, 100, 100);
+        .threeWheelHolonomicMotion(frontRight, frontLeft, backWheel);
   }
 }
