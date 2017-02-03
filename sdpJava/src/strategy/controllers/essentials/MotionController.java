@@ -12,6 +12,7 @@ import strategy.points.DynamicPoint;
 import strategy.robots.RobotBase;
 import vision.Robot;
 import vision.RobotType;
+import vision.gui.SDPConsole;
 import vision.tools.VectorGeometry;
 
 /**
@@ -66,11 +67,13 @@ public class MotionController extends ControllerBase {
 
     Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
     if (us == null) {
+      // todo: For probabilistic inference add something here wrt to the last known location?
       return;
     }
 
     NavigationInterface navigation;
 
+    // always starts with a blankstate:
     VectorGeometry heading = null;
     VectorGeometry destination = null;
 
@@ -79,8 +82,8 @@ public class MotionController extends ControllerBase {
 
       destination = new VectorGeometry(this.destination.getX(), this.destination.getY());
 
+      // find if any of the obstacles OR robots intersects the planned path:
       boolean intersects = false;
-
       for (Obstacle o : this.obstacles) {
         intersects = intersects || o.intersects(us.location, destination);
       }
@@ -93,6 +96,10 @@ public class MotionController extends ControllerBase {
         }
       }
 
+      // Determines which navigation system to use:
+      // use AStarNavigation if obstacle(s) imminent or destination is too far away;
+      // otherwise potential field navigation is good enough.
+      // todo: might want to just use any one of it first?
       if (intersects || us.location.distance(destination) > 30) {
         navigation = new AStarNavigation();
         GUI.gui.searchType.setText("A*");
@@ -103,44 +110,57 @@ public class MotionController extends ControllerBase {
 
       navigation.setDestination(new VectorGeometry(destination.x, destination.y));
 
-
     } else {
+      // no destination set for robot
       return;
-    }
-
-    if (this.heading != null) {
-      this.heading.recalculate();
-      heading = new VectorGeometry(this.heading.getX(), this.heading.getY());
-    } else {
-      heading = VectorGeometry.fromAngular(us.location.direction, 10, null);
     }
 
     if (this.obstacles != null) {
       navigation.setObstacles(this.obstacles);
     }
 
+    if (this.heading != null) {
+      SDPConsole.write("recalculating heading (" + this.heading.toString() + ")..."); // DEBUG
+      this.heading.recalculate();
+      heading = new VectorGeometry(this.heading.getX(), this.heading.getY());
+      SDPConsole.write("   -> " + heading.toString() + " ");
+    } else {
+      heading = VectorGeometry.fromAngular(us.location.direction, 10, null);
+      SDPConsole.write("finding heading (" + heading.toString() + ")..."); // DEBUG
+    }
+
+    // find the force required to get to the goal (this implementation is navigation algorithm
+    // dependent!)
     VectorGeometry force = navigation.getForce();
     if (force == null) {
-      this.robot.port.stop();
+      this.robot.port.stop(); // halt the robot if there is no need to move!
       return;
     }
 
+    // working out the amount of rotation required to face the desired heading
     VectorGeometry robotHeading = VectorGeometry.fromAngular(us.location.direction, 10, null);
     VectorGeometry robotToPoint = VectorGeometry.fromTo(us.location, heading);
-    double factor = 1;
     double rotation = VectorGeometry.signedAngle(robotToPoint, robotHeading);
+
     // Can throw null without check because null check takes SourceGroup into consideration.
+    // Reduce the scaling if the distance is very close to us:
+    // The P controller bit is here:
+    double factor = 1;
     if (destination.distance(us.location) < 30) {
       factor = 0.7;
     }
-    if (this.destination != null && us.location.distance(destination) < tolerance) {
+
+    // If the robot is well within the distance from the destination then just stop! The desirable
+    // distance is dependent on the Motion that robot suppose to execute (e.g. kicking)
+    if (this.destination != null &&
+        us.location.distance(destination) < tolerance) {
       this.robot.port.stop();
       return;
     }
 
-//        strategy.navigationInterface.draw();
+    // strategy.navigationInterface.draw();
 
+    // MOVE THE ROBOT:
     this.robot.drive.move(this.robot.port, us.location, force, rotation, factor);
-
   }
 }

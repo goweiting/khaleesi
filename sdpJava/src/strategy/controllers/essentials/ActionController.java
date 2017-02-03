@@ -18,7 +18,6 @@ public class ActionController extends ControllerBase {
     public ActionController(RobotBase robot) {
         super(robot);
         this.location = new DirectedPoint(0, 0, 0);
-
     }
 
     public void setLocation(DirectedPoint location) {
