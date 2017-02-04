@@ -13,8 +13,8 @@ import vision.tools.VectorGeometry;
 
 public class ThreeWheelHolonomicDrive implements DriveInterface {
 
-    public int MAX_ROTATION = 55; // todo: what is these for?
-    public int MAX_MOTION = 100;
+    public int MAX_ROTATION = 10;
+    public int MAX_MOTION = 90;
     public double[][] FORCE_DECOUPLING = new double[][]{
             {-.3333, -.5774, .3333},
             {-.3333, .5774, .3333},
@@ -41,8 +41,7 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
         force.copyInto(dir).coordinateRotation(force.angle() - location.direction);
         factor = Math.min(1, factor); // this is basically the P_controller bit
 
-//    double lim = this.MAX_MOTION - Math.abs(rotation * this.MAX_ROTATION * factor); // todo:
-// not exactly sure what this does so just leaving it here for now
+        double lim = this.MAX_MOTION - Math.abs(rotation * this.MAX_ROTATION * factor);
 
         double frontRight = FORCE_DECOUPLING[0][0] * dir.x + FORCE_DECOUPLING[0][1] * dir.y
                 + FORCE_DECOUPLING[0][2] * force.angle();
@@ -55,10 +54,10 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
         double normalizer = Math.max(Math.abs(frontRight),
                 Math.max(Math.abs(frontLeft), Math.abs(backWheel)));
 
-//    normalizer = lim / normalizer * factor;
-//    frontRight = frontRight * normalizer + rotation * this.MAX_ROTATION;
-//    frontLeft = frontLeft * normalizer + rotation * this.MAX_ROTATION;
-//    backWheel = backWheel * normalizer + rotation * this.MAX_ROTATION;
+         normalizer = lim / normalizer * factor;
+         frontRight = frontRight * normalizer + rotation * this.MAX_ROTATION;
+         frontLeft = frontLeft * normalizer + rotation * this.MAX_ROTATION;
+         backWheel = backWheel * normalizer + rotation * this.MAX_ROTATION;
 
         // SIMPLE NORMALISER FOR SCALING THE SPEED; USAGE OF FACTOR TO SEE WHAT HAPPENS
         frontRight = (frontRight / normalizer) * (100 * factor);
