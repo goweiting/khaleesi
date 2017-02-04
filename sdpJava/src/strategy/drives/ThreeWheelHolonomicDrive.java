@@ -13,8 +13,8 @@ import vision.tools.VectorGeometry;
 
 public class ThreeWheelHolonomicDrive implements DriveInterface {
 
-    public int MAX_ROTATION = 10;
-    public int MAX_MOTION = 90;
+    public int MAX_ROTATION = 0;
+    public int MAX_MOTION = 70;
     public double[][] FORCE_DECOUPLING = new double[][]{
             {-.3333, -.5774, .3333},
             {-.3333, .5774, .3333},
@@ -54,15 +54,15 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
         double normalizer = Math.max(Math.abs(frontRight),
                 Math.max(Math.abs(frontLeft), Math.abs(backWheel)));
 
-         normalizer = lim / normalizer * factor;
-         frontRight = frontRight * normalizer + rotation * this.MAX_ROTATION;
-         frontLeft = frontLeft * normalizer + rotation * this.MAX_ROTATION;
-         backWheel = backWheel * normalizer + rotation * this.MAX_ROTATION;
+        normalizer = (lim / normalizer) * factor;
+        frontRight = frontRight * normalizer + rotation * this.MAX_ROTATION;
+        frontLeft = frontLeft * normalizer + rotation * this.MAX_ROTATION;
+        backWheel = backWheel * normalizer + rotation * this.MAX_ROTATION;
 
         // SIMPLE NORMALISER FOR SCALING THE SPEED; USAGE OF FACTOR TO SEE WHAT HAPPENS
-        frontRight = (frontRight / normalizer) * (100 * factor);
-        frontLeft = (frontLeft / normalizer) * (100 * factor);
-        backWheel = (backWheel / normalizer) * (100 * factor);
+//        frontRight = (frontRight / normalizer) * (100 * factor);
+//        frontLeft = (frontLeft / normalizer) * (100 * factor);
+//        backWheel = (backWheel / normalizer) * (100 * factor);
 
         // DEBUG
         SDPConsole.writeln("FL: " + frontLeft + " FR: " + frontRight + "Back: " + backWheel);
