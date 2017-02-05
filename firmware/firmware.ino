@@ -40,13 +40,21 @@ SerialCommand sCmd;
 // =====================================================
 void setup(){
         Wire.begin();
-        sCmd.addCommand("f", dontMove);
-        sCmd.addCommand("h", completeHalt);
-        sCmd.addCommand("r", rationalMotors);
-        sCmd.addCommand("dk", dribblerKick);
         sCmd.addCommand("ping", pingMethod);
+
+        // GENERAL
+        sCmd.addCommand("h", completeHalt);
+
+        // MOTION
+        sCmd.addCommand("f", dontMove);
+        sCmd.addCommand("r", rationalMotors);
+
+        // KICKING and DRIBBLING
+        sCmd.addCommand("sk", stopKicker);
+        sCmd.addCommand("sd", stopDribbler);
+        sCmd.addCommand("dk", dribblerKick);
         sCmd.addCommand("kick", kicker);
-        sCmd.addCommand("mux", muxTest);
+
         SDPsetup();
 }
 
@@ -74,6 +82,9 @@ void dontMove(){
 }
 
 void moveMotor(int motor, int power) {
+        // Function to move each individual wheel indepdent of the signed of
+        // the power of the motor.
+        // Note negative sign in the last line
         if (power == 0) { motorStop(motor); }
         else if (power > 0) { motorForward(motor, power); }
         else { motorBackward(motor, -power); }
@@ -83,11 +94,14 @@ void moveMotor(int motor, int power) {
 void rationalMotors(){
         // positive power causes the motor to go COUNTER clockwise
         // note that FRONTLEFT comes first
+        // e.g. r 100 100 100 - spin CCW
         int frontLeft = atoi(sCmd.next());
         int frontRight = atoi(sCmd.next());
         int back  = atoi(sCmd.next());
 
-        // changed the polarity here. software should be idiot proof then
+        // changed the polarity here .due to the structure of the robot.
+        // software is hence *idiot* proof and does not require any flipping
+        // of signs in the command
         moveMotor(FRONTLEFT, frontLeft);
         moveMotor(FRONTRIGHT, -frontRight);
         moveMotor(BACK, back);
@@ -103,11 +117,16 @@ void stopKicker(){
 }
 
 void stopDribbler(){
-    motorStop(DRIBBLER);
+        motorStop(DRIBBLER);
+}
+
+void resetDK(){
+        // reset the dribbler and kicker to the desired position
 }
 
 void dribblerKick(){
-        // first one is the power, second one is the power for kicker
+        // first integer is the power for dribbler
+        // second integer is the power for kicker
         int dribbler = atoi(sCmd.next());
         int kickPower = atoi(sCmd.next());
         moveMotor(DRIBBLER, dribbler);
@@ -117,12 +136,17 @@ void dribblerKick(){
 
 
 void kicker(){
-        int type = atoi(sCmd.next());
-        if(type == 0) {
+        // 3 states for kicker module = {0, 1, -1}
+        // state 0 = halt KICKERS
+        // state 1 = ??
+        // state -1 = ??
+
+        int state = atoi(sCmd.next());
+        if(state == 0) {
                 motorStop(KICKERS);
-        } else if (type == 1) {
-                Serial.print("Starting From: ");
+        } else if (state == 1) {
                 Serial.println(positions[0] % 40);
+                Serial.println("Starting From: ");
                 motorForward(KICKERS, 100);
                 kickerStatus = 1;
         } else {
@@ -131,6 +155,11 @@ void kicker(){
         }
 }
 
+
+//  ====================================
+//      SENSORS and ENCODERS
+//  ====================================
+//  for future work
 
 
 
@@ -147,25 +176,6 @@ void printMotorPositions() {
         delay(PRINT_DELAY); // Delay to avoid flooding serial out
 }
 
-
-void muxTest(){
-        int motor = atoi(sCmd.next());
-        int dir  = atoi(sCmd.next());
-        int pow  = atoi(sCmd.next());
-        Wire.beginTransmission(OPADDR);
-        Wire.write(motor);
-        Wire.write(dir);
-        Serial.println(Wire.endTransmission());
-        Wire.beginTransmission(OPADDR);
-        Wire.write(motor+1);
-        Wire.write(pow);
-        Serial.println(Wire.endTransmission());
-        delay(2000);
-        Wire.beginTransmission(OPADDR);
-        Wire.write(motor);
-        Wire.write(0);
-        Serial.println(Wire.endTransmission());
-}
 
 
 
@@ -198,3 +208,24 @@ void motorControl(int motor, int power){
                 Wire.endTransmission();
         }
 }
+
+
+void muxTest(){
+        int motor = atoi(sCmd.next());
+        int dir  = atoi(sCmd.next());
+        int pow  = atoi(sCmd.next());
+        Wire.beginTransmission(OPADDR);
+        Wire.write(motor);
+        Wire.write(dir);
+        Serial.println(Wire.endTransmission());
+        Wire.beginTransmission(OPADDR);
+        Wire.write(motor+1);
+        Wire.write(pow);
+        Serial.println(Wire.endTransmission());
+        delay(2000);
+        Wire.beginTransmission(OPADDR);
+        Wire.write(motor);
+        Wire.write(0);
+        Serial.println(Wire.endTransmission());
+}
+// ======================================================
