@@ -4,15 +4,22 @@
 #include <Arduino.h>
 #include <I2CPort.h>
 
+// 0 - KICKER LEFT
+// 1 - KICKER RIGHT
+// 2 -   ---
+// 3 - FRONT LEFT (-1x)
+// 4 - BACK
+// 5 - FRONT RIGHT
+
 // Wheels
 #define FRONTLEFT 3
 #define FRONTRIGHT 5
 #define BACK 4
 
 // Kickers
-#define DRIBBLER 0
-#define KICKERS 1
-#define KICKERS2 2
+#define DRIBBLER 2
+#define KICKERS 0
+#define KICKERS2 1
 
 #define OPADDR 0x5A
 #define REGADDR 0x04
@@ -54,6 +61,8 @@ void setup(){
         sCmd.addCommand("sd", stopDribbler);
         sCmd.addCommand("dk", dribblerKick);
         sCmd.addCommand("kick", kicker);
+        
+        sCmd.addCommand("mm", manualMoveMotor);
 
         SDPsetup();
 }
@@ -102,9 +111,17 @@ void rationalMotors(){
         // changed the polarity here .due to the structure of the robot.
         // software is hence *idiot* proof and does not require any flipping
         // of signs in the command
-        moveMotor(FRONTLEFT, frontLeft);
-        moveMotor(FRONTRIGHT, -frontRight);
+        moveMotor(FRONTLEFT, -frontLeft);
+        moveMotor(FRONTRIGHT, frontRight);
         moveMotor(BACK, back);
+}
+
+// For debugging purposes
+void manualMoveMotor(){
+        int motor = atoi(sCmd.next());
+        int power = atoi(sCmd.next());
+        
+        moveMotor(motor, power);
 }
 
 
@@ -113,7 +130,8 @@ void rationalMotors(){
 //  ====================================
 
 void stopKicker(){
-        motorStop(KICKER);
+        motorStop(KICKERS);
+        motorStop(KICKERS2);
 }
 
 void stopDribbler(){
@@ -131,7 +149,7 @@ void dribblerKick(){
         int kickPower = atoi(sCmd.next());
         moveMotor(DRIBBLER, dribbler);
         moveMotor(KICKERS, kickPower);
-        moveMotor(KICKERS2, -kickPower);
+        moveMotor(KICKERS2, kickPower);
 }
 
 
@@ -140,6 +158,7 @@ void kicker(){
         // state 0 = halt KICKERS
         // state 1 = ??
         // state -1 = ??
+        // do we really use this?
 
         int state = atoi(sCmd.next());
         if(state == 0) {
