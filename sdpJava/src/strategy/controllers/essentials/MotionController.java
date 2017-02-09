@@ -117,13 +117,13 @@ public class MotionController extends ControllerBase {
         }
 
         if (this.heading != null) {
-            SDPConsole.write("recalculating heading (" + this.heading.toString() + ")..."); // DEBUG
+            //SDPConsole.write("recalculating heading (" + this.heading.toString() + ")..."); // DEBUG
             this.heading.recalculate();
             heading = new VectorGeometry(this.heading.getX(), this.heading.getY());
-            SDPConsole.write("   -> " + heading.toString() + " ");
+            //SDPConsole.write("   -> " + heading.toString() + " ");
         } else {
             heading = VectorGeometry.fromAngular(us.location.direction, 10, null);
-            SDPConsole.write("finding heading (" + heading.toString() + ")..."); // DEBUG
+            //SDPConsole.write("finding heading (" + heading.toString() + ")..."); // DEBUG
         }
 
         // find the force required to get to the goal (this implementation is navigation algorithm
