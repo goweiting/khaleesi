@@ -24,7 +24,7 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
    * @param force The direction that the robot should move at the current timeslice to reached the
    *     desired direction
    * @param rotation The angle between the robot's heading and the desired point
-   * @param factor scaling factor for todo:idk what!
+   * @param factor the P_controller; if close navigation module will reduce the factor to .7
    */
   public void move(
       RobotPort port,
@@ -34,7 +34,7 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
       double factor) {
     assert (port instanceof ThreeWheelHolonomicRobotPort);
 
-    rotation /= Math.PI;
+//    rotation /= Math.PI;
     VectorGeometry dir = new VectorGeometry();
     force.copyInto(dir).coordinateRotation(force.angle() - location.direction); //
     factor = Math.min(1, factor); // this is basically the P_controller bit
@@ -42,15 +42,15 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
     double frontRight =
         FORCE_DECOUPLING[0][0] * dir.x
             + FORCE_DECOUPLING[0][1] * dir.y
-            + FORCE_DECOUPLING[0][3] * rotation;
+            + FORCE_DECOUPLING[0][2] * rotation;
     double frontLeft =
         FORCE_DECOUPLING[1][0] * dir.x
             + FORCE_DECOUPLING[1][1] * dir.y
-            + FORCE_DECOUPLING[1][3] * rotation;
+            + FORCE_DECOUPLING[1][2] * rotation;
     double backWheel =
         FORCE_DECOUPLING[2][0] * dir.x
             + FORCE_DECOUPLING[2][1] * dir.y
-            + FORCE_DECOUPLING[2][3] * rotation;
+            + FORCE_DECOUPLING[2][2] * rotation;
 
     // find the largest speed required and normalise each of the wheel's speed:
     double normalizer =
@@ -72,9 +72,9 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
     backWheel = (backWheel / normalizer) * (100);
 
     // scaling to 40-100 range - ignore factor here
-    frontRight = (frontRight - this.MIN_MOTOR_SPD) / (this.MAX_MOTOR_SPD - this.MIN_MOTOR_SPD);
-    backWheel = (backWheel - this.MIN_MOTOR_SPD) / (this.MAX_MOTOR_SPD - this.MIN_MOTOR_SPD);
-    frontLeft = (frontLeft - this.MIN_MOTOR_SPD) / (this.MAX_MOTOR_SPD - this.MIN_MOTOR_SPD);
+//    frontRight = (frontRight - this.MIN_MOTOR_SPD) / (this.MAX_MOTOR_SPD - this.MIN_MOTOR_SPD);
+//    backWheel = (backWheel - this.MIN_MOTOR_SPD) / (this.MAX_MOTOR_SPD - this.MIN_MOTOR_SPD);
+//    frontLeft = (frontLeft - this.MIN_MOTOR_SPD) / (this.MAX_MOTOR_SPD - this.MIN_MOTOR_SPD);
 
     // DEBUG
     SDPConsole.writeln("FL: " + frontLeft + " FR: " + frontRight + "Back: " + backWheel);
@@ -83,6 +83,7 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
     ((ThreeWheelHolonomicRobotPort) port)
         .threeWheelHolonomicMotion(frontLeft, frontRight, backWheel);
   }
+
 
   /**
    * Sets the MAX_MOTION and MAX_ROTATION based on the amount of rotation required towards the goal.
