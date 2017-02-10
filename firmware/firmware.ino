@@ -55,14 +55,12 @@ void setup(){
         // MOTION
         sCmd.addCommand("f", dontMove);
         sCmd.addCommand("r", rationalMotors);
+        sCmd.addCommand("mm", manualMoveMotor);
 
         // KICKING and DRIBBLING
         sCmd.addCommand("sk", stopKicker);
-        sCmd.addCommand("sd", stopDribbler);
         sCmd.addCommand("dk", dribblerKick);
         sCmd.addCommand("kick", kicker);
-        
-        sCmd.addCommand("mm", manualMoveMotor);
 
         SDPsetup();
 }
@@ -81,6 +79,10 @@ void completeHalt(){
 
 //  ====================================
 //      WHEELS
+//      - dontMove
+//      - moveMotor
+//      - rationalMotors
+//      - manualMoveMotor
 //  ====================================
 
 void dontMove(){
@@ -120,13 +122,17 @@ void rationalMotors(){
 void manualMoveMotor(){
         int motor = atoi(sCmd.next());
         int power = atoi(sCmd.next());
-        
+
         moveMotor(motor, power);
 }
 
 
 //  ====================================
 //      DRIBBLER AND KICKERS
+//      - stopKicker
+//      - resetKicker
+//      - dribblerKick  // naming is a legacy issue
+//      - kicker
 //  ====================================
 
 void stopKicker(){
@@ -134,11 +140,7 @@ void stopKicker(){
         motorStop(KICKERS2);
 }
 
-void stopDribbler(){
-        motorStop(DRIBBLER);
-}
-
-void resetDK(){
+void resetKicker(){
         // reset the dribbler and kicker to the desired position
 }
 
@@ -178,9 +180,25 @@ void kicker(){
 //  ====================================
 //      SENSORS and ENCODERS
 //  ====================================
-//  for future work
+void updateMotorPositions() {
+        // Request motor position deltas from rotary slave board
+        Wire.requestFrom(ROTARY_SLAVE_ADDRESS, ROTARY_COUNT);
 
+        // Update the recorded motor positions
+        for (int i = 0; i < ROTARY_COUNT; i++) {
+                positions[i] += (int8_t) Wire.read(); // Must cast to signed 8-bit type
+        }
+}
 
+void printMotorPositions() {
+        Serial.print("Motor positions: ");
+        for (int i = 0; i < ROTARY_COUNT; i++) {
+                Serial.print(positions[i]);
+                Serial.print(' ');
+        }
+        Serial.println();
+        delay(PRINT_DELAY); // Delay to avoid flooding serial out
+}
 
 //  ====================================
 //      MISC
