@@ -9,11 +9,12 @@ import vision.tools.VectorGeometry;
 /** Created by Simon Rovder Edited by Wildfire */
 public class ThreeWheelHolonomicDrive implements DriveInterface {
 
-  public int MAX_ROTATION = 50;
+  public int MAX_MOTOR_SPD = 100;
+  public int MIN_MOTOR_SPD = 40;
+  public int MAX_ROTATION = 30;
   public int MAX_MOTION = 100;
   public double[][] FORCE_DECOUPLING =
-      new double[][] {{-1, Math.sqrt(3), 1}, {-1, -Math.sqrt(3), 1}, {2, 0, 1}};
-
+      new double[][] {{-.33, .58, .33}, {-.33, -.58, .33}, {.67, 0, .33}};
   /**
    * Moving the three wheel holonomic robot to a desired location.
    *
@@ -35,32 +36,45 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
 
     rotation /= Math.PI;
     VectorGeometry dir = new VectorGeometry();
-    force.copyInto(dir).coordinateRotation(force.angle() - location.direction);
+    force.copyInto(dir).coordinateRotation(force.angle() - location.direction); //
     factor = Math.min(1, factor); // this is basically the P_controller bit
 
-    //        double lim = this.MAX_MOTION - Math.abs(rotation * this.MAX_ROTATION * factor);
-
-    double frontRight = FORCE_DECOUPLING[0][0] * dir.x + FORCE_DECOUPLING[0][1] * dir.y;
-    double frontLeft = FORCE_DECOUPLING[1][0] * dir.x + FORCE_DECOUPLING[1][1] * dir.y;
-    double backWheel = FORCE_DECOUPLING[2][0] * dir.x + FORCE_DECOUPLING[2][1] * dir.y;
+    double frontRight =
+        FORCE_DECOUPLING[0][0] * dir.x
+            + FORCE_DECOUPLING[0][1] * dir.y
+            + FORCE_DECOUPLING[0][3] * rotation;
+    double frontLeft =
+        FORCE_DECOUPLING[1][0] * dir.x
+            + FORCE_DECOUPLING[1][1] * dir.y
+            + FORCE_DECOUPLING[1][3] * rotation;
+    double backWheel =
+        FORCE_DECOUPLING[2][0] * dir.x
+            + FORCE_DECOUPLING[2][1] * dir.y
+            + FORCE_DECOUPLING[2][3] * rotation;
 
     // find the largest speed required and normalise each of the wheel's speed:
     double normalizer =
         Math.max(Math.abs(frontRight), Math.max(Math.abs(frontLeft), Math.abs(backWheel)));
 
     // refine the priorities on each action
-    this.calibrate(rotation);
+    // this.calibrate(rotation);
 
-    frontRight = (frontRight / normalizer * this.MAX_MOTION + rotation * this.MAX_ROTATION);
-    frontLeft = (frontLeft / normalizer * this.MAX_MOTION + rotation * this.MAX_ROTATION);
-    backWheel = (backWheel / normalizer * this.MAX_MOTION + rotation * this.MAX_ROTATION);
+    //    frontRight = (frontRight / normalizer * this.MAX_MOTION + rotation * this.MAX_ROTATION);
+    //    frontLeft = (frontLeft / normalizer * this.MAX_MOTION + rotation * this.MAX_ROTATION);
+    //    backWheel = (backWheel / normalizer * this.MAX_MOTION + rotation * this.MAX_ROTATION);
 
-    normalizer = Math.max(Math.abs(frontRight), Math.max(Math.abs(frontLeft), Math.abs(backWheel)));
+    //    normalizer = Math.max(Math.abs(frontRight), Math.max(Math.abs(frontLeft), Math.abs(backWheel)));
 
     // SIMPLE NORMALISER FOR SCALING THE SPEED; USAGE OF FACTOR TO SEE WHAT HAPPENS
-    frontRight = (frontRight / normalizer) * (100 * factor);
-    frontLeft = (frontLeft / normalizer) * (100 * factor);
-    backWheel = (backWheel / normalizer) * (100 * factor);
+    // Convert to 100:
+    frontRight = (frontRight / normalizer) * (100);
+    frontLeft = (frontLeft / normalizer) * (100);
+    backWheel = (backWheel / normalizer) * (100);
+
+    // scaling to 40-100 range - ignore factor here
+    frontRight = (frontRight - this.MIN_MOTOR_SPD) / (this.MAX_MOTOR_SPD - this.MIN_MOTOR_SPD);
+    backWheel = (backWheel - this.MIN_MOTOR_SPD) / (this.MAX_MOTOR_SPD - this.MIN_MOTOR_SPD);
+    frontLeft = (frontLeft - this.MIN_MOTOR_SPD) / (this.MAX_MOTOR_SPD - this.MIN_MOTOR_SPD);
 
     // DEBUG
     SDPConsole.writeln("FL: " + frontLeft + " FR: " + frontRight + "Back: " + backWheel);
