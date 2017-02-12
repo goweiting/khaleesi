@@ -1,22 +1,43 @@
 #include "SerialCommand.h"
 #include "SDPArduino.h"
-#include "ThreeWheelMotion.h"
 #include <Wire.h>
 #include <Arduino.h>
-#include <I2CPort.h>
 
-#define DEBUG 1 // change to 0 to off debug mode
+// 0 - KICKER LEFT
+// 1 - KICKER RIGHT
+// 2 -   ---
+// 3 - FRONT LEFT (-1x)
+// 4 - BACK
+// 5 - FRONT RIGHT
+
+// Wheels
+#define FRONTLEFT 3
+#define FRONTRIGHT 5
+#define BACK 4
+
+// Kickers
+#define DRIBBLER 2
+#define KICKERS 0
+#define KICKERS2 1
 
 #define OPADDR 0x5A
 #define REGADDR 0x04
 
 #define KICKERDELAY 10
 
-boolean requestStopKick = 0;
 boolean kickerStatus = 0;
 
 int zeroPosition;
+
+#define ROTARY_SLAVE_ADDRESS 5
+#define ROTARY_COUNT 6
+#define PRINT_DELAY 200
+
+// Initial motor position is 0.
+int positions[ROTARY_COUNT] = {0};
+
 int run = 0;
+
 SerialCommand sCmd;
 
 
@@ -31,37 +52,16 @@ void setup(){
         // MOTION
         sCmd.addCommand("f", dontMove);
         sCmd.addCommand("r", rationalMotors);
-        sCmd.addCommand("mm", manualMoveMotor);
-        sCmd.addCommand("goto", gotoXY);
 
         // KICKING and DRIBBLING
         sCmd.addCommand("sk", stopKicker);
+        sCmd.addCommand("sd", stopDribbler);
         sCmd.addCommand("dk", dribblerKick);
         sCmd.addCommand("kick", kicker);
 
+        sCmd.addCommand("mm", manualMoveMotor);
+
         SDPsetup();
-
-        if (DEBUG) {
-                Serial.printlnF(("DEBUG MODE ON"));
-                Serial.println(F("Forward"));
-                motorForward(FRONTLEFT, 80);
-                motorForward(FRONTRIGHT, 80);
-                motorForward(BACK, 80);
-                sleep(1000);
-                dontMove();
-
-                Serial.println(F("Backwards"));
-                motorBackward(FRONTLEFT, 80);
-                motorBackward(FRONTRIGHT, 80);
-                motorBackward(BACK, 80);
-                sleep(1000);
-                dontMove();
-                motorAllStop()
-        }
-
-        Serial.println(F("READY"));
-        Serial.println(F("I am Khaleesi"));
-
 }
 
 void loop(){
@@ -74,16 +74,10 @@ void pingMethod(){
 
 void completeHalt(){
         motorAllStop();
-        motorAllStop();
-        motorAllStop();
 }
 
 //  ====================================
 //      WHEELS
-//      - dontMove
-//      - moveMotor
-//      - rationalMotors
-//      - manualMoveMotor
 //  ====================================
 
 void dontMove(){
@@ -130,10 +124,6 @@ void manualMoveMotor(){
 
 //  ====================================
 //      DRIBBLER AND KICKERS
-//      - stopKicker
-//      - resetKicker
-//      - dribblerKick  // naming is a legacy issue
-//      - kicker
 //  ====================================
 
 void stopKicker(){
@@ -141,7 +131,11 @@ void stopKicker(){
         motorStop(KICKERS2);
 }
 
-void resetKicker(){
+void stopDribbler(){
+        motorStop(DRIBBLER);
+}
+
+void resetDK(){
         // reset the dribbler and kicker to the desired position
 }
 
@@ -179,56 +173,75 @@ void kicker(){
 
 
 //  ====================================
+//      SENSORS and ENCODERS
+//  ====================================
+//  for future work
+
+
+
+//  ====================================
 //      MISC
 //  ====================================
+void printMotorPositions() {
+        Serial.print("Motor positions: ");
+        for (int i = 0; i < ROTARY_COUNT; i++) {
+                Serial.print(positions[i]);
+                Serial.print(' ');
+        }
+        Serial.println();
+        delay(PRINT_DELAY); // Delay to avoid flooding serial out
+}
+
+
+
 
 // ======================================================
 // we did not use this! this is part of the original code in FRED.
 // See moveMotor instead!
-// void motorControl(int motor, int power){
-//         if(power == 0) {
-//                 Wire.beginTransmission(OPADDR);
-//                 Wire.write(motor);
-//                 Wire.write(0);
-//                 Wire.endTransmission();
-//         } else if(power > 0) {
-//                 Wire.beginTransmission(OPADDR);
-//                 Wire.write(motor);
-//                 Wire.write(1);
-//                 Wire.endTransmission();
-//                 Wire.beginTransmission(OPADDR);
-//                 Wire.write(motor + 1);
-//                 Wire.write(power);
-//                 Wire.endTransmission();
-//         } else {
-//                 Wire.beginTransmission(OPADDR);
-//                 Wire.write(motor);
-//                 Wire.write(2);
-//                 Wire.endTransmission();
-//                 Wire.beginTransmission(OPADDR);
-//                 Wire.write(motor + 1);
-//                 Wire.write(-power); // note change of sign
-//                 Wire.endTransmission();
-//         }
-// }
-//
-//
-// void muxTest(){
-//         int motor = atoi(sCmd.next());
-//         int dir  = atoi(sCmd.next());
-//         int pow  = atoi(sCmd.next());
-//         Wire.beginTransmission(OPADDR);
-//         Wire.write(motor);
-//         Wire.write(dir);
-//         Serial.println(Wire.endTransmission());
-//         Wire.beginTransmission(OPADDR);
-//         Wire.write(motor+1);
-//         Wire.write(pow);
-//         Serial.println(Wire.endTransmission());
-//         delay(2000);
-//         Wire.beginTransmission(OPADDR);
-//         Wire.write(motor);
-//         Wire.write(0);
-//         Serial.println(Wire.endTransmission());
-// }
+void motorControl(int motor, int power){
+        if(power == 0) {
+                Wire.beginTransmission(OPADDR);
+                Wire.write(motor);
+                Wire.write(0);
+                Wire.endTransmission();
+        } else if(power > 0) {
+                Wire.beginTransmission(OPADDR);
+                Wire.write(motor);
+                Wire.write(1);
+                Wire.endTransmission();
+                Wire.beginTransmission(OPADDR);
+                Wire.write(motor + 1);
+                Wire.write(power);
+                Wire.endTransmission();
+        } else {
+                Wire.beginTransmission(OPADDR);
+                Wire.write(motor);
+                Wire.write(2);
+                Wire.endTransmission();
+                Wire.beginTransmission(OPADDR);
+                Wire.write(motor + 1);
+                Wire.write(-power); // note change of sign
+                Wire.endTransmission();
+        }
+}
+
+
+void muxTest(){
+        int motor = atoi(sCmd.next());
+        int dir  = atoi(sCmd.next());
+        int pow  = atoi(sCmd.next());
+        Wire.beginTransmission(OPADDR);
+        Wire.write(motor);
+        Wire.write(dir);
+        Serial.println(Wire.endTransmission());
+        Wire.beginTransmission(OPADDR);
+        Wire.write(motor+1);
+        Wire.write(pow);
+        Serial.println(Wire.endTransmission());
+        delay(2000);
+        Wire.beginTransmission(OPADDR);
+        Wire.write(motor);
+        Wire.write(0);
+        Serial.println(Wire.endTransmission());
+}
 // ======================================================
