@@ -12,7 +12,7 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
   public int MAX_ROTATION = 20;
   public int MAX_MOTION = 100;
   public double[][] FORCE_DECOUPLING =
-      new double[][] {{-.33, .58, .33}, {-.33, -.58, .33}, {.67, 0, .33}};
+        new double[][] {{-.33, .58, .33}, {-.33, -.58, .33}, {.67, 0, .33}};
   /**
    * Moving the three wheel holonomic robot to a desired location.
    *
