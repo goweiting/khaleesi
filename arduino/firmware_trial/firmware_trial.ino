@@ -3,8 +3,7 @@
 #include <Arduino.h>
 #include "SerialCommand.h"
 #include "SDPArduino.h"
-
-#define DEBUG 1 // change to 0 to off debug mode
+#include "Rotary.h"
 
 #define OPADDR 0x5A
 #define REGADDR 0x04
@@ -18,21 +17,28 @@
 // 5 - FRONT RIGHT
 
 // Wheels
+// The port for the motor board and the encoder port is the same.
 #define FRONTLEFT 3
 #define FRONTRIGHT 5
 #define BACK 4
 
 // Kickers
-#define DRIBBLER 2
-#define KICKERS 0
-#define KICKERS2 1
+#define KICKLEFT 0
+#define KICKRIGHT 1
 
+// Encoders
+#define ENCODER 5
 
+// Variables
 SerialCommand sCmd;
-//boolean kickerStatus = 0;
+boolean debug = true;
+boolean kickerStatus = 0;
 
-void setup(){
+void setup()
+{
   Wire.begin();
+  SDPsetup();
+
   sCmd.addCommand("ping", pingMethod);
 
   // GENERAL
@@ -49,14 +55,17 @@ void setup(){
   sCmd.addCommand("dk", dribblerKick);
   sCmd.addCommand("kick", kicker);
 
-  SDPsetup();
-
   Serial.println("READY");
   Serial.println("I am Khaleesi");
 
+  if (debug)
+  {
+    debug();
+  }
 }
 
-void debug(){
+void debug()
+{
 
   Serial.println("DEBUG MODE ON");
   Serial.println("Forward");
@@ -73,18 +82,20 @@ void debug(){
   delay(1000);
   dontMove();
   motorAllStop();
-
 }
 
-void loop(){
+void loop()
+{
   sCmd.readSerial();
 }
 
-void pingMethod(){
+void pingMethod()
+{
   Serial.println("pang");
 }
 
-void completeHalt(){
+void completeHalt()
+{
   motorAllStop();
   motorAllStop();
   motorAllStop();
@@ -98,36 +109,41 @@ void completeHalt(){
 //      - manualMoveMotor
 //  ====================================
 
-void dontMove(){
+void dontMove()
+{
   // stop the three wheels
   motorStop(FRONTLEFT);
   motorStop(BACK);
   motorStop(FRONTRIGHT);
 }
 
-void moveMotor(int motor, int power) {
+void moveMotor(int motor, int power)
+{
   // Function to move each individual wheel indepdent of the signed of
   // the power of the motor.
   // Note negative sign in the last line
-  if (power == 0) { 
-    motorStop(motor); 
+  if (power == 0)
+  {
+    motorStop(motor);
   }
-  else if (power > 0) { 
-    motorForward(motor, power); 
+  else if (power > 0)
+  {
+    motorForward(motor, power);
   }
-  else { 
-    motorBackward(motor, -power); 
+  else
+  {
+    motorBackward(motor, -power);
   }
 }
 
-
-void rationalMotors(){
+void rationalMotors()
+{
   // positive power causes the motor to go COUNTER clockwise
   // note that FRONTLEFT comes first
   // e.g. r 100 100 100 - spin CCW
   int frontLeft = atoi(sCmd.next());
   int frontRight = atoi(sCmd.next());
-  int back  = atoi(sCmd.next());
+  int back = atoi(sCmd.next());
 
   // changed the polarity here .due to the structure of the robot.
   // software is hence *idiot* proof and does not require any flipping
@@ -138,13 +154,12 @@ void rationalMotors(){
 }
 
 // For debugging purposes
-void manualMoveMotor(){
+void manualMoveMotor()
+{
   int motor = atoi(sCmd.next());
   int power = atoi(sCmd.next());
-
   moveMotor(motor, power);
 }
-
 
 //  ====================================
 //      DRIBBLER AND KICKERS
@@ -154,50 +169,26 @@ void manualMoveMotor(){
 //      - kicker
 //  ====================================
 
-void stopKicker(){
-  motorStop(KICKERS);
-  motorStop(KICKERS2);
+void stopKicker()
+{
+  motorStop(KICKLEFT);
+  motorStop(KICKRIGHT);
 }
 
-void resetKicker(){
+void resetKicker()
+{
   // reset the dribbler and kicker to the desired position
 }
 
-void dribblerKick(){
-  // first integer is the power for dribbler
-  // second integer is the power for kicker
-  int dribbler = atoi(sCmd.next());
+// for debugging the kicker at an input speed
+// Kick for 200ms and then halt.
+void kick()
+{
   int kickPower = atoi(sCmd.next());
-  moveMotor(DRIBBLER, dribbler);
-  moveMotor(KICKERS, kickPower);
-  moveMotor(KICKERS2, kickPower);
-}
-
-
-void kicker(){
-  // 3 states for kicker module = {0, 1, -1}
-  // state 0 = halt KICKERS
-  // state 1 = ??
-  // state -1 = ??
-  // do we really use this?
-
-  int state = atoi(sCmd.next());
-  if(state == 0) {
-    motorStop(KICKERS);
-  } 
-  else if (state == 1) {
-//    Serial.println(positions[0] % 40);
-//    Serial.println("Starting From: ");
-//    motorForward(KICKERS, 100);
-//    kickerStatus = 1;
-//  } 
-//  else {
-//    motorBackward(KICKERS, 100);
-//    kickerStatus = -1;
-  }
+  moveMotor(KICKLEFT, kickPower);
+  moveMotor(KICKRIGHT, kickPower);
+  delay(200);
+  stopKicker();
 }
 
 // ======================================================
-
-
-
