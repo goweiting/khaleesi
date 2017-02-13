@@ -1,27 +1,25 @@
 package strategy.actions.other;
 
+import strategy.Strategy;
 import strategy.actions.ActionBase;
-import strategy.actions.ActionException;
-import strategy.points.DynamicPoint;
-import strategy.robots.RobotBase;
 
 /**
  * Created by Simon Rovder
+ * <p>
+ * When the robot fails, it shall Contemplate...
  */
-public class HoldPosition extends ActionBase {
-    public HoldPosition(RobotBase robot, DynamicPoint point) {
-        super(robot, point);
-        this.rawDescription = " Hold Position";
+public class Contemplating extends ActionBase {
+    public Contemplating() {
+        this.rawDescription = "Contemplating...";
     }
 
     @Override
-    public void enterState(int newState) {
-
+    public void onStart() {
+        // Literally stop doing anything. Just stop. STAAAHP.
+        Strategy.currentRobotBase.setControllersActive(false);
+        Strategy.currentRobotBase.port.stop();
     }
 
     @Override
-    public void tok() throws ActionException {
-        this.robot.MOTION_CONTROLLER.setDestination(this.point);
-        this.robot.MOTION_CONTROLLER.setTolerance(-1);
-    }
+    public void update() { }
 }

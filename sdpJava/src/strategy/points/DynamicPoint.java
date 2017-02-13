@@ -10,4 +10,6 @@ public interface DynamicPoint {
     int getX();
 
     int getY();
+
+
 }

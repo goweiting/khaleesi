@@ -2,11 +2,8 @@ package strategy.actions.other;
 
 import strategy.Strategy;
 import strategy.actions.ActionBase;
-import strategy.actions.ActionException;
-import strategy.actions.offense.OffensiveKick;
 import strategy.points.basicPoints.BallPoint;
-import strategy.points.basicPoints.ConstantPoint;
-import strategy.robots.Fred;
+import strategy.robots.Khaleesi;
 import strategy.robots.RobotBase;
 import vision.Ball;
 import vision.Robot;
@@ -19,8 +16,7 @@ public class GoToBall extends ActionBase {
     Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
 
     public GoToBall(RobotBase robot) {
-        super(robot);
-        this.rawDescription = " Go To Ball";
+        this.rawDescription = "Go To Ball";
     }
 
     public static boolean haveBall() {
@@ -32,34 +28,20 @@ public class GoToBall extends ActionBase {
     }
 
     @Override
-    public void enterState(int newState) {
-        if (newState == 0) {
-            if (this.robot instanceof Fred) {
-                //   ((Fred) this.robot).MOTION_CONTROLLER.
+    public void onStart() {
+        Khaleesi us = (Khaleesi)Strategy.currentRobotBase;
+        Ball ball = Strategy.world.getBall();
+        if (ball == null) return;
 
-
-                //Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
-                Ball ball = Strategy.world.getBall();
-                if (us == null || ball == null) return;
-
-                //this.robot.MOTION_CONTROLLER.addObstacle(new Obstacle((int) ball.location.x, (int) ball.location.y, 30));
-                this.robot.MOTION_CONTROLLER.setDestination(new ConstantPoint(new BallPoint().getX(), new BallPoint().getY()));
-                this.robot.MOTION_CONTROLLER.setHeading(new BallPoint());
-                this.robot.MOTION_CONTROLLER.setTolerance(-1);
-                ((Fred) this.robot).DRIBBLER_CONTROLLER.setActive(true);
-
-            }
-        }
+        //this.robot.MOTION_CONTROLLER.addObstacle(new Obstacle((int) ball.location.x, (int) ball.location.y, 30));
+        us.MOTION_CONTROLLER.setDestination(new BallPoint());
+        us.MOTION_CONTROLLER.setHeading(new BallPoint());
+        us.MOTION_CONTROLLER.setTolerance(-1);
+        us.DRIBBLER_CONTROLLER.setActive(true);
     }
 
     @Override
-    public void tok() throws ActionException {
-        if (haveBall()) {
-            this.robot.ACTION_CONTROLLER.setAction(new OffensiveKick(this.robot));
-            throw new ActionException(true, false);
-        } else {
-            ((Fred) this.robot).KICKER_CONTROLLER.setActive(false);
-        }
+    public void update() {
 
     }
 

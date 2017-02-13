@@ -1,43 +1,21 @@
 package strategy.actions;
 
 /**
- * Created by Simon Rovder
+ * Created by Simon Rovder, then everything inside
+ *  was deleted and re-forged by Rado Kirilchev
  */
 public interface ActionInterface {
 
-    /**
-     * Call this method when a state change happens. Perform all state change operations here.
-     * Don't forget to save the state as the current state when done!
-     *
-     * @param newState Nes state number
-     */
-    void enterState(int newState);
+    // Called ONCE when it all starts
+    void onStart();
 
-    /**
-     * Call this method to activate the action.
-     *
-     * @throws ActionException When the action is done.
-     */
-    void tok() throws ActionException;
+    // Called every single update cycle when this action is active.
+    // Set destination, heading, and controllers here
+    void update();
 
-    /**
-     * Put state change logic into this method.
-     *
-     * @throws ActionException When the action is done.
-     */
-    void tik() throws ActionException;
+    // Called ONCE when the action ends.
+    void onEnd();
 
-    /**
-     * Method that delays further action execution. (enforced in tik() )
-     *
-     * @param millis
-     */
-    void delay(long millis);
-
-    /**
-     * Make this return something intuitive, it is for the GUI.
-     *
-     * @return
-     */
+    // Description for the Command box and the question mark.
     String description();
 }

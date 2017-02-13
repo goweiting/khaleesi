@@ -2,7 +2,6 @@ package strategy.robots;
 
 import communication.ports.interfaces.RobotPort;
 import strategy.controllers.ControllerInterface;
-import strategy.controllers.essentials.ActionController;
 import strategy.controllers.essentials.MotionController;
 import strategy.drives.DriveInterface;
 import vision.RobotType;
@@ -15,12 +14,11 @@ import java.util.LinkedList;
  * SDP2017NOTE
  * <p>
  * If you want to add a robot to the system, implement this class for it and instantiate it in the
- * Constructor of Strategy.java. You can see the sample Fred.java
+ * Constructor of Strategy.java. You can see the sample Khaleesi.java
  */
 public abstract class RobotBase implements RobotInterface {
 
     public final RobotType robotType;
-    public final ActionController ACTION_CONTROLLER = new ActionController(this);
     public final MotionController MOTION_CONTROLLER = new MotionController(this);
     public final RobotPort port;
     public final DriveInterface drive;
@@ -39,7 +37,6 @@ public abstract class RobotBase implements RobotInterface {
         this.port = port;
         this.robotType = robotType;
         this.controllers = new LinkedList<ControllerInterface>();
-        this.controllers.add(this.ACTION_CONTROLLER);
         this.controllers.add(this.MOTION_CONTROLLER);
     }
 

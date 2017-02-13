@@ -1,10 +1,10 @@
 package strategy.actions.offense;
 
+import strategy.Strategy;
 import strategy.actions.ActionBase;
-import strategy.actions.ActionException;
 import strategy.points.basicPoints.BallPoint;
 import strategy.points.basicPoints.ReverseBallDirection;
-import strategy.robots.RobotBase;
+import strategy.robots.Khaleesi;
 import vision.tools.VectorGeometry;
 
 /**
@@ -15,23 +15,18 @@ public class ShuntKick extends ActionBase {
     private VectorGeometry destination;
 
 
-    public ShuntKick(RobotBase robot) {
-        super(robot);
+    public ShuntKick() {
         this.rawDescription = "Shunt Kick";
     }
 
     @Override
-    public void enterState(int newState) {
-        if (newState == 0) {
-            this.robot.MOTION_CONTROLLER.setDestination(new BallPoint());
-            this.robot.MOTION_CONTROLLER.setHeading(new ReverseBallDirection());
-            this.robot.MOTION_CONTROLLER.setTolerance(-1);
-        }
-        this.state = newState;
-    }
+    public void update() {
+        Khaleesi us = (Khaleesi)Strategy.currentRobotBase;
+        // I don't know what these are supposed to do. They were just here.
+        us.MOTION_CONTROLLER.setDestination(new BallPoint());
+        us.MOTION_CONTROLLER.setHeading(new ReverseBallDirection());
+        us.MOTION_CONTROLLER.setTolerance(-1);
 
-    @Override
-    public void tok() throws ActionException {
-
+        // Perhaps some actual kicking logic should be added?...
     }
 }

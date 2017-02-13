@@ -1,280 +1,291 @@
 package strategy;
 
 import communication.PortListener;
-import communication.ports.robotPorts.FredRobotPort;
-import java.awt.Toolkit;
+import communication.ports.robotPorts.KhaleesiRobotPort;
+import strategy.actions.offense.OffensiveKick;
+import strategy.actions.offense.ShuntKick;
+import strategy.actions.other.Contemplating;
+import strategy.actions.other.DefendGoal;
+import strategy.actions.other.GoToSafeLocation;
+import strategy.actions.other.HoldPosition;
+import strategy.behaviours.BehaviourBase;
+import strategy.behaviours.DefaultBehaviour;
+import strategy.points.basicPoints.*;
+import strategy.robots.Khaleesi;
+import strategy.robots.RobotBase;
+import vision.*;
+import vision.Robot;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import javax.swing.Timer;
-import strategy.actions.Behave;
-import strategy.actions.offense.OffensiveKick;
-import strategy.actions.offense.ShuntKick;
-import strategy.actions.other.DefendGoal;
-import strategy.actions.other.Demo;
-import strategy.actions.other.GoToSafeLocation;
-import strategy.actions.other.Goto;
-import strategy.actions.other.HoldPosition;
-import strategy.actions.other.RemoteControl;
-import strategy.actions.other.Stop;
-import strategy.actions.other.Waiting;
-import strategy.points.basicPoints.ConstantPoint;
-import strategy.points.basicPoints.EnemyGoal;
-import strategy.points.basicPoints.InFrontOfRobot;
-import strategy.points.basicPoints.MidFoePoint;
-import strategy.points.basicPoints.RobotPoint;
-import strategy.robots.Fred;
-import strategy.robots.RobotBase;
-import vision.DynamicWorld;
-import vision.RobotAlias;
-import vision.RobotType;
-import vision.Vision;
-import vision.VisionListener;
 
 /**
  * Created by Simon Rovder
  * Edited by Wildfire
+ * Mutilated, disemboweled, and remade by Rado Kirilchev
  */
 public class Strategy implements VisionListener, PortListener, ActionListener {
 
 
-  /**
-   * SDP2017NOTE The following variable is a static variable always containing the very last known
-   * state of the world. It is accessible from anywhere in the project at any time as
-   * Strategy.world
-   */
-  public static DynamicWorld world = null;
-  public static Status status;
-  private Timer timer;
-  private String action;
-  private Vision vision;
-  private RobotBase[] robots;
+    /**
+     * SDP2017NOTE The following variable is a static variable always containing the very last known
+     * state of the world. It is accessible from anywhere in the project at any time as
+     * Strategy.world
+     */
+    public static DynamicWorld world = null;
+    private Timer timer;
+    private String action;
+    private Vision vision;
 
-  public Strategy(String[] args) {
+    // This is the current robot, as seen by the vision. Check locations, velocities, etc. with it.
+    // Can be null if the vision can't see where we are.
+    public static Robot curVisionRobot = null;
+    // This is the current robot as an actual instance of Khaleesi. It never changes, and cannot be null;
+    public static RobotBase currentRobotBase;
+    //private RobotBase[] robots;
+    private static BehaviourBase currentBehaviour;
+
+
+    public Strategy(String[] args) {
 
         /*
          * SDP2017NOTE
          * Create your robots in the following line. All these robots will be instantly connected to the
          * navigation system and all its controllers will be launched every cycle.
          */
-    this.robots = new RobotBase[]{new Fred(RobotType.FRIEND_2)};
+        // RK: Replaced this with static reference to one robot, because honestly, we don't need more
+        //this.robots = new RobotBase[]{new Khaleesi(RobotType.FRIEND_2)};
+        Khaleesi khaleesi = new Khaleesi(RobotType.FRIEND_2);
+        KhaleesiRobotPort port = (KhaleesiRobotPort)khaleesi.port;
+        currentRobotBase = khaleesi;
 
-    Fred fred = (Fred) this.robots[0];
-    FredRobotPort port = (FredRobotPort) fred.port;
+        // Assign default behaviour by... well... default.
+        currentBehaviour = new DefaultBehaviour();
 
-    final Strategy semiStrategy = this;
-    semiStrategy.vision = new Vision(args);
-    semiStrategy.vision.addVisionListener(semiStrategy);
+        final Strategy semiStrategy = this;
+        semiStrategy.vision = new Vision(args);
+        semiStrategy.vision.addVisionListener(semiStrategy);
 
-//  fred.PROPELLER_CONTROLLER.setActive(false); // comment out if not in use
+//  khaleesi.PROPELLER_CONTROLLER.setActive(false); // comment out if not in use
 
-    this.action = "";
-    GUI.gui.doesNothingButIsNecessarySoDontDelete();
-    GUI.gui.setRobot(fred);
-    this.timer = new Timer(100, this);
-    this.timer.start();
+        this.action = "";
+        GUI.gui.doesNothingButIsNecessarySoDontDelete();
+        GUI.gui.setRobot(currentRobotBase);
+        this.timer = new Timer(100, this);
+        this.timer.start();
 
-    while (true) {
+        while (true) {
             /*
              * SDP2017NOTE
              * This is a debug loop. You can add manual control over the robots here so as to make testing easier.
              * It simply loops forever. Vision System and Strategy run concurrently.
              *
              */
-      System.out.print(">> ");
-      this.action = this.readLine();
-      if (this.action.equals("exit")) {
-//        fred.PROPELLER_CONTROLLER.setActive(false);
+            System.out.print(">> ");
+            this.action = this.readLine();
+            if (this.action.equals("exit")) {
+//        khaleesi.PROPELLER_CONTROLLER.setActive(false);
 //        port.propeller(0);
 //        port.propeller(0);
 //        port.propeller(0);
-        break;
-      }
-      switch (this.action) {
-        case "a":
-          fred.setControllersActive(true);
-          break;
-        case "stop":
-          fred.ACTION_CONTROLLER.setAction(new Stop(fred));
-          break;
-        case "!":
-          System.out.print("Action: ");
-          System.out.print(fred.ACTION_CONTROLLER.isActive());
-          System.out.print(" Motion: ");
-          System.out.print(fred.MOTION_CONTROLLER.isActive());
-//        System.out.print(" Propeller: ");
-//        System.out.println(fred.PROPELLER_CONTROLLER.isActive());
-          break;
-        case "?":
-          fred.ACTION_CONTROLLER.printDescription();
-          break;
-        case "hold":
-          fred.ACTION_CONTROLLER.setAction(new HoldPosition(fred, new MidFoePoint()));
-          break;
-        case "kick":
-          fred.ACTION_CONTROLLER.setAction(new OffensiveKick(fred));
-          break;
-        case "h":
-          fred.ACTION_CONTROLLER.setAction(new Waiting(fred));
-          fred.MOTION_CONTROLLER.setDestination(null);
-          fred.MOTION_CONTROLLER.setHeading(null);
-          port.halt();
-          port.halt();
-          port.halt();
-//        fred.PROPELLER_CONTROLLER.setActive(false);
-//        port.propeller(0);
-//        port.propeller(0);
-//        port.propeller(0);
-          break;
-        case "reset":
-          fred.ACTION_CONTROLLER.setAction(new Goto(fred, new ConstantPoint(0, 0)));
-          break;
-        case "remote":
-          System.out.println(fred.ACTION_CONTROLLER.isActive());
-          fred.ACTION_CONTROLLER.setAction(new RemoteControl(fred));
-          break;
-        case "behave":
-          Status.fixedBehaviour = null;
-          fred.ACTION_CONTROLLER.setAction(new Behave(fred));
-          break;
-        case "AUTO":
-          Status.fixedBehaviour = null;
-          break;
-        case "safe":
-          fred.ACTION_CONTROLLER.setAction(new GoToSafeLocation(fred));
-          break;
-        case "shunt":
-          fred.ACTION_CONTROLLER.setAction(new ShuntKick(fred));
-          break;
-        case "demo":
-          fred.ACTION_CONTROLLER.setAction(new Demo(fred));
-          break;
-        case "def":
-          fred.ACTION_CONTROLLER.setAction(new DefendGoal(fred));
-          break;
-        case "annoy":
-          fred.ACTION_CONTROLLER.setAction(null);
-          fred.MOTION_CONTROLLER.setDestination(new InFrontOfRobot(RobotAlias.FELIX));
-          fred.MOTION_CONTROLLER.setHeading(new RobotPoint(RobotAlias.FELIX));
-          break;
+                break;
+            }
+            switch (this.action) {
+                case "a":
+                    khaleesi.setControllersActive(true);
+                    break;
+                case "!":
+                    System.out.print("Motion active: ");
+                    System.out.print(khaleesi.MOTION_CONTROLLER.isActive());
+                    System.out.print(" Kicker active: ");
+                    System.out.print(khaleesi.KICKER_CONTROLLER.isActive());
+                    System.out.print(", kick in progress ");
+                    System.out.print(khaleesi.KICKER_CONTROLLER.isKickInProgress() + "\n");
+                    break;
+                case "?":
+                    System.out.print(currentBehaviour.description() + ": " +
+                                     currentBehaviour.getCurrentAction().description());
+                    break;
+                case "hold":
+                    currentBehaviour.setCurrentAction(new HoldPosition(new MidFoePoint()));
+                    break;
+                case "kick":
+                    currentBehaviour.setCurrentAction(new OffensiveKick());
+                    break;
+                case "h":
+                    currentBehaviour.setCurrentAction(new Contemplating());
+                    khaleesi.MOTION_CONTROLLER.setDestination(null);
+                    khaleesi.MOTION_CONTROLLER.setHeading(null);
+                    port.halt();
+                    port.halt();
+                    port.halt();
+                    break;
+                case "reset":
+                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(0, 0)));
+                    break;
+                case "behave":
+                    // Perhaps set proper "gameplay behaviour" here?
+                    //currentBehaviour = ...
+                    break;
+                case "safe":
+                    currentBehaviour.setCurrentAction(new GoToSafeLocation());
+                    break;
+                case "shunt":
+                    currentBehaviour.setCurrentAction(new ShuntKick());
+                    break;
+                case "def":
+                    currentBehaviour.setCurrentAction(new DefendGoal());
+                    break;
+                case "annoy":
+                    currentBehaviour.setCurrentAction(null);
+                    khaleesi.MOTION_CONTROLLER.setDestination(new InFrontOfRobot(RobotAlias.FELIX));
+                    khaleesi.MOTION_CONTROLLER.setHeading(new RobotPoint(RobotAlias.FELIX));
+                    break;
 //        case "rot":
-//          fred.PROPELLER_CONTROLLER.setActive(false);
-//          ((FredRobotPort) fred.port).propeller(0);
-//          ((FredRobotPort) fred.port).propeller(0);
-//          ((FredRobotPort) fred.port).propeller(0);
-//          fred.ACTION_CONTROLLER.setActive(false);
-//          fred.MOTION_CONTROLLER.setDestination(new Rotate());
-//          fred.MOTION_CONTROLLER.setHeading(new BallPoint());
+//          khaleesi.PROPELLER_CONTROLLER.setActive(false);
+//          ((KhaleesiRobotPort) khaleesi.port).propeller(0);
+//          ((KhaleesiRobotPort) khaleesi.port).propeller(0);
+//          ((KhaleesiRobotPort) khaleesi.port).propeller(0);
+//          khaleesi.ACTION_CONTROLLER.setActive(false);
+//          khaleesi.MOTION_CONTROLLER.setDestination(new Rotate());
+//          khaleesi.MOTION_CONTROLLER.setHeading(new BallPoint());
 //          break;
 //        case "p":
-//          boolean act = fred.PROPELLER_CONTROLLER.isActive();
-//          fred.PROPELLER_CONTROLLER.setActive(!act);
+//          boolean act = khaleesi.PROPELLER_CONTROLLER.isActive();
+//          khaleesi.PROPELLER_CONTROLLER.setActive(!act);
 //          if (!act) {
-//            ((FredRobotPort) fred.port).propeller(0);
-//            ((FredRobotPort) fred.port).propeller(0);
-//            ((FredRobotPort) fred.port).propeller(0);
+//            ((KhaleesiRobotPort) khaleesi.port).propeller(0);
+//            ((KhaleesiRobotPort) khaleesi.port).propeller(0);
+//            ((KhaleesiRobotPort) khaleesi.port).propeller(0);
 //          }
-//          System.out.println(fred.PROPELLER_CONTROLLER.isActive());
+//          System.out.println(khaleesi.PROPELLER_CONTROLLER.isActive());
 //          break;
-        case "test":
-          fred.MOTION_CONTROLLER.setHeading(new EnemyGoal());
-          fred.MOTION_CONTROLLER.setDestination(new EnemyGoal());
-          fred.MOTION_CONTROLLER.perform();
-          break;
+                case "test":
+                    khaleesi.MOTION_CONTROLLER.setHeading(new EnemyGoal());
+                    khaleesi.MOTION_CONTROLLER.setDestination(new EnemyGoal());
+                    khaleesi.MOTION_CONTROLLER.perform();
+                    break;
 
-        //drives 2 front wheels forward
-        case "driveForward":
-          ((FredRobotPort) fred.port).threeWheelHolonomicMotion(100, 100, 0);
-          ((FredRobotPort) fred.port).threeWheelHolonomicMotion(100, 100, 0);
-          ((FredRobotPort) fred.port).threeWheelHolonomicMotion(100, 100, 0);
-          break;
-        case "driveStop":
-          ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
-          ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
-          ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
-          break;
+                //drives 2 front wheels forward
+                case "driveForward":
+                    ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(100, 100, 0);
+                    ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(100, 100, 0);
+                    ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(100, 100, 0);
+                    break;
+                case "driveStop":
+                    ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(0, 0, 0);
+                    ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(0, 0, 0);
+                    ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(0, 0, 0);
+                    break;
 
-        /******************** KHALEESI'S ACTION ********************/
-        // spins dribbler and kicker
-        case "dk":
-          ((FredRobotPort) fred.port).dribblerKicker(100, 100);
-          break;
-        case "dkStop":
-          ((FredRobotPort) fred.port).dribblerKicker(0, 0);
-          break;
-        case "attemptKick":
-          fred.KICKER_CONTROLLER.setActive(true);
-          fred.KICKER_CONTROLLER.perform();
-          break;
-        case "stopKick":
-          fred.KICKER_CONTROLLER.setActive(false);
-          break;
+                /******************** KHALEESI'S ACTION ********************/
+                // spins dribbler and kicker
+                case "dk":
+                    ((KhaleesiRobotPort) khaleesi.port).dribblerKicker(100, 100);
+                    break;
+                case "dkStop":
+                    ((KhaleesiRobotPort) khaleesi.port).dribblerKicker(0, 0);
+                    break;
+                case "attemptKick":
+                    khaleesi.KICKER_CONTROLLER.setActive(true);
+                    khaleesi.KICKER_CONTROLLER.perform();
+                    break;
+                case "stopKick":
+                    khaleesi.KICKER_CONTROLLER.setActive(false);
+                    break;
 
-        case "fullstop":
-          ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
-          ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
-          ((FredRobotPort) fred.port).threeWheelHolonomicMotion(0, 0, 0);
-          fred.KICKER_CONTROLLER.setActive(false);
-          fred.DRIBBLER_CONTROLLER.setActive(false);
-          break;
-      }
-    }
-
-    this.vision.terminateVision();
-    System.exit(0);
-
-  }
-
-  private String readLine() {
-    try {
-      return new BufferedReader(new InputStreamReader(System.in)).readLine();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return "";
-  }
-
-
-  @Override
-  public void nextWorld(DynamicWorld dynamicWorld) {
-    world = dynamicWorld;
-    status = new Status(world);
-  }
-
-  /**
-   * SDP2017NOTE
-   * This is the main() you want to run. It launches everything.
-   */
-  public static void main(String[] args) {
-    new Strategy(args);
-  }
-
-  /**
-   * SDP2017NOTE This is the main loop of the entire strategy module. It is launched every couple of
-   * milliseconds. Insert all your clever things here. You can access Strategy.world from here and
-   * control robots.
-   */
-  @Override
-  public void actionPerformed(ActionEvent e) {
-    if (world != null) {
-      for (RobotBase robot : this.robots) {
-        if (world.getRobot(robot.robotType) == null) {
-          // Angry yelling if robot is not detected in vision!
-          Toolkit.getDefaultToolkit().beep();
+                case "fullstop":
+                    ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(0, 0, 0);
+                    ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(0, 0, 0);
+                    ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(0, 0, 0);
+                    khaleesi.KICKER_CONTROLLER.setActive(false);
+                    khaleesi.DRIBBLER_CONTROLLER.setActive(false);
+                    break;
+            }
         }
+
+        this.vision.terminateVision();
+        System.exit(0);
+
+    }
+
+    private String readLine() {
         try {
-          // Tells all the Controllers of each robot to do what they need to do.
-          robot.perform();
-        } catch (Exception ex) {
-          ex.printStackTrace();
+            return new BufferedReader(new InputStreamReader(System.in)).readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-      }
+        return "";
     }
-  }
 
-  @Override
-  public void receivedStringHandler(String string) {
-  }
+
+    @Override
+    public void nextWorld(DynamicWorld dynamicWorld) {
+        world = dynamicWorld;
+        //status = new Status(world);
+    }
+
+    /**
+     * SDP2017NOTE
+     * This is the main() you want to run. It launches everything.
+     */
+    public static void main(String[] args) {
+        new Strategy(args);
+    }
+
+    /**
+     * SDP2017NOTE This is the main loop of the entire strategy module. It is launched every couple of
+     * milliseconds. Insert all your clever things here. You can access Strategy.world from here and
+     * control robots.
+     */
+    // Actually, don't touch this. Stuff all the logic inside the currently-running Behaviour.
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (world != null) {
+            // UPDATE REFERENCE TO OURSELVES
+            curVisionRobot = world.getRobot(currentRobotBase.robotType);
+
+            //System.out.println("Strategy core ticking.");
+
+            // TICK ALL OF OUR CONTROLLERS (and do the beeping thing if we can't see ourselves)
+            if (curVisionRobot == null) Toolkit.getDefaultToolkit().beep();
+            try {
+                currentRobotBase.perform();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            // UPDATE BEHAVIOUR AND ITS ACTION.
+            currentBehaviour.update();
+            currentBehaviour.getCurrentAction().update();
+        }
+    }
+
+    @Override
+    public void receivedStringHandler(String string) {
+    }
+
+    // Support methods for behavioural control.
+    public void restartBehaviour() {
+        // I don't see why we might need this, but hey, who knows.
+        currentBehaviour.onEnd();
+        currentBehaviour.onStart();
+    }
+
+    public void setBehaviour(BehaviourBase behaviour) {
+        currentBehaviour.onEnd();
+        currentBehaviour = behaviour;
+        currentBehaviour.onStart();
+    }
+
+    public static BehaviourBase getCurrentBehaviour() {
+        return currentBehaviour;
+    }
+
+
 }

@@ -8,14 +8,14 @@ import communication.ports.interfaces.ThreeWheelHolonomicRobotPort;
 /**
  * Created by Simon Rovder
  */
-public class FredRobotPort extends RobotPort implements
+public class KhaleesiRobotPort extends RobotPort implements
         PropellerEquipedRobotPort, ThreeWheelHolonomicRobotPort, DribblerKickerEquippedRobotPort {
 
     // Retain state for dribbling and kicking (allow single-var updates)
     private double curDribblerPower = 0;
     private double curKickerPower = 0;
 
-    public FredRobotPort() {
+    public KhaleesiRobotPort() {
         super("pang");
         curDribblerPower = 0;
         curKickerPower = 0;
