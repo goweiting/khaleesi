@@ -6,16 +6,17 @@ package strategy.actions;
 public abstract class ActionBase implements ActionInterface {
 
     protected String rawDescription = null;
+    private boolean hasStarted = false;
 
-    // Blank implementations for these two - again, they're unnecessary
+    // Blank implementations for these two - again, they're sometimes unnecessary
     @Override
     public void onStart() {
-
+        hasStarted = true;
     }
 
     @Override
     public void onEnd() {
-
+        hasStarted = false;
     }
 
     // I'll keep this
@@ -24,5 +25,9 @@ public abstract class ActionBase implements ActionInterface {
         String description = this.rawDescription;
         if (description == null) description = this.getClass().getName();
         return description;
+    }
+
+    public boolean hasStarted() {
+        return hasStarted;
     }
 }

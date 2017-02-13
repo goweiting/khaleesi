@@ -2,6 +2,7 @@ package strategy;
 
 import communication.PortListener;
 import communication.ports.robotPorts.KhaleesiRobotPort;
+import strategy.actions.ActionBase;
 import strategy.actions.offense.OffensiveKick;
 import strategy.actions.offense.ShuntKick;
 import strategy.actions.other.Contemplating;
@@ -66,7 +67,6 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
 
         // Assign default behaviour by... well... default.
         currentBehaviour = new DefaultBehaviour();
-        currentBehaviour.onStart();
 
         final Strategy semiStrategy = this;
         semiStrategy.vision = new Vision(args);
@@ -262,8 +262,11 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
             }
 
             // UPDATE BEHAVIOUR AND ITS ACTION.
-            currentBehaviour.update();
-            currentBehaviour.getCurrentAction().update();
+            if (currentBehaviour.hasStarted()) currentBehaviour.update();
+            else currentBehaviour.onStart();
+            ActionBase curAction = currentBehaviour.getCurrentAction();
+            if (curAction.hasStarted()) curAction.update();
+            else curAction.onStart();
         }
     }
 
@@ -280,6 +283,7 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
 
     public void setBehaviour(BehaviourBase behaviour) {
         currentBehaviour.onEnd();
+        currentRobotBase.setControllersActive(false);
         currentBehaviour = behaviour;
         currentBehaviour.onStart();
     }

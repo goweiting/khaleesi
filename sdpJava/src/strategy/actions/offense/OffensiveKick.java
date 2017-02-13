@@ -18,6 +18,7 @@ public class OffensiveKick extends ActionBase {
     public void update() {
         Khaleesi us = (Khaleesi)Strategy.currentRobotBase;
 
+        us.MOTION_CONTROLLER.setActive(true);
         us.MOTION_CONTROLLER.setHeading(new BallPoint());
         us.MOTION_CONTROLLER.setDestination(new BallPoint());
         // Enable dribbler

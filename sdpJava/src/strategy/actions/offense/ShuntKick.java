@@ -22,7 +22,8 @@ public class ShuntKick extends ActionBase {
     @Override
     public void update() {
         Khaleesi us = (Khaleesi)Strategy.currentRobotBase;
-        // I don't know what these are supposed to do. They were just here.
+        // These probably need extending.
+        us.MOTION_CONTROLLER.setActive(true);
         us.MOTION_CONTROLLER.setDestination(new BallPoint());
         us.MOTION_CONTROLLER.setHeading(new ReverseBallDirection());
         us.MOTION_CONTROLLER.setTolerance(-1);

@@ -32,6 +32,7 @@ public class GoToSafeLocation extends ActionBase {
         Khaleesi us = (Khaleesi)Strategy.currentRobotBase;
         Ball ball = Strategy.world.getBall();
         if (ball == null) return;
+        us.MOTION_CONTROLLER.setActive(true);
         us.MOTION_CONTROLLER.addObstacle(new Obstacle((int)ball.location.x, (int)ball.location.y, 30));
         us.MOTION_CONTROLLER.setDestination(new ConstantPoint(-Constants.PITCH_WIDTH / 2, 0));
         us.MOTION_CONTROLLER.setHeading(new BallPoint());

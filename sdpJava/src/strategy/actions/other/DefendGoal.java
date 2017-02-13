@@ -18,6 +18,7 @@ public class DefendGoal extends ActionBase {
     @Override
     public void onStart() {
         Khaleesi us = (Khaleesi)Strategy.currentRobotBase;
+        us.MOTION_CONTROLLER.setActive(true);
         us.MOTION_CONTROLLER.setHeading(new DangerousPoint());
         us.MOTION_CONTROLLER.setDestination(new MidDangerPoint(us.robotType));
         us.MOTION_CONTROLLER.setTolerance(-1);

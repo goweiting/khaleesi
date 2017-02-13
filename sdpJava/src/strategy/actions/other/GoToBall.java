@@ -13,14 +13,13 @@ import vision.RobotType;
  * Created by Simon Rovder
  */
 public class GoToBall extends ActionBase {
-    Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
 
-    public GoToBall(RobotBase robot) {
+    public GoToBall() {
         this.rawDescription = "Go To Ball";
     }
 
     public static boolean haveBall() {
-        Robot us = Strategy.world.getRobot(RobotType.FRIEND_2);
+        Robot us = Strategy.curVisionRobot;
         if (us.location.distance(new BallPoint().getX(), new BallPoint().getY()) < 20) {
             return true;
         }
@@ -33,11 +32,15 @@ public class GoToBall extends ActionBase {
         Ball ball = Strategy.world.getBall();
         if (ball == null) return;
 
+        us.MOTION_CONTROLLER.setActive(true);
         //this.robot.MOTION_CONTROLLER.addObstacle(new Obstacle((int) ball.location.x, (int) ball.location.y, 30));
         us.MOTION_CONTROLLER.setDestination(new BallPoint());
         us.MOTION_CONTROLLER.setHeading(new BallPoint());
         us.MOTION_CONTROLLER.setTolerance(-1);
-        us.DRIBBLER_CONTROLLER.setActive(true);
+        //us.DRIBBLER_CONTROLLER.setActive(true);
+        us.KICKER_CONTROLLER.setActive(false);
+
+        super.onStart();
     }
 
     @Override

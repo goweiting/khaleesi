@@ -1,5 +1,6 @@
 package strategy.behaviours;
 
+import strategy.Strategy;
 import strategy.actions.ActionBase;
 
 /**
@@ -9,17 +10,18 @@ import strategy.actions.ActionBase;
 public abstract class BehaviourBase implements BehaviourInterface {
     private ActionBase currentAction = null;
     protected String rawDescription = null;
+    private boolean hasStarted = false;
 
     @Override
     public void onStart() {
-
+        hasStarted = true;
     }
 
     // We don't implement 'update()' here, because that's essential for every behaviour itself.
 
     @Override
     public void onEnd() {
-
+        hasStarted = false;
     }
 
     @Override
@@ -39,6 +41,7 @@ public abstract class BehaviourBase implements BehaviourInterface {
 
     public void setCurrentAction(ActionBase action) {
         if (currentAction != null) currentAction.onEnd();
+        Strategy.currentRobotBase.setControllersActive(false);
         currentAction = action;
         currentAction.onStart();
     }
@@ -47,4 +50,7 @@ public abstract class BehaviourBase implements BehaviourInterface {
         return currentAction;
     }
 
+    public boolean hasStarted() {
+        return hasStarted;
+    }
 }

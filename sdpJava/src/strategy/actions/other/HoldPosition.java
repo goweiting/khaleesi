@@ -23,6 +23,7 @@ public class HoldPosition extends ActionBase {
     public void onStart() {
         // Set target position as a destination
         Khaleesi us = (Khaleesi)Strategy.currentRobotBase;
+        us.MOTION_CONTROLLER.setActive(true);
         us.MOTION_CONTROLLER.setDestination(targetPosition);
         us.MOTION_CONTROLLER.setHeading(targetPosition);
         us.MOTION_CONTROLLER.setTolerance(-1);
