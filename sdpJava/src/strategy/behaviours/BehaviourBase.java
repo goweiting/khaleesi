@@ -32,12 +32,13 @@ public abstract class BehaviourBase implements BehaviourInterface {
     // Making these public so that we can force-set actions through the console and command box.
     // This does sort of break the encapsulation, but hey, it's probably useful.
     public void restartAction() {
+        if (currentAction == null) return;
         currentAction.onEnd();
         currentAction.onStart();
     }
 
     public void setCurrentAction(ActionBase action) {
-        currentAction.onEnd();
+        if (currentAction != null) currentAction.onEnd();
         currentAction = action;
         currentAction.onStart();
     }

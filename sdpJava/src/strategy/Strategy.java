@@ -66,6 +66,7 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
 
         // Assign default behaviour by... well... default.
         currentBehaviour = new DefaultBehaviour();
+        currentBehaviour.onStart();
 
         final Strategy semiStrategy = this;
         semiStrategy.vision = new Vision(args);
