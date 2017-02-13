@@ -24,7 +24,7 @@ void SDPsetup() {
   pinMode(A3,INPUT);
   digitalWrite(8,HIGH); //Pin 8 must be high to turn the radio on!
   Serial.begin(115200); // Serial rate the radio is configured to.
-  Wire.begin(); //Makes arduino master of the I2C line.
+  //Wire.begin(); //Makes arduino master of the I2C line.
 }
 
 void helloWorld() {
@@ -45,7 +45,6 @@ void motorForward(int motorNum, int motorPower) { //Makes Motor motorNum go forw
     uint8_t sender[2] = {motor1, motor2};
     Wire.beginTransmission(MotorBoardI2CAddress); //open I2C communation to Motor Board.
     Wire.write(sender,2);                    //send data.
-    byte fred = Wire.endTransmission();		//end I2C communcation.
   }
 }
 
@@ -63,7 +62,6 @@ void motorBackward(int motorNum, int motorPower) { //Makes Motor motorNum go bac
     uint8_t sender[2] = {motor1, motor2};
     Wire.beginTransmission(MotorBoardI2CAddress); //open I2C communation to Motor Board.
     Wire.write(sender,2);        	 // sends two byte
-    byte fred = Wire.endTransmission();//end I2C communcation.
 
   }
 }
@@ -75,7 +73,6 @@ void motorStop(int motorNum) { // stop motor motorNum
     uint8_t sender[1] = {motor1};
     Wire.beginTransmission(MotorBoardI2CAddress); //open I2C communation to Motor Board.
     Wire.write(sender,1);        	          // sends a byte
-    byte fred = Wire.endTransmission();		  // close commucation.
   }
 }
 
@@ -85,7 +82,6 @@ void motorAllStop() {
   uint8_t sender[1] = {allStop};
   Wire.beginTransmission(MotorBoardI2CAddress); //open I2C communation to Motor Board.
   Wire.write(sender,1);        			// sends a byte
-  byte fred = Wire.endTransmission();		//end I2C commucation.
 }
 
 void setPWMpin(int portNum, int power){ //PortNum is the Sensor port used, pwm is the power of the output (between 0-100)
@@ -161,3 +157,4 @@ int readDigitalSensorData(int portNum){ //PortNum is the Sensor port used
     return -2;
   }
 }
+

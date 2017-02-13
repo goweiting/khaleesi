@@ -1,5 +1,6 @@
 #include "ThreeWheelMotion.h"
 #include "SDPArduino.h"
+#include <Arduino.h>
 
 #define VISION_TIMEOUT 300 // ms - the time to considered that the vision is no longer seeing the robot
 #define TIMSTEP 100        // ms - generate prediction every 100ms
@@ -23,3 +24,4 @@ void gotoXY(double myX, double myY, double myHeading,
 void forwardKinematics();
 
 void inverseKinematics();
+

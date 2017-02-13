@@ -3,6 +3,7 @@
 // ======================================================================
 
 #include <Wire.h>
+#include <Arduino.h>
 
 // ======================================================================
 #define EncoderBoardAddr 5
@@ -21,35 +22,6 @@
 int currentPositions[NumPorts] = {0};
 int positions[RotaryCount] = {0}; // for DEBUG
 int currentSpeed[NumPorts] = {0}; // starts from halt
-
-// ======================================================================
-// Miscellanous Functionalities
-int& getCurrentSpeed()
-{
-  // poll the encoders every fixed poll interval (200ms)
-  // and then return the speed.
-  // Speed = dx / dt = (currentPosition - lastKnownPosition ) / 200
-
-  int lastKnownPositions[3] = {currentPositions[0], currentPositions[1], currentPositions[2]};
-  delay(PollInterval); // wait for 200ms to get new positions
-  updateMotorPositions();
-
-  // get the instantaneous speed
-  currentSpeed[0] = (currentPositions[0] - lastKnownPositions[0]) / 200;
-  currentSpeed[1] = (currentPositions[1] - lastKnownPositions[1]) / 200;
-  currentSpeed[2] = (currentPositions[2] - lastKnownPositions[2]) / 200;
-
-  return &currentSpeed;
-}
-
-void updateMotorPositions()
-{
-  pollFromAll();
-  currentPositions[0] = -1 * positions[FRONTLEFT_enc]; // FRONTLEFT_enc flips sign here
-  currentPositions[1] = positions[FRONTRIGHT_enc];
-  currentPositions[2] = positions[BACKWHEEL_enc];
-}
-
 // ======================================================================
 // SOME FUNCTIONS FOR SANITY CHECKING
 
@@ -73,6 +45,39 @@ void printAllPos()
     Serial.print(' ');
   }
   Serial.println();
-}
+} 
 
 // ======================================================================
+// Miscellanous Functionalities
+void updateMotorPositions()
+{
+  pollFromAll();
+  currentPositions[0] = -1 * positions[FRONTLEFT_enc]; // FRONTLEFT_enc flips sign here
+  currentPositions[1] = positions[FRONTRIGHT_enc];
+  currentPositions[2] = positions[BACKWHEEL_enc];
+}
+
+int getCurrentSpeed()
+{
+  // poll the encoders every fixed poll interval (200ms)
+  // and then return the speed.
+  // Speed = dx / dt = (currentPosition - lastKnownPosition ) / 200
+
+  int lastKnownPositions[3] = {currentPositions[0], currentPositions[1], currentPositions[2]};
+  delay(PollInterval); // wait for 200ms to get new positions
+  updateMotorPositions();
+
+  // get the instantaneous speed
+  currentSpeed[0] = (currentPositions[0] - lastKnownPositions[0]) / 200;
+  currentSpeed[1] = (currentPositions[1] - lastKnownPositions[1]) / 200;
+  currentSpeed[2] = (currentPositions[2] - lastKnownPositions[2]) / 200;
+
+  return *currentSpeed;
+}
+
+
+
+
+
+// ======================================================================
+

@@ -4,14 +4,12 @@
 #ifndef HEADER_ROTARY
 #define HEADER_ROTARY
 
-#define NumPorts
-int currentPositions[NumPorts];
-int positions[RotaryCount];
-int currentSpeed[NumPorts];
-int getCurrentSpeed(void);
-void getCurrentSpeed(void);
+#define NumPorts 3
+#define RotaryCount 6
+int* getCurrentSpeed(void);
 void pollFromAll(void);
 void printAllPos(void);
 #endif
 
 // ======================================================================
+

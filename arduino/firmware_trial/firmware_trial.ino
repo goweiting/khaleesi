@@ -31,14 +31,11 @@
 
 // Variables
 SerialCommand sCmd;
-boolean debug = true;
+boolean DEBUG = 1;
 boolean kickerStatus = 0;
 
 void setup()
 {
-  Wire.begin();
-  SDPsetup();
-
   sCmd.addCommand("ping", pingMethod);
 
   // GENERAL
@@ -48,17 +45,18 @@ void setup()
   sCmd.addCommand("f", dontMove);
   sCmd.addCommand("r", rationalMotors);
   sCmd.addCommand("mm", manualMoveMotor);
+  sCmd.addCommand("md", monitoredDrive);
   //sCmd.addCommand("goto", gotoXY);
 
   // KICKING and DRIBBLING
   sCmd.addCommand("sk", stopKicker);
-  sCmd.addCommand("dk", dribblerKick);
-  sCmd.addCommand("kick", kicker);
+  //sCmd.addCommand("dk", dribblerKick);
+  //sCmd.addCommand("kick", kicker);
 
   Serial.println("READY");
   Serial.println("I am Khaleesi");
-
-  if (debug)
+  SDPsetup();
+  if (DEBUG)
   {
     debug();
   }
@@ -163,10 +161,11 @@ void monitoredDrive()
   moveMotor(FRONTLEFT, -frontLeft);
   moveMotor(FRONTRIGHT, frontRight);
   moveMotor(BACK, back);
-  currentSpeed = getCurrentSpeed();
-  sumSpeed_output = abs(currentSpeed[0]) + ans(currentSpeed[1]) + abs(currentSpeed[2]);
-  sumSpeed_input = abs(frontLeft) + abs(frontRight) + abs(back);
+  int *currentSpeed = getCurrentSpeed();
+  int sumSpeed_output = abs(currentSpeed[0]) + abs(currentSpeed[1]) + abs(currentSpeed[2]);
+  int sumSpeed_input = abs(frontLeft) + abs(frontRight) + abs(back);
 
+  Serial.print("<<FL,FR,B>> "); 
   double tolerant = 0.5;
   int interval = 10; // decrement by this amount
   // LEFT:
@@ -177,28 +176,31 @@ void monitoredDrive()
   {
     int new_left = -frontLeft - (interval * delta);
     moveMotor(FRONTLEFT, new_left);
+    Serial.print(new_left);
   }
 
   // RIGHT:
   int frontRight_input = abs(frontRight) / sumSpeed_input;
   int frontRight_output = abs(currentSpeed[1]) / sumSpeed_output;
-  int delta = frontRight_input - frontRight_output;
+  delta = frontRight_input - frontRight_output;
   if (abs(delta) > tolerant)
   {
     int new_right = frontRight - (interval * delta);
     moveMotor(FRONTRIGHT, new_right);
+    Serial.print(new_right);
   }
 
   // BACK:
   int back_input = abs(back) / sumSpeed_input;
   int back_output = abs(currentSpeed[2]) / sumSpeed_output;
-  int delta = back_input - back_output;
+  delta = back_input - back_output;
   if (abs(delta) > tolerant) 
   {
     int new_back = back - (interval * delta);
     moveMotor(BACK, new_back);
+    Serial.print(new_back);
   }
-  Serial.print("<<FL,FR,B>> ");
+
 }
 
 // For debugging purposes
