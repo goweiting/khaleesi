@@ -109,8 +109,8 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
                     System.out.print(khaleesi.KICKER_CONTROLLER.isKickInProgress() + "\n");
                     break;
                 case "?":
-                    System.out.print(currentBehaviour.description() + ": " +
-                                     currentBehaviour.getCurrentAction().description());
+                    System.out.println(currentBehaviour.description() + ": " +
+                                       currentBehaviour.getCurrentAction().description());
                     break;
                 case "hold":
                     currentBehaviour.setCurrentAction(new HoldPosition(new MidFoePoint()));

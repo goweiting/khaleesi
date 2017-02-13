@@ -5,11 +5,6 @@ import strategy.actions.ActionBase;
 import strategy.points.DynamicPoint;
 import strategy.robots.Khaleesi;
 
-/**
- * Created by Simon Rovder
- * <p>
- * When the robot fails, it shall Contemplate...
- */
 public class HoldPosition extends ActionBase {
     private DynamicPoint targetPosition;
 

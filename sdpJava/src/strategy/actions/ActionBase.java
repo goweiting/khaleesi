@@ -8,7 +8,8 @@ public abstract class ActionBase implements ActionInterface {
     protected String rawDescription = null;
     private boolean hasStarted = false;
 
-    // Blank implementations for these two - again, they're sometimes unnecessary
+    // Blank implementations for these two
+    // NOTE: you MUST turn all controllers on.
     @Override
     public void onStart() {
         hasStarted = true;
