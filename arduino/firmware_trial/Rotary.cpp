@@ -24,7 +24,7 @@ int currentSpeed[NumPorts] = {0}; // starts from halt
 
 // ======================================================================
 // Miscellanous Functionalities
-void getCurrentSpeed()
+int& getCurrentSpeed()
 {
   // poll the encoders every fixed poll interval (200ms)
   // and then return the speed.
@@ -38,6 +38,8 @@ void getCurrentSpeed()
   currentSpeed[0] = (currentPositions[0] - lastKnownPositions[0]) / 200;
   currentSpeed[1] = (currentPositions[1] - lastKnownPositions[1]) / 200;
   currentSpeed[2] = (currentPositions[2] - lastKnownPositions[2]) / 200;
+
+  return &currentSpeed;
 }
 
 void updateMotorPositions()

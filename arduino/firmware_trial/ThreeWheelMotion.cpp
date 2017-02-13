@@ -5,8 +5,7 @@
 #define TIMSTEP 100        // ms - generate prediction every 100ms
 double FORCE_DECOUPLING[3][3] = {{-.33, .58, .33}, {-.33, -.58, .33}, {.67, 0, .33}};
 
-#define P_const 1;
-#define D_const 0.5;
+unsigned long currentTime;
 
 /*
  * @param myX, myY, myHeading : the robot's current X,Y, and heading (wrt to
@@ -18,6 +17,7 @@ double FORCE_DECOUPLING[3][3] = {{-.33, .58, .33}, {-.33, -.58, .33}, {.67, 0, .
 void gotoXY(double myX, double myY, double myHeading,
             double forceX, double forceY, double rotation)
 {
+    currentTime = millis();
 }
 
 void forwardKinematics();

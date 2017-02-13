@@ -153,6 +153,54 @@ void rationalMotors()
   moveMotor(BACK, back);
 }
 
+void monitoredDrive()
+{
+  // Drive and monitored by the encoders
+  int frontLeft = atoi(sCmd.next());
+  int frontRight = atoi(sCmd.next());
+  int back = atoi(sCmd.next());
+
+  moveMotor(FRONTLEFT, -frontLeft);
+  moveMotor(FRONTRIGHT, frontRight);
+  moveMotor(BACK, back);
+  currentSpeed = getCurrentSpeed();
+  sumSpeed_output = abs(currentSpeed[0]) + ans(currentSpeed[1]) + abs(currentSpeed[2]);
+  sumSpeed_input = abs(frontLeft) + abs(frontRight) + abs(back);
+
+  double tolerant = 0.5;
+  int interval = 10; // decrement by this amount
+  // LEFT:
+  int frontLeft_input = abs(frontLeft) / sumSpeed_input;
+  int frontLeft_output = abs(currentSpeed[0]) / sumSpeed_output;
+  int delta = frontLeft_input - frontLeft_output;
+  if (abs(delta) > tolerant)
+  {
+    int new_left = -frontLeft - (interval * delta);
+    moveMotor(FRONTLEFT, new_left);
+  }
+
+  // RIGHT:
+  int frontRight_input = abs(frontRight) / sumSpeed_input;
+  int frontRight_output = abs(currentSpeed[1]) / sumSpeed_output;
+  int delta = frontRight_input - frontRight_output;
+  if (abs(delta) > tolerant)
+  {
+    int new_right = frontRight - (interval * delta);
+    moveMotor(FRONTRIGHT, new_right);
+  }
+
+  // BACK:
+  int back_input = abs(back) / sumSpeed_input;
+  int back_output = abs(currentSpeed[2]) / sumSpeed_output;
+  int delta = back_input - back_output;
+  if (abs(delta) > tolerant) 
+  {
+    int new_back = back - (interval * delta);
+    moveMotor(BACK, new_back);
+  }
+  Serial.print("<<FL,FR,B>> ");
+}
+
 // For debugging purposes
 void manualMoveMotor()
 {
