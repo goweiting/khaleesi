@@ -133,42 +133,16 @@ public class GUI extends JFrame implements KeyListener {
             this.robot.port.sdpPort.commandSender("f");
             BehaviourBase currentBehaviour = Strategy.getCurrentBehaviour();
             switch (e.getKeyChar()) {
-                case 'a':
-                    this.robot.setControllersActive(true);
-                    currentBehaviour.setCurrentAction(null);
-                    this.robot.MOTION_CONTROLLER.setDestination(new InFrontOfRobot(RobotAlias.FELIX));
-                    this.robot.MOTION_CONTROLLER.setHeading(new RobotPoint(RobotAlias.FELIX));
-                    break;
-                case 'q':
-                    this.robot.setControllersActive(true);
-                    currentBehaviour.setCurrentAction(null);
-                    this.robot.MOTION_CONTROLLER.setDestination(new InFrontOfRobot(RobotAlias.JEFFREY));
-                    this.robot.MOTION_CONTROLLER.setHeading(new RobotPoint(RobotAlias.JEFFREY));
-                    break;
-                case 'o':
-                    this.robot.setControllersActive(true);
-                    currentBehaviour.setCurrentAction(null);
-                    this.robot.MOTION_CONTROLLER
-                            .setDestination(new MidPoint(new RobotPoint(RobotAlias.FELIX), new BallPoint()));
-                    this.robot.MOTION_CONTROLLER.setHeading(new RobotPoint(RobotAlias.FELIX));
-                    break;
-                case 'p':
-                    this.robot.setControllersActive(true);
-                    currentBehaviour.setCurrentAction(null);
-                    this.robot.MOTION_CONTROLLER
-                            .setDestination(new MidPoint(new RobotPoint(RobotAlias.JEFFREY), new BallPoint()));
-                    this.robot.MOTION_CONTROLLER.setHeading(new RobotPoint(RobotAlias.JEFFREY));
-                    break;
                 case 'd':
-                    this.robot.setControllersActive(true);
                     currentBehaviour.setCurrentAction(new DefendGoal());
                     break;
                 case 'k':
-                    this.robot.setControllersActive(true);
                     currentBehaviour.setCurrentAction(new OffensiveKick());
                     break;
+                case 'b':
+                    currentBehaviour.setCurrentAction(new GoToBall());
+                    break;
                 case 's':
-                    this.robot.setControllersActive(true);
                     currentBehaviour.setCurrentAction(new GoToSafeLocation());
                     break;
                 case '1':
@@ -199,6 +173,7 @@ public class GUI extends JFrame implements KeyListener {
                     currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(50, 50)));
                     break;
                 case 'h':
+                case 'f':
                 case ' ':
                     currentBehaviour.setCurrentAction(new Contemplating());
                     break;
