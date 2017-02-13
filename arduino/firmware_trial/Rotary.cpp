@@ -17,39 +17,35 @@
 #define BACKWHEEL_enc 3
 
 // Constants
-int ports[NumPorts] = {FRONTRIGHT_enc, FRONTLEFT_enc, BACKWHEEL_enc};
+// Need to flip the sign for FRONTLEFT_enc!
 int currentPositions[NumPorts] = {0};
 int positions[RotaryCount] = {0}; // for DEBUG
-int currentSpeed[NumPorts] = {0};
+int currentSpeed[NumPorts] = {0}; // starts from halt
 
 // ======================================================================
 // Miscellanous Functionalities
-int getCurrentSpeed()
+void getCurrentSpeed()
 {
   // poll the encoders every fixed poll interval (200ms)
   // and then return the speed.
   // Speed = dx / dt = (currentPosition - lastKnownPosition ) / 200
 
-  int lastKnownPosition[3] = currentPositions;
+  int lastKnownPositions[3] = {currentPositions[0], currentPositions[1], currentPositions[2]};
   delay(PollInterval); // wait for 200ms to get new positions
   updateMotorPositions();
 
   // get the instantaneous speed
-  for (int i = 0; i < 3; i++)
-  {
-    int dx = currentPositions[i] - lastKnownPosition[i];
-    currentSpeed[i] = dx / 200;
-  }
-  return currentSpeed;
+  currentSpeed[0] = (currentPositions[0] - lastKnownPositions[0]) / 200;
+  currentSpeed[1] = (currentPositions[1] - lastKnownPositions[1]) / 200;
+  currentSpeed[2] = (currentPositions[2] - lastKnownPositions[2]) / 200;
 }
 
 void updateMotorPositions()
 {
   pollFromAll();
-  for (int i = 0; i < NumPorts; i++)
-  {
-    currentPositions[i] = positions(ports[i]);
-  }
+  currentPositions[0] = -1 * positions[FRONTLEFT_enc]; // FRONTLEFT_enc flips sign here
+  currentPositions[1] = positions[FRONTRIGHT_enc];
+  currentPositions[2] = positions[BACKWHEEL_enc];
 }
 
 // ======================================================================
