@@ -6,9 +6,12 @@
 
 #define NumPorts 3
 #define RotaryCount 6
-int* getCurrentSpeed(void);
+double* getCurrentSpeed(int interval);
+void resetMotorPositions(void);
 void pollFromAll(void);
 void printAllPos(void);
+void poll101(void);
+void speed101(void);
 #endif
 
 // ======================================================================

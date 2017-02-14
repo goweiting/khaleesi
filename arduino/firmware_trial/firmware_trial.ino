@@ -26,60 +26,63 @@
 #define KICKLEFT 0
 #define KICKRIGHT 1
 
-// Encoders
-#define ENCODER 5
-
 // Variables
 SerialCommand sCmd;
-boolean DEBUG = 1;
+boolean DEBUG = 0;
 boolean kickerStatus = 0;
+
+// Encoders
 
 void setup()
 {
+  Wire.begin();
   sCmd.addCommand("ping", pingMethod);
 
-  // GENERAL
-  sCmd.addCommand("h", completeHalt);
-
   // MOTION
+  sCmd.addCommand("debug", debug);
   sCmd.addCommand("f", dontMove);
   sCmd.addCommand("r", rationalMotors);
   sCmd.addCommand("mm", manualMoveMotor);
   sCmd.addCommand("md", monitoredDrive);
   //sCmd.addCommand("goto", gotoXY);
 
-  // KICKING and DRIBBLING
+  // KICKERS
   sCmd.addCommand("sk", stopKicker);
   //sCmd.addCommand("dk", dribblerKick);
   //sCmd.addCommand("kick", kicker);
+  
+  // ROTARY
+  sCmd.addCommand("poll101", poll101);
+  sCmd.addCommand("speed101", speed101);  
+  
 
+
+  SDPsetup();
+  resetMotorPositions(); // reset the encoders
   Serial.println("READY");
   Serial.println("I am Khaleesi");
-  SDPsetup();
-  if (DEBUG)
-  {
-    debug();
-  }
+
 }
 
 void debug()
 {
 
   Serial.println("DEBUG MODE ON");
-  Serial.println("Forward");
-  motorForward(FRONTLEFT, 80);
+  Serial.println("Counter clockwise");
+  motorBackward(FRONTLEFT, 80);
   motorForward(FRONTRIGHT, 80);
   motorForward(BACK, 80);
   delay(1000);
   dontMove();
 
-  Serial.println("Backwards");
-  motorBackward(FRONTLEFT, 80);
+  Serial.println("Clockwise");
+  motorForward(FRONTLEFT, 80);
   motorBackward(FRONTRIGHT, 80);
   motorBackward(BACK, 80);
   delay(1000);
   dontMove();
   motorAllStop();
+  Serial.println("Exiting Debug...");
 }
 
 void loop()
@@ -94,6 +97,7 @@ void pingMethod()
 
 void completeHalt()
 {
+  Serial.println("comepletHalt");
   motorAllStop();
   motorAllStop();
   motorAllStop();
@@ -109,6 +113,7 @@ void completeHalt()
 
 void dontMove()
 {
+  Serial.println("dontMove");
   // stop the three wheels
   motorStop(FRONTLEFT);
   motorStop(BACK);
@@ -151,6 +156,8 @@ void rationalMotors()
   moveMotor(BACK, back);
 }
 
+
+int pollinterval_drive = 200; // ms
 void monitoredDrive()
 {
   // Drive and monitored by the encoders
@@ -161,7 +168,7 @@ void monitoredDrive()
   moveMotor(FRONTLEFT, -frontLeft);
   moveMotor(FRONTRIGHT, frontRight);
   moveMotor(BACK, back);
-  int *currentSpeed = getCurrentSpeed();
+  double *currentSpeed = getCurrentSpeed(pollinterval_drive);
   int sumSpeed_output = abs(currentSpeed[0]) + abs(currentSpeed[1]) + abs(currentSpeed[2]);
   int sumSpeed_input = abs(frontLeft) + abs(frontRight) + abs(back);
 
