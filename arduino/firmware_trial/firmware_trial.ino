@@ -58,7 +58,8 @@ void setup()
 
 
   SDPsetup();
-  resetMotorPositions(); // reset the encoders
+  resetAll();
+  
   Serial.println("READY");
   Serial.println("I am Khaleesi");
 

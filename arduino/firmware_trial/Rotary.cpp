@@ -15,13 +15,13 @@ int PollInterval =  200;   // ms
 // locations of the encoders in the port.
 #define FRONTLEFT_enc 0
 #define FRONTRIGHT_enc 1
-#define BACKWHEEL_enc 2
+#define BACKWHEEL_enc 2 
 
 // Constants
 // Need to flip the sign for FRONTLEFT_enc!
-int currentPositions[NumPorts] = {0};
-int positions[RotaryCount] = {0}; // for DEBUG
-
+double currentSpeed[NumPorts] = {0.0}; // starts from halt
+int _positions[RotaryCount] = {0}; // for ALL the ports
+int positions[NumPorts] = {0}; // for ports of interest (listed above) [FL, FR, BACK]
 // ======================================================================
 // SOME FUNCTIONS FOR SANITY CHECKING
 
@@ -34,7 +34,7 @@ Wire.requestFrom(EncoderBoardAddr, RotaryCount);
 int i;
 for (i = 0; i < RotaryCount; i++)
 {
-positions[i] += (int8_t)Wire.read(); // Must cast to signed 80bit type
+_positions[i] += (int8_t) Wire.read(); // Must cast to signed 80bit type
 }
 }
 
@@ -43,102 +43,122 @@ void printAllPos()
 Serial.print("Motor positions: ");
 for (int i = 0; i < RotaryCount; i++)
 {
-Serial.print(positions[i]);
+Serial.print(_positions[i]);
 Serial.print(' ');
 }
 Serial.println();
 } 
 
+
+void resetMotorPositions(int array[]){
+memset(array, 0, sizeof(int)*sizeof(array));
+}
+
+void resetDoubleArray(double array[]){
+  memset(array, 0, sizeof(double) * sizeof(array));
+}
+
+void resetAll(){
+  resetMotorPositions(_positions);
+  resetMotorPositions(positions);
+}
+
+// ======================================================================
+void pollWheels()
+{
+// poll all the ports for their current positions;
+Wire.requestFrom(EncoderBoardAddr, RotaryCount);
+int i;
+for (i = 0; i<NumPorts; i++)
+{
+positions[i] += (int8_t) Wire.read(); // Must cast to signed 80bit type
+}
+}
+
+void updateWheelPositions()
+{
+pollWheels();
+// debug output
+Serial.print("       updateWheelPositions:");
+Serial.print(positions[0]);
+Serial.print(" ");
+Serial.print(positions[1]);
+Serial.print(" ");
+Serial.print(positions[2]);
+Serial.println();
+}
+
+double * getCurrentSpeed(int interval)
+{
+// poll the encoders every fixed poll interval (e.g. 200ms)
+// return an array of speed - representing the [FL , FR , BACK] wheels.
+// Speed = dx / dt = (currentPosition - lastKnownPosition ) / 200
+// interval is the time between each polling
+resetDoubleArray(currentSpeed);
+int lastKnownPositions[3] = {positions[0], positions[1], positions[2]};
+delay(interval);
+updateWheelPositions();
+// get the instantaneous speed
+currentSpeed[0] = (double) (positions[0] - lastKnownPositions[0]) / interval;    // FL
+currentSpeed[1] = (double) (positions[1] - lastKnownPositions[1]) / interval;    // FR
+currentSpeed[2] = (double) (positions[2] - lastKnownPositions[2]) / interval;    // Back
+
+return currentSpeed;
+}
+
+
 void poll101(){
-// poll and print for 10 seconds
+// poll and print for 10 seconds N.B. LEFT WHEEL NOT FLIPPERD
+resetAll();
 int time = millis();
 int runtime = 0;
 Serial.print(runtime); //debug
 Serial.print("  ");
 
 while (runtime < 1000){
-pollFromAll();
-printAllPos();
-delay(200);
-runtime = runtime + millis() - time;
+pollWheels();
+Serial.print("Motor positions: ");
+for (int i = 0; i < NumPorts; i++)
+{
+Serial.print(positions[i]);
+Serial.print(' ');
+}
+Serial.println();
+delay(PollInterval);
+runtime += millis() - time;
 time = millis();
-Serial.print(time); //debug
+Serial.print(runtime); //debug
  Serial.print("  ");
 }
 }
 
-void resetMotorPositions(){
-pollFromAll();
-memset(currentPositions, 0, sizeof(currentPositions));
-memset(positions, 0, sizeof(positions));
-}
-
-// ======================================================================
-// Miscellanous Functionalities
-void updateMotorPositions()
-{
-pollFromAll();
-currentPositions[0] = -1 * positions[FRONTLEFT_enc]; // FRONTLEFT_enc flips sign here
-currentPositions[1] = positions[FRONTRIGHT_enc];
-currentPositions[2] = positions[BACKWHEEL_enc];
-// debug
-Serial.print("       updateMotorPositions:");
-Serial.print(currentPositions[0]);
-Serial.print(" ");
-Serial.print(currentPositions[1]);
-Serial.print(" ");
-Serial.print(currentPositions[2]);
-Serial.println();
-}
-
-double * getCurrentSpeed(int interval)
-{
-// poll the encoders every fixed poll interval (200ms)
-// and then return the speed.
-// Speed = dx / dt = (currentPosition - lastKnownPosition ) / 200
-// interval is the time between each polling
-
-// double lastKnownPositions[3] = {currentPositions[0], currentPositions[1], currentPositions[2]}; // this will give ACCELERATION!!
-double lastKnownPositions[3] = {0.0};
-resetMotorPositions();
-delay(interval);
-updateMotorPositions();
-
-double currentSpeed[NumPorts] = {0.0}; // starts from halt
-// get the instantaneous speed
-currentSpeed[0] = (currentPositions[0] - lastKnownPositions[0]) / interval;    // FL
-currentSpeed[1] = (currentPositions[1] - lastKnownPositions[1]) / interval;    // FR
-currentSpeed[2] = (currentPositions[2] - lastKnownPositions[2]) / interval;    // Back
-
-return currentSpeed;
-}
-
-
 void speed101(){
 // find instantaneous speed every 1000ms
-// Note that updateMotorPositions will naturally flip the signs for the FrontLeft motor.
-resetMotorPositions();
-Serial.println("Polling speed! FL FR B");
+static int interval = 1000;
+Serial.println("Polling speed!");
+resetAll();
+// time
 int time = millis();
 int runtime = 0;
 Serial.println(runtime);
 
-while (runtime < 10000){
-double * cs = getCurrentSpeed(PollInterval);
+while (runtime < 10000){ // get some readings
+double * cs = getCurrentSpeed(interval);
 Serial.print("     Speed ");
 for (int i=0; i<NumPorts; i++){
 Serial.print(" ");
 Serial.print(cs[i]);
 }
-delay(1000); // poll every second
 
 runtime = runtime + millis() - time;
 time = millis();
 Serial.println();
 Serial.println(runtime); //debug
+}
 
 }
-}
+
+
 
 
 // ======================================================================
