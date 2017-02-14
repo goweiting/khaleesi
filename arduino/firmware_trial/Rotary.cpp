@@ -34,7 +34,7 @@ Wire.requestFrom(EncoderBoardAddr, RotaryCount);
 int i;
 for (i = 0; i < RotaryCount; i++)
 {
-_positions[i] += (int8_t) Wire.read(); // Must cast to signed 80bit type
+_positions[i] += (int) Wire.read(); // Must cast to signed 80bit type
 }
 }
 
@@ -51,17 +51,28 @@ Serial.println();
 
 
 void resetMotorPositions(int array[]){
-memset(array, 0, sizeof(int)*sizeof(array));
+memset(array, 0, sizeof(int)*3);
 }
 
 void resetDoubleArray(double array[]){
-  memset(array, 0, sizeof(double) * sizeof(array));
+  memset(array, 0, sizeof(double) * 3);
 }
 
 void resetAll(){
   resetMotorPositions(_positions);
   resetMotorPositions(positions);
 }
+
+double findMaxSpeed(double array[]){
+  double largest = abs(array[0]);
+  for (int i=1; i<NumPorts; i++){
+    if (largest<abs(array[i])){
+      largest = abs(array[i]);
+    }
+  }
+  return largest;
+}
+
 
 // ======================================================================
 void pollWheels()
@@ -71,7 +82,7 @@ Wire.requestFrom(EncoderBoardAddr, RotaryCount);
 int i;
 for (i = 0; i<NumPorts; i++)
 {
-positions[i] += (int8_t) Wire.read(); // Must cast to signed 80bit type
+positions[i] += (int) Wire.read(); // Must cast to signed 80bit type
 }
 }
 
@@ -94,16 +105,27 @@ double * getCurrentSpeed(int interval)
 // return an array of speed - representing the [FL , FR , BACK] wheels.
 // Speed = dx / dt = (currentPosition - lastKnownPosition ) / 200
 // interval is the time between each polling
+resetAll();
 resetDoubleArray(currentSpeed);
 int lastKnownPositions[3] = {positions[0], positions[1], positions[2]};
 delay(interval);
 updateWheelPositions();
 // get the instantaneous speed
-currentSpeed[0] = (double) (positions[0] - lastKnownPositions[0]) / interval;    // FL
+currentSpeed[0] = (double) -1 * (positions[0] - lastKnownPositions[0]) / interval;    // FL
 currentSpeed[1] = (double) (positions[1] - lastKnownPositions[1]) / interval;    // FR
 currentSpeed[2] = (double) (positions[2] - lastKnownPositions[2]) / interval;    // Back
 
 return currentSpeed;
+}
+
+double * normaliseSpeed(double currentSpeed[], double base){
+  double largest = findMaxSpeed(currentSpeed);
+
+  currentSpeed[0] = (currentSpeed[0] / largest) * base;
+  currentSpeed[1] = (currentSpeed[1] / largest) * base;
+  currentSpeed[2] = (currentSpeed[2] / largest) * base;
+  
+  return currentSpeed;
 }
 
 
@@ -134,7 +156,7 @@ Serial.print(runtime); //debug
 
 void speed101(){
 // find instantaneous speed every 1000ms
-static int interval = 1000;
+static int interval = 200;
 Serial.println("Polling speed!");
 resetAll();
 // time
