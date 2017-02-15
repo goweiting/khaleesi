@@ -1,27 +1,29 @@
 package strategy.actions.other;
 
+import strategy.Strategy;
 import strategy.actions.ActionBase;
-import strategy.actions.ActionException;
 import strategy.points.DynamicPoint;
-import strategy.robots.RobotBase;
+import strategy.robots.Khaleesi;
 
-/**
- * Created by Simon Rovder
- */
 public class HoldPosition extends ActionBase {
-    public HoldPosition(RobotBase robot, DynamicPoint point) {
-        super(robot, point);
-        this.rawDescription = " Hold Position";
+    private DynamicPoint targetPosition;
+
+    public HoldPosition(DynamicPoint target) {
+        targetPosition = target;
+        this.rawDescription = "Holding position [X " + targetPosition.getX() + ";" +
+                              "Y " + targetPosition.getY() + "]";
     }
 
     @Override
-    public void enterState(int newState) {
-
+    public void onStart() {
+        // Set target position as a destination
+        Khaleesi us = (Khaleesi)Strategy.currentRobotBase;
+        us.MOTION_CONTROLLER.setActive(true);
+        us.MOTION_CONTROLLER.setDestination(targetPosition);
+        us.MOTION_CONTROLLER.setHeading(targetPosition);
+        us.MOTION_CONTROLLER.setTolerance(-1);
     }
 
     @Override
-    public void tok() throws ActionException {
-        this.robot.MOTION_CONTROLLER.setDestination(this.point);
-        this.robot.MOTION_CONTROLLER.setTolerance(-1);
-    }
+    public void update() { }
 }

@@ -18,10 +18,10 @@ public class DribblerController extends ControllerBase {
 
   @Override
   public void setActive(boolean active) {
-    super.setActive(false);
+    super.setActive(active);
 
     // Turn off dribbler when the component deactivates
-//    if (!active) doAction(0);
+    if (!active) doAction(0);
   }
 
   // (Why are we using doubles?)

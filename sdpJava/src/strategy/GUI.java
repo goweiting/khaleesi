@@ -1,17 +1,13 @@
 package strategy;
 
-import communication.ports.interfaces.PropellerEquipedRobotPort;
-import communication.ports.robotPorts.FredRobotPort;
-import strategy.actions.Behave;
+import communication.ports.robotPorts.KhaleesiRobotPort;
 import strategy.actions.offense.OffensiveKick;
-import strategy.actions.other.DefendGoal;
-import strategy.actions.other.GoToSafeLocation;
-import strategy.actions.other.Goto;
-import strategy.actions.other.Waiting;
+import strategy.actions.other.*;
+import strategy.behaviours.BehaviourBase;
 import strategy.controllers.essentials.MotionController;
 import strategy.drives.ThreeWheelHolonomicDrive;
 import strategy.points.basicPoints.*;
-import strategy.robots.Fred;
+import strategy.robots.Khaleesi;
 import strategy.robots.RobotBase;
 import vision.RobotAlias;
 
@@ -126,95 +122,60 @@ public class GUI extends JFrame implements KeyListener {
             this.robot.MOTION_CONTROLLER.setHeading(null);
             this.robot.MOTION_CONTROLLER.setDestination(null);
             this.robot.MOTION_CONTROLLER.clearObstacles();
-            if (this.robot instanceof Fred) {
-                ((Fred) this.robot).PROPELLER_CONTROLLER.setActive(false);
-                ((FredRobotPort) this.robot.port).propeller(0);
-                ((FredRobotPort) this.robot.port).propeller(0);
-                ((FredRobotPort) this.robot.port).propeller(0);
+            if (this.robot instanceof Khaleesi) {
+                ((Khaleesi) this.robot).PROPELLER_CONTROLLER.setActive(false);
+                ((KhaleesiRobotPort) this.robot.port).propeller(0);
+                ((KhaleesiRobotPort) this.robot.port).propeller(0);
+                ((KhaleesiRobotPort) this.robot.port).propeller(0);
             }
             this.robot.port.sdpPort.commandSender("f");
             this.robot.port.sdpPort.commandSender("f");
             this.robot.port.sdpPort.commandSender("f");
+            BehaviourBase currentBehaviour = Strategy.getCurrentBehaviour();
             switch (e.getKeyChar()) {
-                case 'a':
-                    this.robot.setControllersActive(true);
-                    this.robot.ACTION_CONTROLLER.setAction(null);
-                    this.robot.MOTION_CONTROLLER.setDestination(new InFrontOfRobot(RobotAlias.FELIX));
-                    this.robot.MOTION_CONTROLLER.setHeading(new RobotPoint(RobotAlias.FELIX));
-                    break;
-                case 'q':
-                    this.robot.setControllersActive(true);
-                    this.robot.ACTION_CONTROLLER.setAction(null);
-                    this.robot.MOTION_CONTROLLER.setDestination(new InFrontOfRobot(RobotAlias.JEFFREY));
-                    this.robot.MOTION_CONTROLLER.setHeading(new RobotPoint(RobotAlias.JEFFREY));
-                    break;
-                case 'o':
-                    this.robot.setControllersActive(true);
-                    this.robot.ACTION_CONTROLLER.setAction(null);
-                    this.robot.MOTION_CONTROLLER
-                            .setDestination(new MidPoint(new RobotPoint(RobotAlias.FELIX), new BallPoint()));
-                    this.robot.MOTION_CONTROLLER.setHeading(new RobotPoint(RobotAlias.FELIX));
-                    break;
-                case 'p':
-                    this.robot.setControllersActive(true);
-                    this.robot.ACTION_CONTROLLER.setAction(null);
-                    this.robot.MOTION_CONTROLLER
-                            .setDestination(new MidPoint(new RobotPoint(RobotAlias.JEFFREY), new BallPoint()));
-                    this.robot.MOTION_CONTROLLER.setHeading(new RobotPoint(RobotAlias.JEFFREY));
-                    break;
                 case 'd':
-                    this.robot.setControllersActive(true);
-                    this.robot.ACTION_CONTROLLER.setAction(new DefendGoal(this.robot));
+                    currentBehaviour.setCurrentAction(new DefendGoal());
                     break;
                 case 'k':
-                    this.robot.setControllersActive(true);
-                    this.robot.ACTION_CONTROLLER.setAction(new OffensiveKick(this.robot));
-                    break;
-                case 's':
-                    this.robot.setControllersActive(true);
-                    this.robot.ACTION_CONTROLLER.setAction(new GoToSafeLocation(this.robot));
+                    currentBehaviour.setCurrentAction(new OffensiveKick());
                     break;
                 case 'b':
-                    this.robot.setControllersActive(true);
-                    this.robot.ACTION_CONTROLLER.setAction(new Behave(this.robot));
+                    currentBehaviour.setCurrentAction(new GoToBall());
+                    break;
+                case 's':
+                    currentBehaviour.setCurrentAction(new GoToSafeLocation());
                     break;
                 case '1':
-                    this.robot.ACTION_CONTROLLER.setAction(new Goto(this.robot, new ConstantPoint(-50, -50)));
+                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(-50, -50)));
                     break;
                 case '2':
-                    this.robot.ACTION_CONTROLLER.setAction(new Goto(this.robot, new ConstantPoint(0, -50)));
+                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(0, -50)));
                     break;
                 case '3':
-                    this.robot.ACTION_CONTROLLER.setAction(new Goto(this.robot, new ConstantPoint(50, -50)));
+                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(50, -50)));
                     break;
                 case '4':
-                    this.robot.ACTION_CONTROLLER.setAction(new Goto(this.robot, new ConstantPoint(-50, 0)));
+                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(-50, 0)));
                     break;
                 case '5':
-                    this.robot.ACTION_CONTROLLER.setAction(new Goto(this.robot, new ConstantPoint(0, 0)));
+                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(0, 0)));
                     break;
                 case '6':
-                    this.robot.ACTION_CONTROLLER.setAction(new Goto(this.robot, new ConstantPoint(50, 0)));
+                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(50, 0)));
                     break;
                 case '7':
-                    this.robot.ACTION_CONTROLLER.setAction(new Goto(this.robot, new ConstantPoint(-50, 50)));
+                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(-50, 50)));
                     break;
                 case '8':
-                    this.robot.ACTION_CONTROLLER.setAction(new Goto(this.robot, new ConstantPoint(0, 50)));
+                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(0, 50)));
                     break;
                 case '9':
-                    this.robot.ACTION_CONTROLLER.setAction(new Goto(this.robot, new ConstantPoint(50, 50)));
+                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(50, 50)));
                     break;
                 case 'h':
+                case 'f':
                 case ' ':
-                    this.robot.MOTION_CONTROLLER.setMode(MotionController.MotionMode.OFF);
-                    if (this.robot instanceof Fred) {
-                        ((Fred) this.robot).PROPELLER_CONTROLLER.setActive(false);
-                        ((PropellerEquipedRobotPort) this.robot.port).propeller(0);
-                        ((PropellerEquipedRobotPort) this.robot.port).propeller(0);
-                        ((PropellerEquipedRobotPort) this.robot.port).propeller(0);
-                    }
-                    this.robot.ACTION_CONTROLLER.setAction(new Waiting(this.robot));
+                    currentBehaviour.setCurrentAction(new Contemplating());
                     break;
             }
         }
@@ -223,7 +184,7 @@ public class GUI extends JFrame implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (this.robot instanceof Fred) {
+        if (this.robot instanceof Khaleesi) {
             ThreeWheelHolonomicDrive drive = (ThreeWheelHolonomicDrive) this.robot.drive;
             if (e.getSource() == this.maxSpeed) {
                 System.out.println("SpeedChange");
