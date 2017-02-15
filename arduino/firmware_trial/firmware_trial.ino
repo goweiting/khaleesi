@@ -189,7 +189,7 @@ void monitoredDrive()
                               (double)currentSpeed[1] / magnitude_act,
                               (double)currentSpeed[1] / magnitude_act};
     Serial.print("Current Speed Ratio: ");
-    printTrio(actualRatio);
+    printTrio(actualRatios);
 
     //Exp - act =  err
     //Exp + err = New
