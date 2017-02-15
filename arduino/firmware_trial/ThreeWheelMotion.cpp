@@ -24,4 +24,3 @@ void gotoXY(double myX, double myY, double myHeading,
 void forwardKinematics();
 
 void inverseKinematics();
-
