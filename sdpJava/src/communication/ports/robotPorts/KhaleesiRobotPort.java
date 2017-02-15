@@ -31,8 +31,8 @@ public class KhaleesiRobotPort extends RobotPort implements
      *
      */
     @Override
-    public void threeWheelHolonomicMotion(double frontRight, double frontLeft, double back) {
-        this.sdpPort.commandSender("r", (int) frontRight, (int) frontLeft, (int) back);
+    public void threeWheelHolonomicMotion(double frontLeft, double frontRight, double back) {
+        this.sdpPort.commandSender("r", (int) frontLeft, (int) frontRight, (int) back);
     }
 
     // command to spin dribbler and kicker

@@ -140,6 +140,8 @@ public class GUI extends JFrame implements KeyListener {
                     currentBehaviour.setCurrentAction(new OffensiveKick());
                     break;
                 case 'b':
+                    ((KhaleesiRobotPort) this.robot.port).threeWheelHolonomicMotion(-100,100,0 );
+                    ((KhaleesiRobotPort) this.robot.port).threeWheelHolonomicMotion(-100,100,0 );
                     currentBehaviour.setCurrentAction(new GoToBall());
                     break;
                 case 's':
