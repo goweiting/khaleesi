@@ -22,7 +22,7 @@ public class SettingsManager {
 
 
     public static void saveSettings() throws Exception {
-        String fileName = SDPConsole.chooseFile();
+        String fileName = SDPConsole.chooseFile("SAVE SETTINGS");
         if (fileName != null) {
             PrintWriter writer = new PrintWriter(fileName, "UTF-8");
             writer.write("^COLORS\n");
@@ -65,7 +65,7 @@ public class SettingsManager {
     }
 
     public static void loadSettings() throws Exception {
-        String fileName = SDPConsole.chooseFile();
+        String fileName = SDPConsole.chooseFile("LOAD SETTINGS");
         if (fileName != null) {
             loadSettings(fileName);
         }

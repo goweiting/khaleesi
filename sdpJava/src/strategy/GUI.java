@@ -4,12 +4,13 @@ import communication.ports.robotPorts.KhaleesiRobotPort;
 import strategy.actions.offense.OffensiveKick;
 import strategy.actions.other.*;
 import strategy.behaviours.BehaviourBase;
+import strategy.behaviours.DefaultBehaviour;
+import strategy.behaviours.PassiveBehaviour;
 import strategy.controllers.essentials.MotionController;
 import strategy.drives.ThreeWheelHolonomicDrive;
-import strategy.points.basicPoints.*;
+import strategy.points.basicPoints.ConstantPoint;
 import strategy.robots.Khaleesi;
 import strategy.robots.RobotBase;
-import vision.RobotAlias;
 
 import javax.swing.*;
 import java.awt.*;
@@ -147,6 +148,10 @@ public class GUI extends JFrame implements KeyListener {
                 case 's':
                     currentBehaviour.setCurrentAction(new GoToSafeLocation());
                     break;
+                case 'z':
+                    // Ideally, we shouldn't be injecting actions directly into the behaviour.
+                    // They'd be overridden inside a REAL one, such as this one.
+                    Strategy.setBehaviour(new DefaultBehaviour());
                 case '1':
                     currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(-50, -50)));
                     break;
@@ -177,7 +182,7 @@ public class GUI extends JFrame implements KeyListener {
                 case 'h':
                 case 'f':
                 case ' ':
-                    currentBehaviour.setCurrentAction(new Contemplating());
+                    Strategy.setBehaviour(new PassiveBehaviour());
                     break;
             }
         }

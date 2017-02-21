@@ -11,6 +11,7 @@ import strategy.actions.other.GoToSafeLocation;
 import strategy.actions.other.HoldPosition;
 import strategy.behaviours.BehaviourBase;
 import strategy.behaviours.DefaultBehaviour;
+import strategy.behaviours.PassiveBehaviour;
 import strategy.points.basicPoints.*;
 import strategy.robots.Khaleesi;
 import strategy.robots.RobotBase;
@@ -66,7 +67,8 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
         currentRobotBase = khaleesi;
 
         // Assign default behaviour by... well... default.
-        currentBehaviour = new DefaultBehaviour();
+        // Actually, we're using the PASSIVE behaviour by default. The "default" one actually does things
+        currentBehaviour = new PassiveBehaviour();
 
         final Strategy semiStrategy = this;
         semiStrategy.vision = new Vision(args);
@@ -130,8 +132,8 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
                     currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(0, 0)));
                     break;
                 case "behave":
-                    // Perhaps set proper "gameplay behaviour" here?
-                    //currentBehaviour = ...
+                    // Set proper gameplay behaviour here.
+                    currentBehaviour = new DefaultBehaviour();
                     break;
                 case "safe":
                     currentBehaviour.setCurrentAction(new GoToSafeLocation());
@@ -207,7 +209,7 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
                     khaleesi.KICKER_CONTROLLER.setActive(false);
                     khaleesi.DRIBBLER_CONTROLLER.setActive(false);
                     break;
-            }
+            }\
         }
 
         this.vision.terminateVision();
@@ -275,13 +277,13 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
     }
 
     // Support methods for behavioural control.
-    public void restartBehaviour() {
+    public static void restartBehaviour() {
         // I don't see why we might need this, but hey, who knows.
         currentBehaviour.onEnd();
         currentBehaviour.onStart();
     }
 
-    public void setBehaviour(BehaviourBase behaviour) {
+    public static void setBehaviour(BehaviourBase behaviour) {
         currentBehaviour.onEnd();
         currentRobotBase.setControllersActive(false);
         currentBehaviour = behaviour;
