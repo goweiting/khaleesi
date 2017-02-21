@@ -9,8 +9,6 @@
 #define EncoderBoardAddr 5
 #define RotaryCount 6
 #define NumPorts 3
-#define TolerableDelay 200 // ms
-int PollInterval = 200;    // ms
 
 // locations of the encoders in the port.
 #define FRONTLEFT_enc 0
@@ -18,6 +16,9 @@ int PollInterval = 200;    // ms
 #define BACKWHEEL_enc 2
 
 // Constants
+#define TolerableDelay 200 // ms
+int PollInterval = 200;    // ms
+
 // Need to flip the sign for FRONTLEFT_enc!
 double currentSpeed[NumPorts] = {0.0}; // starts from halt
 int _positions[RotaryCount] = {0};     // for ALL the ports
@@ -25,9 +26,11 @@ int positions[NumPorts] = {0};         // for ports of interest (listed above) [
 // ======================================================================
 // SOME FUNCTIONS FOR SANITY CHECKING
 
+/**
+  *   poll all the ports for their current positions
+  */
 void pollFromAll()
 {
-  // poll all the ports for their current positions;
   Wire.requestFrom(EncoderBoardAddr, RotaryCount);
   int i;
   for (i = 0; i < RotaryCount; i++)
@@ -47,6 +50,25 @@ void printAllPos()
   Serial.println();
 }
 
+/**
+  *   Returns the maximum absolute speed in the current speed array
+  */
+double findMaxSpeed(double array[])
+{
+  double largest = abs(array[0]);
+  for (int i = 1; i < NumPorts; i++)
+  {
+    if (largest < abs(array[i]))
+    {
+      largest = abs(array[i]);
+    }
+  }
+  return largest;
+}
+
+/**
+  *   Misc reset functions for the lazy soul
+  */
 void resetMotorPositions(int array[])
 {
   memset(array, 0, sizeof(int) * 3);
@@ -63,20 +85,11 @@ void resetAll()
   resetMotorPositions(positions);
 }
 
-double findMaxSpeed(double array[])
-{
-  double largest = abs(array[0]);
-  for (int i = 1; i < NumPorts; i++)
-  {
-    if (largest < abs(array[i]))
-    {
-      largest = abs(array[i]);
-    }
-  }
-  return largest;
-}
-
 // ======================================================================
+/**
+  *   Find the current encoder positions for all the ports that we are 
+  *   interested in - i.e. the FRONTLEFT, FRONTRIGHT, BACK
+  */
 void pollWheels()
 {
   // poll all the ports for their current positions;
@@ -101,21 +114,28 @@ void updateWheelPositions()
   Serial.println();
 }
 
+/**
+  * poll the encoders every fixed poll interval (e.g. 200ms)
+  * return an array of speed - represupdateWheelPositionsenting the [FL , FR , BACK] wheels.
+  * Speed = dx / dt = (currentPosition - lastKnownPosition ) / interval
+  * @param interval - time between each poll for the wheel encoders
+  */
 double *getCurrentSpeed(int interval)
 {
-  // poll the encoders every fixed poll interval (e.g. 200ms)
-  // return an array of speed - representing the [FL , FR , BACK] wheels.
-  // Speed = dx / dt = (currentPosition - lastKnownPosition ) / 200
-  // interval is the time between each polling
-  resetAll();
+  resetAll(); // set to 0
   resetDoubleArray(currentSpeed);
-  int lastKnownPositions[3] = {positions[0], positions[1], positions[2]};
+
+  int old0 = positions[0];
+  int old1 = positions[1];
+  int old2 = positions[2];
+
   delay(interval);
   updateWheelPositions();
   // get the instantaneous speed
-  currentSpeed[0] = (double)-1 * (positions[0] - lastKnownPositions[0]) / interval; // FL
-  currentSpeed[1] = (double)(positions[1] - lastKnownPositions[1]) / interval;      // FR
-  currentSpeed[2] = (double)(positions[2] - lastKnownPositions[2]) / interval;      // Back
+
+  currentSpeed[0] = (double)-1 * (positions[0] - old0) / interval; // FL
+  currentSpeed[1] = (double)(positions[1] - old1) / interval;      // FR
+  currentSpeed[2] = (double)(positions[2] - old2) / interval;      // Back
 
   return currentSpeed;
 }
@@ -131,6 +151,8 @@ double *normaliseSpeed(double currentSpeed[], double base)
   return currentSpeed;
 }
 
+// ======================================================================
+// Functions for testing
 void poll101()
 {
   // poll and print for 10 seconds N.B. LEFT WHEEL NOT FLIPPERD

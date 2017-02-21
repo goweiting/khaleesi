@@ -154,7 +154,7 @@ void rationalMotors()
   moveMotor(BACK, back);
 }
 
-int pollinterval_drive = 200; // ms
+int pollinterval_drive = 100; // ms
 void monitoredDrive()
 {
   // Drive and monitored by the encoders
@@ -165,7 +165,7 @@ void monitoredDrive()
   int tolerant = 5;
   int proportion = 1; // TO TUNE!
   int x = 0;
-  int iter = 10;
+  int iter = 3; // Instead of using 10 to limit the delay
 
   Serial.print("Expected Speed:");
   Serial.print(frontLeft);
@@ -175,8 +175,7 @@ void monitoredDrive()
   Serial.print(back);
   Serial.print(" ");
 
-  double magnitude_exp = (double)sqrt((frontLeft * frontLeft + frontRight * frontRight + back * back));
-  double expectedRatios[3] = {(double)frontLeft / magnitude_exp, (double)frontRight / magnitude_exp, (double)back / magnitude_exp};
+  double maxSpeed = findMaxSpeed(new double[] *{frontLeft, frontRight, back});
   moveMotor(FRONTLEFT, -frontLeft);
   moveMotor(FRONTRIGHT, frontRight);
   moveMotor(BACK, back);
@@ -184,26 +183,19 @@ void monitoredDrive()
   while (x < iter)
   {
     double *currentSpeed = getCurrentSpeed(pollinterval_drive);
-    double magnitude_act = (double)sqrt((currentSpeed[0] * currentSpeed[0] + currentSpeed[1] * currentSpeed[1] + currentSpeed[2] * currentSpeed[2]));
-    double actualRatios[3] = {(double)currentSpeed[0] / magnitude_act,
-                              (double)currentSpeed[1] / magnitude_act,
-                              (double)currentSpeed[1] / magnitude_act};
+    double estimatedSpeed = normaliseSpeed(currentSpeed, maxSpeed);
     Serial.print("Current Speed Ratio: ");
-    printTrio(actualRatio);
+    printTrio(estimatedSpeed);
 
     //Exp - act =  err
     //Exp + err = New
     // We would like to adjust the speed accordingly here:
-    double error[3] = {expectedRatios[0] - actualRatios[0],
-                       expectedRatios[1] - actualRatios[1],
-                       expectedRatios[2] - actualRatios[2]};
-    double largest = findMaxSpeed(error);
-    double errorScaled[3] = {(error[0] / largest) * 100,
-                             (error[1] / largest) * 100,
-                             (error[2] / largest) * 100}; // scale it up to 100
-    double output[3] = {frontLeft + errorScaled[0],
-                        frontRight + errorScaled[1],
-                        back + errorScaled[2]};
+    double error[3] = {-frontLeft - estimatedSpeed[0],
+                       frontRight - estimatedSpeed[1],
+                       back - estimatedSpeed[2]};
+    double output[3] = {frontLeft + error[0],
+                        frontRight + error[1],
+                        back + error[2]};
     moveMotor(FRONTLEFT, (int)output[0]);
     moveMotor(FRONTRIGHT, (int)output[1]);
     moveMotor(BACK, (int)output[2]);
