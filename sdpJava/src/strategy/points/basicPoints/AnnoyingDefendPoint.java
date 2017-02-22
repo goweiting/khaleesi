@@ -26,12 +26,19 @@ public class AnnoyingDefendPoint extends DynamicPointBase {
         } else {
             Robot foe1 = Strategy.world.getRobot(RobotType.FOE_1);
             if (foe1 != null) {
-                closest = VectorGeometry.intersectionWithFiniteLine(foe1.location, VectorGeometry.fromAngular(foe1.location.direction, 10, null), lower, upper);
+                closest = VectorGeometry.intersectionWithFiniteLine(foe1.location,
+                        VectorGeometry.fromAngular(foe1.location.direction, 10, null), lower, upper);
             }
             Robot foe2 = Strategy.world.getRobot(RobotType.FOE_2);
             if (foe2 != null) {
-                if (foe1 == null || VectorGeometry.angle(VectorGeometry.fromAngular(foe2.location.direction, 10, null), VectorGeometry.fromTo(foe2.location, new VectorGeometry(-Constants.PITCH_WIDTH, 0))) < VectorGeometry.angle(VectorGeometry.fromAngular(foe1.location.direction, 10, null), VectorGeometry.fromTo(foe1.location, new VectorGeometry(-Constants.PITCH_WIDTH, 0)))) {
-                    closest = VectorGeometry.intersectionWithFiniteLine(foe2.location, VectorGeometry.fromAngular(foe2.location.direction, 10, null), lower, upper);
+                VectorGeometry foe2angular = VectorGeometry.fromAngular(foe2.location.direction, 10, null);
+                VectorGeometry foe2diff = VectorGeometry.fromTo(foe2.location, new VectorGeometry(-Constants.PITCH_WIDTH, 0));
+                VectorGeometry foe1angular = VectorGeometry.fromAngular(foe1.location.direction, 10, null);
+                VectorGeometry foe1diff = VectorGeometry.fromTo(foe1.location, new VectorGeometry(-Constants.PITCH_WIDTH, 0));
+                if (foe1 == null ||
+                    VectorGeometry.angle(foe2angular, foe2diff) < VectorGeometry.angle(foe1angular, foe1diff)) {
+                    closest = VectorGeometry.intersectionWithFiniteLine(foe2.location,
+                            VectorGeometry.fromAngular(foe2.location.direction, 10, null), lower, upper);
                 }
             }
             if (closest == null) {

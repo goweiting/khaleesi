@@ -7,6 +7,8 @@ import strategy.robots.RobotBase;
 import vision.Robot;
 
 /** Created by Rado Kirilchev on 31/01/17. */
+// It now also works as a grabber, so make sure we're sort of prepared for that.
+
 public class KickerController extends ControllerBase {
     // Prevent kicker from slamming back into the robot by clamping the power
     private static final int MAX_KICKER_RETRACT_POWER = 70;
@@ -19,6 +21,9 @@ public class KickerController extends ControllerBase {
     private KickerStatus kickerStatus = KickerStatus.OFF;
     // We need some way to track the time, in order to retract the kicker after
     private long nextStateChangeTime = 0;
+
+    // Kick repeatedly, or just once?
+    private boolean autoShutdownAfterKick = true; // Just once by default
 
     public KickerController(RobotBase robot) {
         super(robot);
@@ -74,6 +79,7 @@ public class KickerController extends ControllerBase {
                 kickerStatus = KickerStatus.KICKING;
                 nextStateChangeTime = currentTime + KICKER_MOVE_DURATION_MSEC;
                 doAction(100); // Perform kick
+                if (autoShutdownAfterKick) shutDownAfterKick = true;
                 break;
             // Kicking up, and we've been pushing up for a while now. Time to hold for a bit.
             case KICKING:
@@ -109,5 +115,13 @@ public class KickerController extends ControllerBase {
 
         // The lifetime of a kick:
         // Off -> Kicking -> Peak_Pause -> Retracting -> Off
+    }
+
+    // Toggle between infinite kicking and just one kick with greater ease
+    public void setAutoShutdownAfterKick(boolean state) {
+        autoShutdownAfterKick = state;
+    }
+    public boolean willAutoShutdownAfterKick() {
+        return autoShutdownAfterKick;
     }
 }

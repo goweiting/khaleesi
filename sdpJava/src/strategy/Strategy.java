@@ -209,7 +209,7 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
                     khaleesi.KICKER_CONTROLLER.setActive(false);
                     khaleesi.DRIBBLER_CONTROLLER.setActive(false);
                     break;
-            }\
+            }
         }
 
         this.vision.terminateVision();

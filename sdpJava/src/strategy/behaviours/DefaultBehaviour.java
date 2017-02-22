@@ -6,7 +6,6 @@ import strategy.WorldTools;
 import strategy.actions.offense.OffensiveKick;
 import strategy.actions.offense.PassingKick;
 import strategy.actions.other.DefendGoal;
-import strategy.actions.other.GoToBall;
 import strategy.actions.other.PatrolGoal;
 import strategy.points.basicPoints.EnemyGoal;
 import vision.Ball;
@@ -121,7 +120,7 @@ public class DefaultBehaviour extends BehaviourBase {
                     return;
                 }
                 // Otherwise, assume we need to handle the ball.
-                setCurrentAction(new GoToBall());
+                setCurrentAction(new OffensiveKick());
         }
     }
 }

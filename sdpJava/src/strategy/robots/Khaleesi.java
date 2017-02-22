@@ -120,7 +120,7 @@ public class Khaleesi extends RobotBase {
     public Khaleesi(RobotType robotType) {
         super(robotType, new KhaleesiRobotPort(), new ThreeWheelHolonomicDrive());
         //this.controllers.add(this.PROPELLER_CONTROLLER);
-        this.controllers.add(this.DRIBBLER_CONTROLLER);
+        //this.controllers.add(this.DRIBBLER_CONTROLLER);
         this.controllers.add(this.KICKER_CONTROLLER);
     }
 
