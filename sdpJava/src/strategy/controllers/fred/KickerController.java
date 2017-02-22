@@ -50,8 +50,8 @@ public class KickerController extends ControllerBase {
     // Positive kicker power means we're actually kicking, i.e. propelling the ball outwards.
     private void doAction(double kickerPower) {
         // Clamp kicker retracting force if necessary
-        kickerPower =
-                (kickerPower < -MAX_KICKER_RETRACT_POWER) ? -MAX_KICKER_RETRACT_POWER : kickerPower;
+        kickerPower = (kickerPower < -MAX_KICKER_RETRACT_POWER) ?
+                -MAX_KICKER_RETRACT_POWER : kickerPower;
 
         // Send command
         ((DribblerKickerEquippedRobotPort) this.robot.port).updateKicker(kickerPower);
