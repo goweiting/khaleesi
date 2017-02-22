@@ -133,7 +133,7 @@ void moveMotor(int motor, int power)
   }
   else
   {
-    motorBackward(motor, -power);
+    motorBackward(motor, abs(power));
   }
 }
 
@@ -154,7 +154,7 @@ void rationalMotors()
   moveMotor(BACK, back);
 }
 
-int pollinterval_drive = 100; // ms
+int pollinterval_drive = 200; // ms
 void monitoredDrive()
 {
   // Drive and monitored by the encoders
@@ -163,47 +163,50 @@ void monitoredDrive()
   int back = atoi(sCmd.next());
 
   int tolerant = 5;
-  int proportion = 1; // TO TUNE!
+  double proportion = 0.5; // TO TUNE!
   int x = 0;
-  int iter = 3; // Instead of using 10 to limit the delay
+  int iter = 5; // Instead of using 10 to limit the delay
 
-  Serial.print("Expected Speed:");
-  Serial.print(frontLeft);
-  Serial.print(" ");
-  Serial.print(frontRight);
-  Serial.print(" ");
-  Serial.print(back);
-  Serial.print(" ");
-
-  double maxSpeed = findMaxSpeed(new double[] *{frontLeft, frontRight, back});
+  resetAll();
+  double expectedSpeed[3] = {frontLeft, frontRight, back};
+  Serial.print("Expected Speed:"); printTrio(expectedSpeed); Serial.println();
+  
+  double maxSpeed = findMaxSpeed(expectedSpeed);
+  //Serial.println(maxSpeed); // DEBUG
   moveMotor(FRONTLEFT, -frontLeft);
   moveMotor(FRONTRIGHT, frontRight);
   moveMotor(BACK, back);
 
   while (x < iter)
   {
-    double *currentSpeed = getCurrentSpeed(pollinterval_drive);
-    double estimatedSpeed = normaliseSpeed(currentSpeed, maxSpeed);
-    Serial.print("Current Speed Ratio: ");
-    printTrio(estimatedSpeed);
+    double *currentSpeed; double *estimatedSpeed; double *output;
+    
+    currentSpeed = getCurrentSpeed(pollinterval_drive);
+    estimatedSpeed = normaliseSpeed(currentSpeed, maxSpeed);
+    Serial.print("Current Speed: "); printTrio(estimatedSpeed); Serial.println();
 
     //Exp - act =  err
     //Exp + err = New
     // We would like to adjust the speed accordingly here:
-    double error[3] = {-frontLeft - estimatedSpeed[0],
+    double error[3] = {frontLeft - estimatedSpeed[0],
                        frontRight - estimatedSpeed[1],
                        back - estimatedSpeed[2]};
-    double output[3] = {frontLeft + error[0],
-                        frontRight + error[1],
-                        back + error[2]};
+    Serial.print("Error: "); printTrio(error); Serial.println();
+    
+    // new speed to correct the unbalance in wheels
+    output[0] = (double) frontLeft + error[0]*proportion;
+    output[1] = (double) frontRight + error[1]*proportion;
+    output[2] = (double) back + error[2]*proportion;
+    
+    output = normaliseSpeed(output, maxSpeed);
     moveMotor(FRONTLEFT, (int)output[0]);
     moveMotor(FRONTRIGHT, (int)output[1]);
     moveMotor(BACK, (int)output[2]);
-
-    Serial.print(" New Speeds");
-    printTrio(output);
+    Serial.print(" New Speeds "); printTrio(output); Serial.println("\n");
     x += 1;
   }
+  dontMove(); // FOR DEBUG? but may be good actually
+  Serial.println("\n\n");
 }
 
 // For debugging purposes

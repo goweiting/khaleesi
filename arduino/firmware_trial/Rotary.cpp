@@ -35,7 +35,7 @@ void pollFromAll()
   int i;
   for (i = 0; i < RotaryCount; i++)
   {
-    _positions[i] += (int)Wire.read(); // Must cast to signed 80bit type
+    _positions[i] += (int8_t) Wire.read(); // Must cast to signed 8bit type
   }
 }
 
@@ -69,20 +69,28 @@ double findMaxSpeed(double array[])
 /**
   *   Misc reset functions for the lazy soul
   */
-void resetMotorPositions(int array[])
+void resetMotorPositions(int array[], int len)
 {
-  memset(array, 0, sizeof(int) * 3);
+  for (int i=0; i<len; i++){
+    array[i] = 0;
+  }
 }
 
 void resetDoubleArray(double array[])
 {
-  memset(array, 0, sizeof(double) * 3);
+  for (int i=0; i<NumPorts; i++){
+    array[i] = (double) 0;
+  }
 }
 
 void resetAll()
 {
-  resetMotorPositions(_positions);
-  resetMotorPositions(positions);
+  memset(_positions, 0, RotaryCount * sizeof(int));
+  memset(positions, 0, NumPorts * sizeof(int));
+  memset(currentSpeed, 0, sizeof(double));
+//  resetMotorPositions(_positions,RotaryCount);
+//  resetMotorPositions(positions, NumPorts);
+//  resetDoubleArray(currentSpeed);
 }
 
 // ======================================================================
@@ -94,24 +102,30 @@ void pollWheels()
 {
   // poll all the ports for their current positions;
   Wire.requestFrom(EncoderBoardAddr, RotaryCount);
-  int i;
-  for (i = 0; i < NumPorts; i++)
-  {
-    positions[i] += (int)Wire.read();
-  }
+  positions[0] -= (int8_t) Wire.read(); // polarity switch is here!
+  positions[1] += (int8_t) Wire.read();
+  positions[2] += (int8_t) Wire.read();
 }
 
 void updateWheelPositions()
 {
-  pollWheels();
-  // debug output
-  Serial.print("       updateWheelPositions:");
+    // debug output
+  Serial.print("currentpos:  ");
   Serial.print(positions[0]);
   Serial.print(" ");
   Serial.print(positions[1]);
   Serial.print(" ");
   Serial.print(positions[2]);
   Serial.println();
+  pollWheels();
+  Serial.print("polled:  ");
+  Serial.print(positions[0]);
+  Serial.print(" ");
+  Serial.print(positions[1]);
+  Serial.print(" ");
+  Serial.print(positions[2]);
+  Serial.println();
+
 }
 
 /**
@@ -120,27 +134,22 @@ void updateWheelPositions()
   * Speed = dx / dt = (currentPosition - lastKnownPosition ) / interval
   * @param interval - time between each poll for the wheel encoders
   */
-double *getCurrentSpeed(int interval)
+double * getCurrentSpeed(int interval)
 {
-  resetAll(); // set to 0
-  resetDoubleArray(currentSpeed);
-
-  int old0 = positions[0];
-  int old1 = positions[1];
-  int old2 = positions[2];
-
+  resetAll();
   delay(interval);
-  updateWheelPositions();
+  // pollWheels();
+  updateWheelPositions(); // DEBUG
   // get the instantaneous speed
 
-  currentSpeed[0] = (double)-1 * (positions[0] - old0) / interval; // FL
-  currentSpeed[1] = (double)(positions[1] - old1) / interval;      // FR
-  currentSpeed[2] = (double)(positions[2] - old2) / interval;      // Back
+  currentSpeed[0] = (double) (positions[0] / interval);      // FL
+  currentSpeed[1] = (double) (positions[1] / interval);      // FR
+  currentSpeed[2] = (double) (positions[2] / interval);      // Back
 
   return currentSpeed;
 }
 
-double *normaliseSpeed(double currentSpeed[], double base)
+double *normaliseSpeed(double* currentSpeed, double base)
 {
   double largest = findMaxSpeed(currentSpeed);
 
@@ -162,7 +171,7 @@ void poll101()
   Serial.print(runtime); //debug
   Serial.print("  ");
 
-  while (runtime < 1000)
+  while (runtime < 5000)
   {
     pollWheels();
     Serial.print("Motor positions: ");

@@ -10,7 +10,7 @@
 // generic
 void pollFromAll(void);
 void printAllPos(void);
-void resetMotorPositions(int array[]);
+void resetMotorPositions(int8_t array[], int len);
 void resetDoubleArray(double array[]);
 void resetAll(void);
 double findMaxSpeed(double array[]);
