@@ -13,10 +13,11 @@ import vision.tools.VectorGeometry;
  */
 public class AnnoyingDefendPoint extends DynamicPointBase {
 
+    VectorGeometry lower = new VectorGeometry(-Constants.PITCH_WIDTH / 2 + 20, 20);
+    VectorGeometry upper = new VectorGeometry(-Constants.PITCH_WIDTH / 2 + 20, -20);
+
     @Override
     public void recalculate() {
-        VectorGeometry lower = new VectorGeometry(-Constants.PITCH_WIDTH / 2 + 20, 20);
-        VectorGeometry upper = new VectorGeometry(-Constants.PITCH_WIDTH / 2 + 20, -20);
         Ball ball = Strategy.world.getBall();
         VectorGeometry closest = null;
         if (ball != null && ball.velocity.length() > 0.2) {

@@ -1,9 +1,7 @@
 package strategy.robots;
 
 import communication.ports.robotPorts.KhaleesiRobotPort;
-import strategy.controllers.fred.DribblerController;
-import strategy.controllers.fred.KickerController;
-import strategy.controllers.fred.PropellerController;
+import strategy.controllers.khaleesi.OnagerKicker;
 import strategy.drives.ThreeWheelHolonomicDrive;
 import vision.RobotType;
 
@@ -111,11 +109,13 @@ import vision.RobotType;
 
 
 public class Khaleesi extends RobotBase {
+    // We're not using these any more.
+    //public final PropellerController PROPELLER_CONTROLLER = new PropellerController(this);
+    //public final DribblerController DRIBBLER_CONTROLLER = new DribblerController(this);
 
-    public final PropellerController PROPELLER_CONTROLLER = new PropellerController(this);
-
-    public final DribblerController DRIBBLER_CONTROLLER = new DribblerController(this);
-    public final KickerController KICKER_CONTROLLER = new KickerController(this);
+    // Replacing the old kicker with the Onager™ Reinforced Propelling System
+    //public final KickerController KICKER_CONTROLLER = new KickerController(this);
+    public final OnagerKicker KICKER_CONTROLLER = new OnagerKicker(this);
 
     public Khaleesi(RobotType robotType) {
         super(robotType, new KhaleesiRobotPort(), new ThreeWheelHolonomicDrive());

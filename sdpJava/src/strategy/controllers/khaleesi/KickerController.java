@@ -1,4 +1,4 @@
-package strategy.controllers.fred;
+package strategy.controllers.khaleesi;
 
 import communication.ports.interfaces.DribblerKickerEquippedRobotPort;
 import strategy.Strategy;
@@ -6,9 +6,8 @@ import strategy.controllers.ControllerBase;
 import strategy.robots.RobotBase;
 import vision.Robot;
 
-/** Created by Rado Kirilchev on 31/01/17. */
-// It now also works as a grabber, so make sure we're sort of prepared for that.
-
+/** Created by Rado Kirilchev on 24/02/17. */
+// Just in case we want to revert back to the old mechanism (down -> up -> down)
 public class KickerController extends ControllerBase {
     // Prevent kicker from slamming back into the robot by clamping the power
     private static final int MAX_KICKER_RETRACT_POWER = 70;

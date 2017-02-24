@@ -32,7 +32,7 @@ public class MidDangerPoint extends DynamicPointBase {
             VectorGeometry base;
 
             if (WorldTools.isPointInFriendDefenceArea(dangerV)) {
-                base = VectorGeometry.vectorToClosestPointOnFiniteLine(new VectorGeometry(-Constants.PITCH_WIDTH / 2, 20), new VectorGeometry(-Constants.PITCH_WIDTH / 2, 20), dangerV);
+                base = VectorGeometry.vectorToClosestPointOnFiniteLine(new VectorGeometry(-Constants.PITCH_WIDTH / 2, -20), new VectorGeometry(-Constants.PITCH_WIDTH / 2, 20), dangerV);
             } else {
                 base = new VectorGeometry(-Constants.PITCH_WIDTH / 2, 0);
             }

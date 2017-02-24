@@ -40,8 +40,8 @@ public abstract class BehaviourBase implements BehaviourInterface {
     }
 
     public void setCurrentAction(ActionBase action) {
-        if (currentAction != null) currentAction.onEnd();
         if (currentAction.equals(action)) return; // Do not restart. There's a function for that.
+        if (currentAction != null) currentAction.onEnd();
         Strategy.currentRobotBase.setControllersActive(false);
         currentAction = action;
         currentAction.onStart();
