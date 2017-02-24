@@ -21,8 +21,8 @@ int PollInterval = 200;    // ms
 
 // Need to flip the sign for FRONTLEFT_enc!
 double currentSpeed[NumPorts] = {0.0}; // starts from halt
-int _positions[RotaryCount] = {0};     // for ALL the ports
-int positions[NumPorts] = {0};         // for ports of interest (listed above) [FL, FR, BACK]
+int8_t _positions[RotaryCount] = {0};     // for ALL the ports
+int8_t positions[NumPorts] = {0};         // for ports of interest (listed above) [FL, FR, BACK]
 // ======================================================================
 // SOME FUNCTIONS FOR SANITY CHECKING
 
@@ -32,8 +32,7 @@ int positions[NumPorts] = {0};         // for ports of interest (listed above) [
 void pollFromAll()
 {
   Wire.requestFrom(EncoderBoardAddr, RotaryCount);
-  int i;
-  for (i = 0; i < RotaryCount; i++)
+  for (int i = 0; i < RotaryCount; i++)
   {
     _positions[i] += (int8_t) Wire.read(); // Must cast to signed 8bit type
   }
@@ -85,24 +84,26 @@ void resetDoubleArray(double array[])
 
 void resetAll()
 {
-  memset(_positions, 0, RotaryCount * sizeof(int));
-  memset(positions, 0, NumPorts * sizeof(int));
+  memset(_positions, 0, RotaryCount * sizeof(int8_t));
+  memset(positions, 0, NumPorts * sizeof(int8_t));
   memset(currentSpeed, 0, sizeof(double));
-//  resetMotorPositions(_positions,RotaryCount);
-//  resetMotorPositions(positions, NumPorts);
-//  resetDoubleArray(currentSpeed);
 }
 
 // ======================================================================
 /**
-  *   Find the current encoder positions for all the ports that we are 
+  *   Find the current encoder positions for all the ports that we are
   *   interested in - i.e. the FRONTLEFT, FRONTRIGHT, BACK
   */
 void pollWheels()
 {
   // poll all the ports for their current positions;
   Wire.requestFrom(EncoderBoardAddr, RotaryCount);
-  positions[0] -= (int8_t) Wire.read(); // polarity switch is here!
+  int8_t tmp = (int8_t) Wire.read(); // polarity switch is here!
+  if (tmp < 0) {
+      positions[0] += abs(tmp); // forward drive
+  } else {
+      positions[0] -= abs(tmp); // backward drive
+  }
   positions[1] += (int8_t) Wire.read();
   positions[2] += (int8_t) Wire.read();
 }
@@ -136,27 +137,28 @@ void updateWheelPositions()
   */
 double * getCurrentSpeed(int interval)
 {
-  resetAll();
+  int8_t old0 = positions[0];
+  int8_t old1 = positions[1];
+  int8_t old2 = positions[2];
   delay(interval);
   // pollWheels();
   updateWheelPositions(); // DEBUG
   // get the instantaneous speed
-
-  currentSpeed[0] = (double) (positions[0] / interval);      // FL
-  currentSpeed[1] = (double) (positions[1] / interval);      // FR
-  currentSpeed[2] = (double) (positions[2] / interval);      // Back
+  currentSpeed[0] = (double) ((positions[0] - old0));      // FL
+  currentSpeed[1] = (double) ((positions[1] - old1));      // FR
+  currentSpeed[2] = (double) ((positions[2] - old2));      // Back
 
   return currentSpeed;
 }
 
-double *normaliseSpeed(double* currentSpeed, double base)
+double *normaliseSpeed(double * currentSpeed, double base)
 {
-  double largest = findMaxSpeed(currentSpeed);
+  double largest = abs(findMaxSpeed(currentSpeed));
 
-  currentSpeed[0] = (currentSpeed[0] / largest) * base;
-  currentSpeed[1] = (currentSpeed[1] / largest) * base;
-  currentSpeed[2] = (currentSpeed[2] / largest) * base;
-
+  for (int i=0; i<3; i++){
+      double tmp = currentSpeed[i];
+      currentSpeed[i] = (double) ((tmp / largest) * base);
+  }
   return currentSpeed;
 }
 
@@ -170,6 +172,7 @@ void poll101()
   int runtime = 0;
   Serial.print(runtime); //debug
   Serial.print("  ");
+  delay(PollInterval); // reseting needs time
 
   while (runtime < 5000)
   {
@@ -209,7 +212,7 @@ void speed101()
       Serial.print(" ");
       Serial.print(cs[i]);
     }
-
+    resetAll();
     runtime = runtime + millis() - time;
     time = millis();
     Serial.println();

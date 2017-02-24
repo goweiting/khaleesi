@@ -41,7 +41,7 @@ void setup()
   // MOTION
   sCmd.addCommand("debug", debug);
   sCmd.addCommand("f", dontMove);
-  sCmd.addCommand("r", monitoredDrive);
+  sCmd.addCommand("r", rationalMotors);
   sCmd.addCommand("mm", manualMoveMotor);
   sCmd.addCommand("md", monitoredDrive);
   //sCmd.addCommand("goto", gotoXY);
@@ -154,59 +154,52 @@ void rationalMotors()
   moveMotor(BACK, back);
 }
 
-int pollinterval_drive = 200; // ms
+static int pollinterval_drive = 200; // ms
+
 void monitoredDrive()
 {
-  // Drive and monitored by the encoders
-  int frontLeft = atoi(sCmd.next());
-  int frontRight = atoi(sCmd.next());
-  int back = atoi(sCmd.next());
+    // Drive and monitored by the encoders
+    int frontLeft     = atoi(sCmd.next());
+    int frontRight    = atoi(sCmd.next());
+    int back          = atoi(sCmd.next());
+    double expectedSpeed[3] = {frontLeft, frontRight, back};
+    double maxSpeed = findMaxSpeed(expectedSpeed);
+    Serial.print("Expected Speed:"); printTrio(expectedSpeed); Serial.println();
 
-  int tolerant = 5;
-  double proportion = 0.5; // TO TUNE!
-  int x = 0;
-  int iter = 5; // Instead of using 10 to limit the delay
 
-  resetAll();
-  double expectedSpeed[3] = {frontLeft, frontRight, back};
-  Serial.print("Expected Speed:"); printTrio(expectedSpeed); Serial.println();
-  
-  double maxSpeed = findMaxSpeed(expectedSpeed);
-  //Serial.println(maxSpeed); // DEBUG
-  moveMotor(FRONTLEFT, -frontLeft);
-  moveMotor(FRONTRIGHT, frontRight);
-  moveMotor(BACK, back);
+    int x = 0;
+    static int iter = 2; // change the number of iterations here!
+    static double p = 1; // P constant
 
-  while (x < iter)
-  {
-    double *currentSpeed; double *estimatedSpeed; double *output;
-    
-    currentSpeed = getCurrentSpeed(pollinterval_drive);
-    estimatedSpeed = normaliseSpeed(currentSpeed, maxSpeed);
-    Serial.print("Current Speed: "); printTrio(estimatedSpeed); Serial.println();
+    while (x<iter){
+        resetAll(); // ESEENTIAL TO PREVENT OVF
 
-    //Exp - act =  err
-    //Exp + err = New
-    // We would like to adjust the speed accordingly here:
-    double error[3] = {frontLeft - estimatedSpeed[0],
-                       frontRight - estimatedSpeed[1],
-                       back - estimatedSpeed[2]};
-    Serial.print("Error: "); printTrio(error); Serial.println();
-    
-    // new speed to correct the unbalance in wheels
-    output[0] = (double) frontLeft + error[0]*proportion;
-    output[1] = (double) frontRight + error[1]*proportion;
-    output[2] = (double) back + error[2]*proportion;
-    
-    output = normaliseSpeed(output, maxSpeed);
-    moveMotor(FRONTLEFT, (int)output[0]);
-    moveMotor(FRONTRIGHT, (int)output[1]);
-    moveMotor(BACK, (int)output[2]);
-    Serial.print(" New Speeds "); printTrio(output); Serial.println("\n");
-    x += 1;
-  }
-  dontMove(); // FOR DEBUG? but may be good actually
-  Serial.println("\n\n");
+        moveMotor(FRONTLEFT, -frontLeft);
+        moveMotor(FRONTRIGHT, frontRight);
+        moveMotor(BACK, back);
+
+        double *currentSpeed  = getCurrentSpeed(pollinterval_drive);
+        double *estimatedSpeed = normaliseSpeed(currentSpeed, maxSpeed);
+        Serial.print("Current Speed: "); printTrio(estimatedSpeed); Serial.println();
+        resetAll();
+
+        // set the new speeds:
+        double error[3] = {frontLeft-estimatedSpeed[0],
+                            frontRight - estimatedSpeed[1],
+                            back - estimatedSpeed[2]};
+        frontLeft = frontLeft + (p * error[0]);
+        frontRight = frontRight + (p * error[1]);
+        back = back + (p * error[2]);
+        double newSpeeds[3] = {frontLeft, frontRight, back};
+        double *output = normaliseSpeed(newSpeeds, maxSpeed);
+        Serial.print("New Speed: "); printTrio(output); Serial.println("\n\n");
+        // next iteration
+        frontLeft = (int) output[0];
+        frontRight = (int) output[1];
+        back = (int) output[2];
+        x += 1;
+    }
+    dontMove();
 }
 
 // For debugging purposes
@@ -251,7 +244,7 @@ void printTrio(double array[])
 {
   for (int i = 0; i < 3; i++)
   {
-    Serial.print(array[i]);
+    Serial.print(array[i], 5); // up to 5dp
     Serial.print(" ");
   }
 }
