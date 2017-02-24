@@ -18,10 +18,16 @@ public class OffensiveKick extends ActionBase {
 
     @Override
     public void onStart() {
+        super.onStart();
+
         Khaleesi us = (Khaleesi)Strategy.currentRobotBase;
+
         us.MOTION_CONTROLLER.setActive(true);
         us.MOTION_CONTROLLER.setHeading(new BallPoint());
         us.MOTION_CONTROLLER.setDestination(new BallPoint());
+
+        us.KICKER_CONTROLLER.setKickerHoldDuration(2500);
+        us.KICKER_CONTROLLER.setAutoShutdownAfterKick(true);
     }
 
     private boolean adjustingBeforeShot = false;

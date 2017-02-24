@@ -4,7 +4,6 @@ import communication.PortListener;
 import communication.ports.robotPorts.KhaleesiRobotPort;
 import strategy.actions.ActionBase;
 import strategy.actions.offense.OffensiveKick;
-import strategy.actions.offense.ShuntKick;
 import strategy.actions.other.Contemplating;
 import strategy.actions.other.DefendGoal;
 import strategy.actions.other.GoToSafeLocation;
@@ -137,9 +136,6 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
                     break;
                 case "safe":
                     currentBehaviour.setCurrentAction(new GoToSafeLocation());
-                    break;
-                case "shunt":
-                    currentBehaviour.setCurrentAction(new ShuntKick());
                     break;
                 case "def":
                     currentBehaviour.setCurrentAction(new DefendGoal());
@@ -277,14 +273,16 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
     }
 
     // Support methods for behavioural control.
+    // I don't see why we might need this specific one, but hey, who knows.
     public static void restartBehaviour() {
-        // I don't see why we might need this, but hey, who knows.
+        if (currentBehaviour == null) return; // This should never happen in the first place.
         currentBehaviour.onEnd();
         currentBehaviour.onStart();
     }
 
     public static void setBehaviour(BehaviourBase behaviour) {
-        currentBehaviour.onEnd();
+        if (currentBehaviour.equals(behaviour)) return;
+        if (currentBehaviour != null) currentBehaviour.onEnd();
         currentRobotBase.setControllersActive(false);
         currentBehaviour = behaviour;
         currentBehaviour.onStart();

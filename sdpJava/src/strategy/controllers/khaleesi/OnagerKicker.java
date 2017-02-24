@@ -26,7 +26,7 @@ public class OnagerKicker extends ControllerBase {
     // Grab duration: How long to keep the ball grabbed for (in msec).
     // Negative values will return the kicker to manual mode.
     // (Note that receiving a 'shoot()' call will instantly release the ball even on auto mode)
-    private int KICKER_HOLD_DURATION = 2500;
+    private static final int KICKER_DEFAULT_HOLD_DURATION = 2500;
     // However, holding the ball forever will probably be against the rules.
     // Therefore, we need a fail-safe.
     private static final int KICKER_MANUAL_MAX_HOLD_DURATION = 10000;
@@ -39,6 +39,7 @@ public class OnagerKicker extends ControllerBase {
     // Internal vars
     private boolean shutDownAfterKick = true;
     private boolean shootOrderReceived = false;
+    private int kickerHoldDuration = KICKER_DEFAULT_HOLD_DURATION;
     private KickerStatus kickerStatus = KickerStatus.OFF;
     // We need some way to track the time, in order to change states properly
     private long nextStateChangeTime = 0;
@@ -55,7 +56,7 @@ public class OnagerKicker extends ControllerBase {
         return kickerStatus != KickerStatus.OFF;
     }
     public boolean isInManualMode() {
-        return KICKER_HOLD_DURATION < 0;
+        return kickerHoldDuration < 0;
     }
 
     @Override
@@ -134,7 +135,7 @@ public class OnagerKicker extends ControllerBase {
             case DESCENDING:
                 kickerStatus = KickerStatus.HOLDING;
                 nextStateChangeTime = currentTime + ((isInManualMode()) ?
-                        KICKER_MANUAL_MAX_HOLD_DURATION : KICKER_HOLD_DURATION);
+                        KICKER_MANUAL_MAX_HOLD_DURATION : kickerHoldDuration);
                 doAction(-100);
                 break;
             // We're done with the holding, the ball needs to be released now.
@@ -177,9 +178,11 @@ public class OnagerKicker extends ControllerBase {
 
     // Allow toggling "manual mode" and run-time delay tweaking.
     public int getKickerHoldDuration() {
-        return KICKER_HOLD_DURATION;
+        return kickerHoldDuration;
     }
+    // Call with a negative value to set "manual mode". Call with 0 to reset to default.
     public void setKickerHoldDuration(int kickerHoldDuration) {
-        KICKER_HOLD_DURATION = kickerHoldDuration;
+        if (kickerHoldDuration == 0) kickerHoldDuration = KICKER_DEFAULT_HOLD_DURATION;
+        this.kickerHoldDuration = kickerHoldDuration;
     }
 }

@@ -2,6 +2,7 @@ package strategy.actions.offense;
 
 import strategy.Strategy;
 import strategy.actions.ActionBase;
+import strategy.points.basicPoints.BallPoint;
 import strategy.points.basicPoints.RobotPoint;
 import strategy.robots.Khaleesi;
 import vision.RobotType;
@@ -9,7 +10,7 @@ import vision.RobotType;
 /**
  * Created by Rado Kirilchev on 21/02/2017.
  */
-// Pass ball to friend. FIXME: ACTUALLY MAKE IT DO THINGS.
+// Pass ball to friend.
 public class PassingKick extends ActionBase {
     public PassingKick() {
         this.rawDescription = "Passing Kick";
@@ -17,6 +18,20 @@ public class PassingKick extends ActionBase {
 
     private boolean adjustingBeforeShot = false;
     private long nextStateChangeTime = -1;
+
+    @Override
+    public void onStart() {
+        Khaleesi us = (Khaleesi)Strategy.currentRobotBase;
+
+        us.MOTION_CONTROLLER.setActive(true);
+        us.MOTION_CONTROLLER.setHeading(new BallPoint());
+        us.MOTION_CONTROLLER.setDestination(new BallPoint());
+
+        us.KICKER_CONTROLLER.setKickerHoldDuration(2500);
+        us.KICKER_CONTROLLER.setAutoShutdownAfterKick(true);
+
+        super.onStart();
+    }
 
     @Override
     public void update() {
@@ -37,7 +52,7 @@ public class PassingKick extends ActionBase {
                 us.MOTION_CONTROLLER.setHeading(new RobotPoint(RobotType.FRIEND_1));
                 adjustingBeforeShot = true;
             }
-            // When we're ready - and hopefully looking at the opposing goal, kick
+            // When we're ready - and hopefully looking at our friend, kick.
             else {
                 adjustingBeforeShot = false;
                 us.KICKER_CONTROLLER.setActive(true);

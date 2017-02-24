@@ -7,7 +7,9 @@ import strategy.actions.offense.OffensiveKick;
 import strategy.actions.offense.PassingKick;
 import strategy.actions.other.DefendGoal;
 import strategy.actions.other.PatrolGoal;
+import strategy.controllers.khaleesi.OnagerKicker;
 import strategy.points.basicPoints.EnemyGoal;
+import strategy.robots.Khaleesi;
 import vision.Ball;
 import vision.Robot;
 import vision.RobotType;
@@ -63,6 +65,12 @@ public class DefaultBehaviour extends BehaviourBase {
         Robot teammate = Strategy.world.getRobot(RobotType.FRIEND_1);
         Robot opponent1 = Strategy.world.getRobot(RobotType.FOE_1);
         Robot opponent2 = Strategy.world.getRobot(RobotType.FOE_2);
+
+
+        // Don't interrupt the kicker if we're currently fiddling with the ball.
+        OnagerKicker kicker = ((Khaleesi)Strategy.currentRobotBase).KICKER_CONTROLLER;
+        if (!kicker.isInManualMode() && kicker.isKickInProgress()) return;
+
 
         VectorGeometry opposingGoal = new VectorGeometry(new EnemyGoal().getX(), new EnemyGoal().getY());
 

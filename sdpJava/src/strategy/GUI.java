@@ -1,9 +1,7 @@
 package strategy;
 
-import communication.ports.robotPorts.KhaleesiRobotPort;
 import strategy.actions.offense.OffensiveKick;
 import strategy.actions.other.*;
-import strategy.behaviours.BehaviourBase;
 import strategy.behaviours.DefaultBehaviour;
 import strategy.behaviours.PassiveBehaviour;
 import strategy.controllers.essentials.MotionController;
@@ -123,66 +121,92 @@ public class GUI extends JFrame implements KeyListener {
             this.robot.MOTION_CONTROLLER.setHeading(null);
             this.robot.MOTION_CONTROLLER.setDestination(null);
             this.robot.MOTION_CONTROLLER.clearObstacles();
-            if (this.robot instanceof Khaleesi) {
-                ((Khaleesi) this.robot).PROPELLER_CONTROLLER.setActive(false);
-                ((KhaleesiRobotPort) this.robot.port).propeller(0);
-                ((KhaleesiRobotPort) this.robot.port).propeller(0);
-                ((KhaleesiRobotPort) this.robot.port).propeller(0);
-            }
             this.robot.port.sdpPort.commandSender("f");
             this.robot.port.sdpPort.commandSender("f");
             this.robot.port.sdpPort.commandSender("f");
-            BehaviourBase currentBehaviour = Strategy.getCurrentBehaviour();
+            // I'm reorganising this, as it's over-encumbered right now.
             switch (e.getKeyChar()) {
-                case 'd':
-                    currentBehaviour.setCurrentAction(new DefendGoal());
-                    break;
-                case 'k':
-                    currentBehaviour.setCurrentAction(new OffensiveKick());
-                    break;
-                case 'b':
-                    ((KhaleesiRobotPort) this.robot.port).threeWheelHolonomicMotion(-100,100,0 );
-                    ((KhaleesiRobotPort) this.robot.port).threeWheelHolonomicMotion(-100,100,0 );
-                    currentBehaviour.setCurrentAction(new GoToBall());
-                    break;
-                case 's':
-                    currentBehaviour.setCurrentAction(new GoToSafeLocation());
-                    break;
-                case 'z':
+                // W - ("work") FORCE DEFAULT BEHAVIOUR
+                case 'w':
                     // Ideally, we shouldn't be injecting actions directly into the behaviour.
                     // They'd be overridden inside a REAL one, such as this one.
                     Strategy.setBehaviour(new DefaultBehaviour());
+                // D - DEFEND GOAL (PASSIVE BEHAVIOUR)
+                case 'd':
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new DefendGoal());
+                    break;
+                // K - OFFENSIVE KICK (PASSIVE BEHAVIOUR)
+                case 'k':
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new OffensiveKick());
+                    break;
+                // B - APPROACH BALL (PASSIVE BEHAVIOUR)
+                case 'b':
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new GoToBall());
+                    break;
+                // S - RETREAT TO SAFE LOCATION (PASSIVE BEHAVIOUR)
+                case 's':
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new GoToSafeLocation());
+                    break;
+                // P - PATROL GOAL (PASSIVE BEHAVIOUR)
+                case 'p':
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new GoToSafeLocation());
+                    break;
+
+                // Manual kicker testing. BAD PRACTICE!
+                case 'y':
+                    ((Khaleesi)this.robot).KICKER_CONTROLLER.setKickerHoldDuration(0);
+                    ((Khaleesi)this.robot).KICKER_CONTROLLER.setActive(true);
+
+                // NUMBERS MIRROR PITCH, I.E. PATTERN SAME AS NUMPAD
+                // ALL NUMBER COMMANDS WILL CHANGE STRATEGY TO PASSIVE BEHAVIOUR
                 case '1':
-                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(-50, -50)));
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new HoldPosition(new ConstantPoint(-50, -50)));
                     break;
                 case '2':
-                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(0, -50)));
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new HoldPosition(new ConstantPoint(0, -50)));
                     break;
                 case '3':
-                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(50, -50)));
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new HoldPosition(new ConstantPoint(50, -50)));
                     break;
                 case '4':
-                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(-50, 0)));
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new HoldPosition(new ConstantPoint(-50, 0)));
                     break;
                 case '5':
-                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(0, 0)));
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new HoldPosition(new ConstantPoint(0, 0)));
                     break;
                 case '6':
-                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(50, 0)));
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new HoldPosition(new ConstantPoint(50, 0)));
                     break;
                 case '7':
-                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(-50, 50)));
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new HoldPosition(new ConstantPoint(-50, 50)));
                     break;
                 case '8':
-                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(0, 50)));
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new HoldPosition(new ConstantPoint(0, 50)));
                     break;
                 case '9':
-                    currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(50, 50)));
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new HoldPosition(new ConstantPoint(50, 50)));
                     break;
+
+                // H or F or SPACE - STOP, DO NOTHING. (PASSIVE BEHAVIOUR)
                 case 'h':
                 case 'f':
                 case ' ':
                     Strategy.setBehaviour(new PassiveBehaviour());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new Contemplating());
                     break;
             }
         }
