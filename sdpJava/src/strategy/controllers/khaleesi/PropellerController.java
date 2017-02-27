@@ -1,4 +1,4 @@
-package strategy.controllers.fred;
+package strategy.controllers.khaleesi;
 
 import communication.ports.interfaces.PropellerEquipedRobotPort;
 import strategy.Strategy;

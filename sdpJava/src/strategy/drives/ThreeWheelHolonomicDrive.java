@@ -9,8 +9,8 @@ import vision.tools.VectorGeometry;
 /** Created by Simon Rovder Edited by Wildfire */
 public class ThreeWheelHolonomicDrive implements DriveInterface {
 
-  public int MAX_ROTATION = 5;
-  public int MAX_MOTION = 100;
+  public int MAX_ROTATING = 5;
+//  public int MAX_MOVING = 100;
   public double[][] FORCE_DECOUPLING =
           new double[][] {{-.33, .58, .33}, {-.33, -.58, .33}, {.67, 0, .33}};
   /**
@@ -40,15 +40,15 @@ public class ThreeWheelHolonomicDrive implements DriveInterface {
     double frontRight =
             FORCE_DECOUPLING[0][0] * dir.x
                     + FORCE_DECOUPLING[0][1] * dir.y
-                    + FORCE_DECOUPLING[0][2] * rotation * this.MAX_ROTATION;
+                    + FORCE_DECOUPLING[0][2] * rotation * this.MAX_ROTATING;
     double frontLeft =
             FORCE_DECOUPLING[1][0] * dir.x
                     + FORCE_DECOUPLING[1][1] * dir.y
-                    + FORCE_DECOUPLING[1][2] * rotation * this.MAX_ROTATION;
+                    + FORCE_DECOUPLING[1][2] * rotation * this.MAX_ROTATING;
     double backWheel =
             FORCE_DECOUPLING[2][0] * dir.x
                     + FORCE_DECOUPLING[2][1] * dir.y
-                    + FORCE_DECOUPLING[2][2] * rotation * this.MAX_ROTATION;
+                    + FORCE_DECOUPLING[2][2] * rotation * this.MAX_ROTATING;
 
     // find the largest speed required and normalise each of the wheel's speed:
     double normalizer =

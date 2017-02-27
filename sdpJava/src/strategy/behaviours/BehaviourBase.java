@@ -40,6 +40,7 @@ public abstract class BehaviourBase implements BehaviourInterface {
     }
 
     public void setCurrentAction(ActionBase action) {
+        if (currentAction != null && currentAction.equals(action)) return; // Do not restart. There's a function for that.
         if (currentAction != null) currentAction.onEnd();
         Strategy.currentRobotBase.setControllersActive(false);
         currentAction = action;
@@ -52,5 +53,20 @@ public abstract class BehaviourBase implements BehaviourInterface {
 
     public boolean hasStarted() {
         return hasStarted;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BehaviourBase)) return false;
+
+        BehaviourBase that = (BehaviourBase) o;
+
+        return rawDescription != null ? rawDescription.equals(that.rawDescription) : that.rawDescription == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return rawDescription != null ? rawDescription.hashCode() : 0;
     }
 }

@@ -4,13 +4,13 @@ import communication.PortListener;
 import communication.ports.robotPorts.KhaleesiRobotPort;
 import strategy.actions.ActionBase;
 import strategy.actions.offense.OffensiveKick;
-import strategy.actions.offense.ShuntKick;
 import strategy.actions.other.Contemplating;
 import strategy.actions.other.DefendGoal;
 import strategy.actions.other.GoToSafeLocation;
 import strategy.actions.other.HoldPosition;
 import strategy.behaviours.BehaviourBase;
 import strategy.behaviours.DefaultBehaviour;
+import strategy.behaviours.PassiveBehaviour;
 import strategy.points.basicPoints.*;
 import strategy.robots.Khaleesi;
 import strategy.robots.RobotBase;
@@ -18,6 +18,7 @@ import vision.*;
 import vision.Robot;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,6 +52,8 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
     //private RobotBase[] robots;
     private static BehaviourBase currentBehaviour;
 
+    private static final int TICK_INTERVAL_MSEC = 200;
+
 
     public Strategy(String[] args) {
 
@@ -66,7 +69,8 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
         currentRobotBase = khaleesi;
 
         // Assign default behaviour by... well... default.
-        currentBehaviour = new DefaultBehaviour();
+        // Actually, we're using the PASSIVE behaviour by default. The "default" one actually does things
+        currentBehaviour = new PassiveBehaviour();
 
         final Strategy semiStrategy = this;
         semiStrategy.vision = new Vision(args);
@@ -77,7 +81,7 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
         this.action = "";
         GUI.gui.doesNothingButIsNecessarySoDontDelete();
         GUI.gui.setRobot(currentRobotBase);
-        this.timer = new Timer(100, this);
+        this.timer = new Timer(TICK_INTERVAL_MSEC, this);
         this.timer.start();
 
         while (true) {
@@ -130,14 +134,11 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
                     currentBehaviour.setCurrentAction(new HoldPosition(new ConstantPoint(0, 0)));
                     break;
                 case "behave":
-                    // Perhaps set proper "gameplay behaviour" here?
-                    //currentBehaviour = ...
+                    // Set proper gameplay behaviour here.
+                    currentBehaviour = new DefaultBehaviour();
                     break;
                 case "safe":
                     currentBehaviour.setCurrentAction(new GoToSafeLocation());
-                    break;
-                case "shunt":
-                    currentBehaviour.setCurrentAction(new ShuntKick());
                     break;
                 case "def":
                     currentBehaviour.setCurrentAction(new DefendGoal());
@@ -184,14 +185,6 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
                     ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(0, 0, 0);
                     break;
 
-                /******************** KHALEESI'S ACTION ********************/
-                // spins dribbler and kicker
-                case "dk":
-                    ((KhaleesiRobotPort) khaleesi.port).dribblerKicker(100, 100);
-                    break;
-                case "dkStop":
-                    ((KhaleesiRobotPort) khaleesi.port).dribblerKicker(0, 0);
-                    break;
                 case "attemptKick":
                     khaleesi.KICKER_CONTROLLER.setActive(true);
                     khaleesi.KICKER_CONTROLLER.perform();
@@ -205,7 +198,7 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
                     ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(0, 0, 0);
                     ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(0, 0, 0);
                     khaleesi.KICKER_CONTROLLER.setActive(false);
-                    khaleesi.DRIBBLER_CONTROLLER.setActive(false);
+                    //khaleesi.DRIBBLER_CONTROLLER.setActive(false);
                     break;
             }
         }
@@ -275,14 +268,16 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
     }
 
     // Support methods for behavioural control.
-    public void restartBehaviour() {
-        // I don't see why we might need this, but hey, who knows.
+    // I don't see why we might need this specific one, but hey, who knows.
+    public static void restartBehaviour() {
+        if (currentBehaviour == null) return; // This should never happen in the first place.
         currentBehaviour.onEnd();
         currentBehaviour.onStart();
     }
 
-    public void setBehaviour(BehaviourBase behaviour) {
-        currentBehaviour.onEnd();
+    public static void setBehaviour(BehaviourBase behaviour) {
+        if (currentBehaviour != null && currentBehaviour.equals(behaviour)) return;
+        if (currentBehaviour != null) currentBehaviour.onEnd();
         currentRobotBase.setControllersActive(false);
         currentBehaviour = behaviour;
         currentBehaviour.onStart();

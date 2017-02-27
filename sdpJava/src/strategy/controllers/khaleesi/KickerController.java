@@ -1,4 +1,4 @@
-package strategy.controllers.fred;
+package strategy.controllers.khaleesi;
 
 import communication.ports.interfaces.DribblerKickerEquippedRobotPort;
 import strategy.Strategy;
@@ -6,7 +6,8 @@ import strategy.controllers.ControllerBase;
 import strategy.robots.RobotBase;
 import vision.Robot;
 
-/** Created by Rado Kirilchev on 31/01/17. */
+/** Created by Rado Kirilchev on 24/02/17. */
+// Just in case we want to revert back to the old mechanism (down -> up -> down)
 public class KickerController extends ControllerBase {
     // Prevent kicker from slamming back into the robot by clamping the power
     private static final int MAX_KICKER_RETRACT_POWER = 70;
@@ -19,6 +20,9 @@ public class KickerController extends ControllerBase {
     private KickerStatus kickerStatus = KickerStatus.OFF;
     // We need some way to track the time, in order to retract the kicker after
     private long nextStateChangeTime = 0;
+
+    // Kick repeatedly, or just once?
+    private boolean autoShutdownAfterKick = true; // Just once by default
 
     public KickerController(RobotBase robot) {
         super(robot);
@@ -45,8 +49,8 @@ public class KickerController extends ControllerBase {
     // Positive kicker power means we're actually kicking, i.e. propelling the ball outwards.
     private void doAction(double kickerPower) {
         // Clamp kicker retracting force if necessary
-        kickerPower =
-                (kickerPower < -MAX_KICKER_RETRACT_POWER) ? -MAX_KICKER_RETRACT_POWER : kickerPower;
+        kickerPower = (kickerPower < -MAX_KICKER_RETRACT_POWER) ?
+                -MAX_KICKER_RETRACT_POWER : kickerPower;
 
         // Send command
         ((DribblerKickerEquippedRobotPort) this.robot.port).updateKicker(kickerPower);
@@ -74,6 +78,7 @@ public class KickerController extends ControllerBase {
                 kickerStatus = KickerStatus.KICKING;
                 nextStateChangeTime = currentTime + KICKER_MOVE_DURATION_MSEC;
                 doAction(100); // Perform kick
+                if (autoShutdownAfterKick) shutDownAfterKick = true;
                 break;
             // Kicking up, and we've been pushing up for a while now. Time to hold for a bit.
             case KICKING:
@@ -109,5 +114,13 @@ public class KickerController extends ControllerBase {
 
         // The lifetime of a kick:
         // Off -> Kicking -> Peak_Pause -> Retracting -> Off
+    }
+
+    // Toggle between infinite kicking and just one kick with greater ease
+    public void setAutoShutdownAfterKick(boolean state) {
+        autoShutdownAfterKick = state;
+    }
+    public boolean willAutoShutdownAfterKick() {
+        return autoShutdownAfterKick;
     }
 }
