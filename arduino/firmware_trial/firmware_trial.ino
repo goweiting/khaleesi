@@ -150,7 +150,7 @@ void rationalMotors()
   moveMotor(BACK, back);
 }
 
-static int pollinterval_drive = 300; // ms
+static int pollinterval_drive = 250; // ms
 
 void monitoredDrive()
 {
@@ -166,7 +166,7 @@ void monitoredDrive()
 
   int x = 0;
   static int iter = 3;   // change the number of iterations here!
-  static double p = 1.2; // P constant
+  static double p = 1; // P constant
 
   while (x < iter)
   {
