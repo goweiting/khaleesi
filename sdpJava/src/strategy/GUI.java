@@ -218,8 +218,8 @@ public class GUI extends JFrame implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-//        if (this.robot instanceof Khaleesi) {
-//            ThreeWheelHolonomicDrive drive = (ThreeWheelHolonomicDrive) this.robot.drive;
+        if (this.robot instanceof Khaleesi) {
+            ThreeWheelHolonomicDrive drive = (ThreeWheelHolonomicDrive) this.robot.drive;
 //            if (e.getSource() == this.maxSpeed) {
 //                System.out.println("SpeedChange");
 //                try {
@@ -234,7 +234,7 @@ public class GUI extends JFrame implements KeyListener {
 //                }
 //                System.out.println("TurnChange : " + drive.MAX_ROTATION);
 //            }
-//        }
-//        r.setText("");
+        }
+        r.setText("");
     }
 }

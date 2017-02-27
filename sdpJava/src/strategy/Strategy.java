@@ -52,6 +52,8 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
     //private RobotBase[] robots;
     private static BehaviourBase currentBehaviour;
 
+    private static final int TICK_INTERVAL_MSEC = 200;
+
 
     public Strategy(String[] args) {
 
@@ -79,7 +81,7 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
         this.action = "";
         GUI.gui.doesNothingButIsNecessarySoDontDelete();
         GUI.gui.setRobot(currentRobotBase);
-        this.timer = new Timer(100, this);
+        this.timer = new Timer(TICK_INTERVAL_MSEC, this);
         this.timer.start();
 
         while (true) {
