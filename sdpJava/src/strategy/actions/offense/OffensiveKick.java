@@ -5,6 +5,8 @@ import strategy.actions.ActionBase;
 import strategy.points.basicPoints.BallPoint;
 import strategy.points.basicPoints.EnemyGoal;
 import strategy.robots.Khaleesi;
+import vision.Ball;
+import vision.Robot;
 import vision.RobotType;
 
 /**
@@ -57,6 +59,9 @@ public class OffensiveKick extends ActionBase {
         }
         // If we don't have the ball, try grabbing it
         else {
+            Robot usVision = Strategy.curVisionRobot;
+            Ball ball = Strategy.world.getLastKnownBall();
+            if (usVision == null || ball == null) return;
             if (Strategy.curVisionRobot.location.distance(Strategy.world.getBall().location) < 10) {
                 us.KICKER_CONTROLLER.setActive(true);
             }

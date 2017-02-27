@@ -15,11 +15,13 @@ import vision.tools.VectorGeometry;
  */
 public class PatrolGoal extends ActionBase {
 
+    private boolean upperDest = true;
+
     public PatrolGoal() {
-        this.rawDescription = "Patrol Goal";
+        this.rawDescription = "Patrol Goal, going " + ((upperDest) ? "up" : "down");
     }
 
-    private static final int ourGoalX = -Constants.PITCH_WIDTH / 2 + 20; // A little bit in front of the goal
+    private static final int ourGoalX = -Constants.PITCH_WIDTH / 2 + 40; // A little bit in front of the goal
     private static final ConstantPoint upperLimit = new ConstantPoint(ourGoalX, Constants.PITCH_HEIGHT / 2);
     private static final ConstantPoint lowerLimit = new ConstantPoint(ourGoalX, -Constants.PITCH_HEIGHT / 2);
     private ConstantPoint curDestination;
@@ -41,9 +43,10 @@ public class PatrolGoal extends ActionBase {
         // Check whether we're approaching our destination
         Robot us = Strategy.curVisionRobot;
         double dist = VectorGeometry.distance(us.location, new VectorGeometry(curDestination.getX(), curDestination.getY()));
-        if (dist < 10) {
+        if (dist < 30) {
             // Change destination.
             curDestination = (curDestination == upperLimit) ? lowerLimit : upperLimit;
+            upperDest = (curDestination == upperLimit);
         }
     }
 }

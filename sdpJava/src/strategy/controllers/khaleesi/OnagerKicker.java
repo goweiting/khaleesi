@@ -1,6 +1,7 @@
 package strategy.controllers.khaleesi;
 
 import communication.ports.interfaces.DribblerKickerEquippedRobotPort;
+import communication.ports.interfaces.KickerEquippedRobotPort;
 import strategy.Strategy;
 import strategy.controllers.ControllerBase;
 import strategy.robots.RobotBase;
@@ -44,7 +45,7 @@ public class OnagerKicker extends ControllerBase {
     // We need some way to track the time, in order to change states properly
     private long nextStateChangeTime = 0;
 
-
+    private int lastKickerAction = 0;
 
     public OnagerKicker(RobotBase robot) {
         super(robot);
@@ -94,7 +95,7 @@ public class OnagerKicker extends ControllerBase {
         if (!POSITIVE_POWER_IS_UP) kickerPower *= -1;
 
         // Send command
-        ((DribblerKickerEquippedRobotPort) this.robot.port).updateKicker(kickerPower);
+        ((KickerEquippedRobotPort) this.robot.port).updateKicker(kickerPower);
     }
 
     // If we're holding down (hopefully with a ball inside the grabber), kick it ASAP.
@@ -106,11 +107,12 @@ public class OnagerKicker extends ControllerBase {
     @Override
     // This (allegedly) gets called every update cycle. Track state changes in here?
     public void perform() {
-        assert (this.robot.port instanceof DribblerKickerEquippedRobotPort);
+        assert (this.robot.port instanceof KickerEquippedRobotPort);
         Robot us = Strategy.world.getRobot(this.robot.robotType);
         // Abort if we don't exist, or...
         if (us == null) return;
         // ... if we're turned off, IFF we don't have a kick to complete, or...
+        if (isKickInProgress()) doAction(lastKickerAction);
         if (!this.isActive() && !isKickInProgress()) return;
         // ... if a change isn't due yet
         long currentTime = System.currentTimeMillis();
@@ -119,9 +121,13 @@ public class OnagerKicker extends ControllerBase {
         // If we've received an order to discharge the ball, do so.
         if (shootOrderReceived && isKickInProgress()) {
             // Instead of duplicating code, we just hook ourselves into the releasing subroutine.
-            kickerStatus = KickerStatus.HOLDING;
             shootOrderReceived = false;
+            kickerStatus = KickerStatus.HOLDING;
         }
+
+        // Apparently, we're seeing issues where the kicker commands don't register.
+        // I'm attributing this to UDP packet loss, which means we'll have to resend stuff.
+        // Ergo, instead of calling 'doAction()' directly, set 'lastKickerAction'
 
         // This will continue working even if we're inactive, in case a kick is in progress.
         switch (kickerStatus) { // could've done it using methods inside an interface inside the enum... awwww yeaaaah
@@ -129,26 +135,26 @@ public class OnagerKicker extends ControllerBase {
             case OFF:
                 kickerStatus = KickerStatus.DESCENDING;
                 nextStateChangeTime = currentTime + KICKER_DESCEND_DURATION;
-                doAction(-100);
+                lastKickerAction = -100;
                 break;
             // Descending finished, now hold. We still need to apply power to resist the rubber band
             case DESCENDING:
                 kickerStatus = KickerStatus.HOLDING;
                 nextStateChangeTime = currentTime + ((isInManualMode()) ?
                         KICKER_MANUAL_MAX_HOLD_DURATION : kickerHoldDuration);
-                doAction(-100);
+                lastKickerAction = -KICKER_HOLD_POWER;
                 break;
             // We're done with the holding, the ball needs to be released now.
             case HOLDING:
                 kickerStatus = KickerStatus.ASCENDING;
                 nextStateChangeTime = currentTime + KICKER_ASCEND_DURATION;
-                doAction(-KICKER_HOLD_POWER);
+                lastKickerAction = 100;
                 break;
             // And once we're done with moving upwards, turn motors off.
             case ASCENDING:
                 kickerStatus = KickerStatus.OFF;
                 nextStateChangeTime = currentTime + 5; // Just to be safe, I guess
-                doAction(0);
+                lastKickerAction = 0;
                 // If we received a deactivation command whilst kicking, or we want to kick just once, shut down.
                 if (shutDownAfterKick || autoShutdownAfterKick) {
                     setActive(false);
@@ -156,6 +162,8 @@ public class OnagerKicker extends ControllerBase {
                 }
                 break;
         }
+
+        doAction(lastKickerAction);
     }
 
     private enum KickerStatus {

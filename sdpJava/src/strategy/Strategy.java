@@ -183,14 +183,6 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
                     ((KhaleesiRobotPort) khaleesi.port).threeWheelHolonomicMotion(0, 0, 0);
                     break;
 
-                /******************** KHALEESI'S ACTION ********************/
-                // spins dribbler and kicker
-                case "dk":
-                    ((KhaleesiRobotPort) khaleesi.port).dribblerKicker(100, 100);
-                    break;
-                case "dkStop":
-                    ((KhaleesiRobotPort) khaleesi.port).dribblerKicker(0, 0);
-                    break;
                 case "attemptKick":
                     khaleesi.KICKER_CONTROLLER.setActive(true);
                     khaleesi.KICKER_CONTROLLER.perform();

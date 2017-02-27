@@ -154,16 +154,17 @@ public class GUI extends JFrame implements KeyListener {
                 // P - PATROL GOAL (PASSIVE BEHAVIOUR)
                 case 'p':
                     Strategy.setBehaviour(new PassiveBehaviour());
-                    Strategy.getCurrentBehaviour().setCurrentAction(new GoToSafeLocation());
+                    Strategy.getCurrentBehaviour().setCurrentAction(new PatrolGoal());
                     break;
 
                 // Manual kicker testing. BAD PRACTICE!
                 case 'y':
                     Strategy.setBehaviour(new PassiveBehaviour());
                     this.robot.MOTION_CONTROLLER.setActive(false);
-                    ((Khaleesi)this.robot).KICKER_CONTROLLER.setKickerHoldDuration(0);
+                    ((Khaleesi)this.robot).KICKER_CONTROLLER.setKickerHoldDuration(1250);
                     ((Khaleesi)this.robot).KICKER_CONTROLLER.setActive(true);
                     break;
+
                 // NUMBERS MIRROR PITCH, I.E. PATTERN SAME AS NUMPAD
                 // ALL NUMBER COMMANDS WILL CHANGE STRATEGY TO PASSIVE BEHAVIOUR
                 case '1':
@@ -217,23 +218,23 @@ public class GUI extends JFrame implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (this.robot instanceof Khaleesi) {
-            ThreeWheelHolonomicDrive drive = (ThreeWheelHolonomicDrive) this.robot.drive;
-            if (e.getSource() == this.maxSpeed) {
-                System.out.println("SpeedChange");
-                try {
-                    drive.MAX_MOTION = Integer.parseInt(this.maxSpeed.getText());
-                } catch (Exception ex) {
-                }
-                System.out.println("SpeedChange : " + drive.MAX_MOTION);
-            } else if (e.getSource() == this.turnSpeed) {
-                try {
-                    drive.MAX_ROTATION = Integer.parseInt(this.turnSpeed.getText());
-                } catch (Exception ex) {
-                }
-                System.out.println("TurnChange : " + drive.MAX_ROTATION);
-            }
-        }
-        r.setText("");
+//        if (this.robot instanceof Khaleesi) {
+//            ThreeWheelHolonomicDrive drive = (ThreeWheelHolonomicDrive) this.robot.drive;
+//            if (e.getSource() == this.maxSpeed) {
+//                System.out.println("SpeedChange");
+//                try {
+//                    drive.MAX_MOTION = Integer.parseInt(this.maxSpeed.getText());
+//                } catch (Exception ex) {
+//                }
+//                System.out.println("SpeedChange : " + drive.MAX_MOTION);
+//            } else if (e.getSource() == this.turnSpeed) {
+//                try {
+//                    drive.MAX_ROTATION = Integer.parseInt(this.turnSpeed.getText());
+//                } catch (Exception ex) {
+//                }
+//                System.out.println("TurnChange : " + drive.MAX_ROTATION);
+//            }
+//        }
+//        r.setText("");
     }
 }
