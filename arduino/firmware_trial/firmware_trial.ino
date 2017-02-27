@@ -48,8 +48,7 @@ void setup()
 
   // KICKERS
   sCmd.addCommand("sk", stopKicker);
-  //sCmd.addCommand("dk", dribblerKick);
-  //sCmd.addCommand("kick", kicker);
+  sCmd.addCommand("k", kick);
 
   // ROTARY
   sCmd.addCommand("poll101", poll101);
@@ -229,16 +228,15 @@ void resetKicker()
   // reset the dribbler and kicker to the desired position
 }
 
-// for debugging the kicker at an input speed
-// Kick for 200ms and then halt.
 void kick()
 {
   int kickPower = atoi(sCmd.next());
   moveMotor(KICKLEFT, kickPower);
   moveMotor(KICKRIGHT, kickPower);
-  delay(200);
-  stopKicker();
+  Serial.print("Kick ");
+  Serial.print(kickPower);
 }
+
 
 void printTrio(double array[])
 {
