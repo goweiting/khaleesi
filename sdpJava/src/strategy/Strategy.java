@@ -18,6 +18,7 @@ import vision.*;
 import vision.Robot;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -281,7 +282,7 @@ public class Strategy implements VisionListener, PortListener, ActionListener {
     }
 
     public static void setBehaviour(BehaviourBase behaviour) {
-        if (currentBehaviour.equals(behaviour)) return;
+        if (currentBehaviour != null && currentBehaviour.equals(behaviour)) return;
         if (currentBehaviour != null) currentBehaviour.onEnd();
         currentRobotBase.setControllersActive(false);
         currentBehaviour = behaviour;

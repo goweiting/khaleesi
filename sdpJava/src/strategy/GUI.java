@@ -159,9 +159,11 @@ public class GUI extends JFrame implements KeyListener {
 
                 // Manual kicker testing. BAD PRACTICE!
                 case 'y':
+                    Strategy.setBehaviour(new PassiveBehaviour());
+                    this.robot.MOTION_CONTROLLER.setActive(false);
                     ((Khaleesi)this.robot).KICKER_CONTROLLER.setKickerHoldDuration(0);
                     ((Khaleesi)this.robot).KICKER_CONTROLLER.setActive(true);
-
+                    break;
                 // NUMBERS MIRROR PITCH, I.E. PATTERN SAME AS NUMPAD
                 // ALL NUMBER COMMANDS WILL CHANGE STRATEGY TO PASSIVE BEHAVIOUR
                 case '1':
