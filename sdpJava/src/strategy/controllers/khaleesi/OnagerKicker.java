@@ -30,7 +30,7 @@ public class OnagerKicker extends ControllerBase {
     private static final int KICKER_DEFAULT_HOLD_DURATION = 2500;
     // However, holding the ball forever will probably be against the rules.
     // Therefore, we need a fail-safe.
-    private static final int KICKER_MANUAL_MAX_HOLD_DURATION = 10000;
+    private static final int KICKER_MANUAL_MAX_HOLD_DURATION = 2500; //10000; // hack to prevent long stalling
     // Assumed duration of the movements. Please adjust as necessary - these will depend on the power.
     private static final int KICKER_ASCEND_DURATION = 750;
     private static final int KICKER_DESCEND_DURATION = 750;
