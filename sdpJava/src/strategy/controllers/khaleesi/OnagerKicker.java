@@ -17,9 +17,9 @@ public class OnagerKicker extends ControllerBase {
     private static final boolean POSITIVE_POWER_IS_UP = true;
 
     // Maximum descending power. More => faster "grabbing".
-    private static final int MAX_KICKER_DESCEND_POWER = 85;
+    private static final int MAX_KICKER_DESCEND_POWER = 100;
     // Power to use to keep the kicker down - less than the descending one
-    private static final int KICKER_HOLD_POWER = 60;
+    private static final int KICKER_HOLD_POWER = 100;
     // Maximum ascending power. More => more powerful kick, but we can't avoid slamming the kicker in the robot
     private static final int MAX_KICKER_ASCEND_POWER = 100;
 
