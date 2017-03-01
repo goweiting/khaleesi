@@ -1,10 +1,8 @@
 package vision.rawInput;
 
-/**
- * Created by Simon Rovder
- */
+/** Created by Simon Rovder */
 public interface RawInputInterface {
-    public void stop();
+  public void stop();
 
-    public void start();
+  public void start();
 }

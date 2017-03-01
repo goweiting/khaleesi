@@ -2,9 +2,7 @@ package vision.robotAnalysis;
 
 import vision.DynamicWorld;
 
-/**
- * Created by Simon Rovder
- */
+/** Created by Simon Rovder */
 public interface DynamicWorldListener {
-    public void nextDynamicWorld(DynamicWorld state);
+  public void nextDynamicWorld(DynamicWorld state);
 }

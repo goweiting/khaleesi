@@ -1,9 +1,6 @@
 package vision;
 
-/**
- * Created by Simon Rovder
- */
-
+/** Created by Simon Rovder */
 public interface VisionListener {
-    public void nextWorld(DynamicWorld staticWorld);
+  public void nextWorld(DynamicWorld staticWorld);
 }

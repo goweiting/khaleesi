@@ -2,15 +2,13 @@ package vision.tools;
 
 import java.awt.*;
 
-/**
- * Created by Simon Rovder
- */
+/** Created by Simon Rovder */
 public class ColoredPoint extends Point {
 
-    public final Color color;
+  public final Color color;
 
-    public ColoredPoint(int x, int y, Color c) {
-        super(x, y);
-        this.color = c;
-    }
+  public ColoredPoint(int x, int y, Color c) {
+    super(x, y);
+    this.color = c;
+  }
 }

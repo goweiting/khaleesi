@@ -1,14 +1,12 @@
 package strategy.robots;
 
-/**
- * Created by Simon Rovder
- */
+/** Created by Simon Rovder */
 interface RobotInterface {
-    void perform();
+  void perform();
 
-    void performAutomatic();
+  void performAutomatic();
 
-    void performManual();
+  void performManual();
 
-    void setControllersActive(boolean active);
+  void setControllersActive(boolean active);
 }

@@ -1,9 +1,6 @@
 package communication;
 
-/**
- * Created by Simon Rovder
- */
-
+/** Created by Simon Rovder */
 public interface PortListener {
-    void receivedStringHandler(String string);
+  void receivedStringHandler(String string);
 }

@@ -2,13 +2,11 @@ package strategy.navigation.potentialFieldNavigation;
 
 import vision.tools.VectorGeometry;
 
-/**
- * Created by Simon Rovder
- */
+/** Created by Simon Rovder */
 public interface PotentialSourceInterface {
-    VectorGeometry getForce(VectorGeometry point);
+  VectorGeometry getForce(VectorGeometry point);
 
-    VectorGeometry getRelativePoint(VectorGeometry point);
+  VectorGeometry getRelativePoint(VectorGeometry point);
 
-    double getPotentialAtPoint(VectorGeometry relativePoint);
+  double getPotentialAtPoint(VectorGeometry relativePoint);
 }

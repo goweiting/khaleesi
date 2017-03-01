@@ -2,25 +2,21 @@ package strategy.behaviours;
 
 import strategy.actions.other.Contemplating;
 
-/**
- * RK: This is only to make sure the robot does NOTHING before given a command
- */
+/** RK: This is only to make sure the robot does NOTHING before given a command */
 public class PassiveBehaviour extends BehaviourBase {
 
-    public PassiveBehaviour() {
-        this.rawDescription = "Passive behaviour";
-    }
+  public PassiveBehaviour() {
+    this.rawDescription = "Passive behaviour";
+  }
 
-    @Override
-    public void onStart() {
-        // When we start up, we'd like to do NOTHING
-        setCurrentAction(new Contemplating());
-        super.onStart();
-    }
+  @Override
+  public void onStart() {
+    // When we start up, we'd like to do NOTHING
+    setCurrentAction(new Contemplating());
+    super.onStart();
+  }
 
-    // Actual strategy.
-    @Override
-    public void update() {
-
-    }
+  // Actual strategy.
+  @Override
+  public void update() {}
 }

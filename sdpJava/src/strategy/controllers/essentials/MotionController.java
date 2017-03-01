@@ -1,14 +1,14 @@
 package strategy.controllers.essentials;
 
+import strategy.GUI;
 import strategy.Strategy;
 import strategy.controllers.ControllerBase;
 import strategy.navigation.NavigationInterface;
 import strategy.navigation.Obstacle;
-import strategy.points.DynamicPoint;
 import strategy.navigation.aStarNavigation.AStarNavigation;
 import strategy.navigation.potentialFieldNavigation.PotentialFieldNavigation;
+import strategy.points.DynamicPoint;
 import strategy.robots.RobotBase;
-import strategy.GUI;
 import vision.Robot;
 import vision.RobotType;
 import vision.tools.VectorGeometry;
@@ -28,11 +28,6 @@ public class MotionController extends ControllerBase {
 
   public MotionController(RobotBase robot) {
     super(robot);
-  }
-
-  public enum MotionMode {
-    ON,
-    OFF
   }
 
   public void setMode(MotionMode mode) {
@@ -138,5 +133,10 @@ public class MotionController extends ControllerBase {
     //        strategy.navigationInterface.draw();
 
     this.robot.drive.move(this.robot.port, us.location, force, rotation, factor);
+  }
+
+  public enum MotionMode {
+    ON,
+    OFF
   }
 }

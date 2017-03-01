@@ -5,10 +5,7 @@ import strategy.controllers.khaleesi.OnagerKicker;
 import strategy.drives.ThreeWheelHolonomicDrive;
 import vision.RobotType;
 
-/**
- * Created, in some form or another, by Simon Rovder
- * Purified through fire by Rado Kirilchev
- */
+/** Created, in some form or another, by Simon Rovder Purified through fire by Rado Kirilchev */
 
 // ALL HAIL DAENERYS TARGARYEN, THE FIRST OF HER NAME, STORMBORN AND UNBURNT, MOTHER OF DRAGONS AND BREAKER OF CHAINS,
 // OF DRAGONSTONE, QUEEN OF THE ANDALS AND THE RHOYNAR AND THE FIRST MEN, AND KHALEESI OF THE GREAT GRASS SEA
@@ -107,26 +104,22 @@ import vision.RobotType;
 //~~::::,:::::,..,,,,::::,,,.......,.,,,.,.,,.......,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.....,,,,,,,,,,::::::::~~===+======
 //~~:::,:::::,,...,,,::::,,:..,,,,,.,,.,,,,,,,......,,,,,,:,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.....,,,,,,,,,,,,::::::~~=========
 
-
 public class Khaleesi extends RobotBase {
-    // We're not using these any more.
-    //public final PropellerController PROPELLER_CONTROLLER = new PropellerController(this);
-    //public final DribblerController DRIBBLER_CONTROLLER = new DribblerController(this);
+  // We're not using these any more.
+  //public final PropellerController PROPELLER_CONTROLLER = new PropellerController(this);
+  //public final DribblerController DRIBBLER_CONTROLLER = new DribblerController(this);
 
-    // Replacing the old kicker with the Onager™ Reinforced Propelling System
-    //public final KickerController KICKER_CONTROLLER = new KickerController(this);
-    public final OnagerKicker KICKER_CONTROLLER = new OnagerKicker(this);
+  // Replacing the old kicker with the Onager™ Reinforced Propelling System
+  //public final KickerController KICKER_CONTROLLER = new KickerController(this);
+  public final OnagerKicker KICKER_CONTROLLER = new OnagerKicker(this);
 
-    public Khaleesi(RobotType robotType) {
-        super(robotType, new KhaleesiRobotPort(), new ThreeWheelHolonomicDrive());
-        //this.controllers.add(this.PROPELLER_CONTROLLER);
-        //this.controllers.add(this.DRIBBLER_CONTROLLER);
-        this.controllers.add(this.KICKER_CONTROLLER);
-    }
+  public Khaleesi(RobotType robotType) {
+    super(robotType, new KhaleesiRobotPort(), new ThreeWheelHolonomicDrive());
+    //this.controllers.add(this.PROPELLER_CONTROLLER);
+    //this.controllers.add(this.DRIBBLER_CONTROLLER);
+    this.controllers.add(this.KICKER_CONTROLLER);
+  }
 
-
-    @Override
-    public void performManual() {
-
-    }
+  @Override
+  public void performManual() {}
 }

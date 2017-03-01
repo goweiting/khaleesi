@@ -1,15 +1,10 @@
 package strategy.points;
 
-
-/**
- * Created by Simon Rovder
- */
+/** Created by Simon Rovder */
 public interface DynamicPoint {
-    void recalculate();
+  void recalculate();
 
-    int getX();
+  int getX();
 
-    int getY();
-
-
+  int getY();
 }

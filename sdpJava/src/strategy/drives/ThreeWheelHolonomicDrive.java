@@ -2,7 +2,6 @@ package strategy.drives;
 
 import communication.ports.interfaces.RobotPort;
 import communication.ports.interfaces.ThreeWheelHolonomicRobotPort;
-import vision.gui.SDPConsole;
 import vision.tools.DirectedPoint;
 import vision.tools.VectorGeometry;
 

@@ -1,12 +1,10 @@
 package strategy.controllers;
 
-/**
- * Created by Simon Rovder
- */
+/** Created by Simon Rovder */
 public interface ControllerInterface {
-    void perform();
+  void perform();
 
-    boolean isActive();
+  boolean isActive();
 
-    void setActive(boolean active);
+  void setActive(boolean active);
 }
