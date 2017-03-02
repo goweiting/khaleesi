@@ -150,57 +150,60 @@ void rationalMotors()
   moveMotor(BACK, back);
 }
 
-static int pollinterval_drive = 250; // ms
+static int pollinterval_drive = 200; // ms
 
 void monitoredDrive()
 {
+    
   // Drive and monitored by the encoders
   int frontLeft = atoi(sCmd.next());
   int frontRight = atoi(sCmd.next());
   int back = atoi(sCmd.next());
+  
+  // force it to move forward first:
+  moveMotor(FRONTLEFT, 100);
+  moveMotor(FRONTRIGHT, 100);
+    delay(1000);
   double expectedSpeed[3] = {frontLeft, frontRight, back};
   double maxSpeed = findMaxSpeed(expectedSpeed);
-  Serial.print("Expected Speed:");
-  printTrio(expectedSpeed);
-  Serial.println();
+//  Serial.print("Expected Speed:");
+  //printTrio(expectedSpeed);
+  //Serial.println();
 
   int x = 0;
-  static int iter = 3;   // change the number of iterations here!
+  static int iter = 2;   // change the number of iterations here!
   static double p = 1; // P constant
 
-  while (x < iter)
-  {
-    resetAll(); // ESEENTIAL TO PREVENT OVF
+  resetAll(); // ESEENTIAL TO PREVENT OVF
 
-    moveMotor(FRONTLEFT, -frontLeft);
-    moveMotor(FRONTRIGHT, frontRight);
-    moveMotor(BACK, back);
+  moveMotor(FRONTLEFT, -frontLeft);
+  moveMotor(FRONTRIGHT, frontRight);
+  moveMotor(BACK, back);
 
-    double *currentSpeed = getCurrentSpeed(pollinterval_drive);
-    double *estimatedSpeed = normaliseSpeed(currentSpeed, maxSpeed);
-    Serial.print("Current Speed: ");
-    printTrio(estimatedSpeed);
-    Serial.println();
-    resetAll();
+  double *currentSpeed = getCurrentSpeed(pollinterval_drive);
+  double *estimatedSpeed = normaliseSpeed(currentSpeed, maxSpeed);
+  //Serial.print("Current Speed: ");
+  //printTrio(estimatedSpeed);
+  //Serial.println();
+  resetAll();
 
-    // set the new speeds:
-    double error[3] = {frontLeft - estimatedSpeed[0],
-                       frontRight - estimatedSpeed[1],
-                       back - estimatedSpeed[2]};
-    frontLeft = frontLeft + (p * error[0]);
-    frontRight = frontRight + (p * error[1]);
-    back = back + (p * error[2]);
-    double newSpeeds[3] = {frontLeft, frontRight, back};
-    double *output = normaliseSpeed(newSpeeds, maxSpeed);
-    Serial.print("New Speed: ");
-    printTrio(output);
-    Serial.println("\n\n");
-    // next iteration
-    frontLeft = (int)output[0];
-    frontRight = (int)output[1];
-    back = (int)output[2];
-    x += 1;
-  }
+  // set the new speeds:
+  double error[3] = {frontLeft - estimatedSpeed[0],
+                     frontRight - estimatedSpeed[1],
+                      back - estimatedSpeed[2]};
+   frontLeft = frontLeft + (p * error[0]);
+   frontRight = frontRight + (p * error[1]);
+   back = back + (p * error[2]);
+   double newSpeeds[3] = {frontLeft, frontRight, back};
+   double *output = normaliseSpeed(newSpeeds, maxSpeed);
+   // Serial.print("New Speed: ");
+   // printTrio(output);
+   // Serial.println("\n\n");
+   // next iteration
+   moveMotor(FRONTLEFT, output[0]);
+  moveMotor(FRONTRIGHT, output[1]);
+  moveMotor(BACK, output[2]);
+  delay(1000);
   dontMove();
 }
 
