@@ -1,7 +1,9 @@
 package strategy.robots;
 
+import communication.ports.interfaces.RobotPort;
 import communication.ports.robotPorts.KhaleesiRobotPort;
 import strategy.controllers.khaleesi.OnagerKicker;
+import strategy.drives.DriveInterface;
 import strategy.drives.ThreeWheelHolonomicDrive;
 import vision.RobotType;
 
@@ -105,21 +107,27 @@ import vision.RobotType;
 //~~:::,:::::,,...,,,::::,,:..,,,,,.,,.,,,,,,,......,,,,,,:,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.....,,,,,,,,,,,,::::::~~=========
 
 public class Khaleesi extends RobotBase {
-  // We're not using these any more.
-  //public final PropellerController PROPELLER_CONTROLLER = new PropellerController(this);
-  //public final DribblerController DRIBBLER_CONTROLLER = new DribblerController(this);
+    // We're not using these any more.
+    //public final PropellerController PROPELLER_CONTROLLER = new PropellerController(this);
+    //public final DribblerController DRIBBLER_CONTROLLER = new DribblerController(this);
 
-  // Replacing the old kicker with the Onager™ Reinforced Propelling System
-  //public final KickerController KICKER_CONTROLLER = new KickerController(this);
-  public final OnagerKicker KICKER_CONTROLLER = new OnagerKicker(this);
+    // Replacing the old kicker with the Onager™ Reinforced Propelling System
+    //public final KickerController KICKER_CONTROLLER = new KickerController(this);
+    public final OnagerKicker KICKER_CONTROLLER = new OnagerKicker(this);
 
-  public Khaleesi(RobotType robotType) {
-    super(robotType, new KhaleesiRobotPort(), new ThreeWheelHolonomicDrive());
-    //this.controllers.add(this.PROPELLER_CONTROLLER);
-    //this.controllers.add(this.DRIBBLER_CONTROLLER);
-    this.controllers.add(this.KICKER_CONTROLLER);
-  }
+    public Khaleesi(RobotType robotType) {
+        super(robotType, new KhaleesiRobotPort(), new ThreeWheelHolonomicDrive());
+        //this.controllers.add(this.PROPELLER_CONTROLLER);
+        //this.controllers.add(this.DRIBBLER_CONTROLLER);
+        this.controllers.add(this.KICKER_CONTROLLER);
+    }
 
-  @Override
-  public void performManual() {}
+    // Bad things. This is most definitely against the original design idea.
+    // But it might be useful, though. He-he.
+    public void setDrive(DriveInterface drive) {
+        this.drive = port;
+    }
+
+    @Override
+    public void performManual() {}
 }

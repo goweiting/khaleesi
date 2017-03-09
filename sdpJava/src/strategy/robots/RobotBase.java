@@ -21,7 +21,7 @@ public abstract class RobotBase implements RobotInterface {
   public final RobotType robotType;
   public final MotionController MOTION_CONTROLLER = new MotionController(this);
   public final RobotPort port;
-  public final DriveInterface drive;
+  public DriveInterface drive;
   protected LinkedList<ControllerInterface> controllers;
 
   /**

@@ -58,3 +58,4 @@
 
 # End of https://www.gitignore.io/api/intellij
 sdpJava/.idea
+out/
