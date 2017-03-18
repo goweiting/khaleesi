@@ -1,10 +1,3 @@
-/fred/bin/
-/fred/.idea/
-/fred/out/
-/fred/*.iml
-/fred/.classpath
-/fred/.project
-
 # Editted to include all nested version of the .idea folders!
 
 ### Intellij ###
@@ -64,7 +57,7 @@
 **/*.ipr
 
 # End of https://www.gitignore.io/api/intellij
-sdpJava/.idea
+.idea
 out/
 
 # Ignore VSCODE
