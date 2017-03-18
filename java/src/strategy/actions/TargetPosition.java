@@ -3,13 +3,13 @@ package strategy.actions;
 import PolarCoordNavigation.Coordinates.CartesianCoordinate;
 import strategy.Strategy;
 
-public class HoldPosition extends ActionBase {
+public class TargetPosition extends ActionBase {
     private CartesianCoordinate targetPosition;
 
-    public HoldPosition(CartesianCoordinate target) {
+    public TargetPosition(CartesianCoordinate target) {
         targetPosition = target;
         this.rawDescription =
-                "Holding position [X " + targetPosition.getX() + ";" + "Y " + targetPosition.getY() + "]";
+                "Targeting position [X " + targetPosition.getX() + ";" + "Y " + targetPosition.getY() + "]";
     }
 
     @Override

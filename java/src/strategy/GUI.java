@@ -3,7 +3,7 @@ package strategy;
 import PolarCoordNavigation.Coordinates.CartesianCoordinate;
 import strategy.actions.ActionBase;
 import strategy.actions.Contemplating;
-import strategy.actions.HoldPosition;
+import strategy.actions.TargetPosition;
 import strategy.behaviours.BehaviourBase;
 import strategy.behaviours.DefaultBehaviour;
 import strategy.behaviours.PassiveBehaviour;
@@ -149,47 +149,47 @@ public class GUI extends JFrame implements KeyListener {
                 case '1':
                     Strategy.setBehaviour(new PassiveBehaviour());
                     Strategy.getCurrentBehaviour()
-                            .setCurrentAction(new HoldPosition(new CartesianCoordinate(-50, -50)));
+                            .setCurrentAction(new TargetPosition(new CartesianCoordinate(-50, -50)));
                     break;
                 case '2':
                     Strategy.setBehaviour(new PassiveBehaviour());
                     Strategy.getCurrentBehaviour()
-                            .setCurrentAction(new HoldPosition(new CartesianCoordinate(0, -50)));
+                            .setCurrentAction(new TargetPosition(new CartesianCoordinate(0, -50)));
                     break;
                 case '3':
                     Strategy.setBehaviour(new PassiveBehaviour());
                     Strategy.getCurrentBehaviour()
-                            .setCurrentAction(new HoldPosition(new CartesianCoordinate(50, -50)));
+                            .setCurrentAction(new TargetPosition(new CartesianCoordinate(50, -50)));
                     break;
                 case '4':
                     Strategy.setBehaviour(new PassiveBehaviour());
                     Strategy.getCurrentBehaviour()
-                            .setCurrentAction(new HoldPosition(new CartesianCoordinate(-50, 0)));
+                            .setCurrentAction(new TargetPosition(new CartesianCoordinate(-50, 0)));
                     break;
                 case '5':
                     Strategy.setBehaviour(new PassiveBehaviour());
                     Strategy.getCurrentBehaviour()
-                            .setCurrentAction(new HoldPosition(new CartesianCoordinate(0, 0)));
+                            .setCurrentAction(new TargetPosition(new CartesianCoordinate(0, 0)));
                     break;
                 case '6':
                     Strategy.setBehaviour(new PassiveBehaviour());
                     Strategy.getCurrentBehaviour()
-                            .setCurrentAction(new HoldPosition(new CartesianCoordinate(50, 0)));
+                            .setCurrentAction(new TargetPosition(new CartesianCoordinate(50, 0)));
                     break;
                 case '7':
                     Strategy.setBehaviour(new PassiveBehaviour());
                     Strategy.getCurrentBehaviour()
-                            .setCurrentAction(new HoldPosition(new CartesianCoordinate(-50, 50)));
+                            .setCurrentAction(new TargetPosition(new CartesianCoordinate(-50, 50)));
                     break;
                 case '8':
                     Strategy.setBehaviour(new PassiveBehaviour());
                     Strategy.getCurrentBehaviour()
-                            .setCurrentAction(new HoldPosition(new CartesianCoordinate(0, 50)));
+                            .setCurrentAction(new TargetPosition(new CartesianCoordinate(0, 50)));
                     break;
                 case '9':
                     Strategy.setBehaviour(new PassiveBehaviour());
                     Strategy.getCurrentBehaviour()
-                            .setCurrentAction(new HoldPosition(new CartesianCoordinate(50, 50)));
+                            .setCurrentAction(new TargetPosition(new CartesianCoordinate(50, 50)));
                     break;
 
                 // H or F or SPACE - STOP, DO NOTHING. (PASSIVE BEHAVIOUR)

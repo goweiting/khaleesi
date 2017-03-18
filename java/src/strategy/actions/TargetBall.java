@@ -4,10 +4,10 @@ import strategy.Strategy;
 import strategy.points.ImportantPoints;
 
 /** Created by Simon Rovder */
-public class LookAtBall extends ActionBase {
+public class TargetBall extends ActionBase {
 
-    public LookAtBall() {
-        this.rawDescription = "Look At Ball";
+    public TargetBall() {
+        this.rawDescription = "Looking At Ball";
     }
 
     @Override

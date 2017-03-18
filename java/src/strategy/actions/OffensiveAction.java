@@ -12,6 +12,7 @@ public class OffensiveAction extends ActionBase {
 
     @Override
     public void onStart() {
+        Strategy.currentRobotBase.MOTION_CONTROLLER.setActive(true);
         Strategy.currentRobotBase.drive.setCurrentLookTarget(ImportantPoints.getEnemyGoalCartesian());
 
         super.onStart();
