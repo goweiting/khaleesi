@@ -5,6 +5,7 @@ import PolarCoordNavigation.Coordinates.PolarCoordinate;
 import PolarCoordNavigation.PolarNavigator;
 import communication.ports.interfaces.FourWheelHolonomicRobotPort;
 import communication.ports.interfaces.RobotPort;
+import communication.ports.interfaces.SpammingKickRobotPort;
 import communication.ports.robotPorts.Diag4RobotPort;
 import strategy.Strategy;
 import strategy.points.ImportantPoints;
@@ -97,7 +98,7 @@ public class HorizVertSimpleDrive implements DriveInterface {
         if (angleDiffAbs <= angleThreshold2
                 && diag4PolarCoords.getRadius() - ballPolarCoords.getRadius() < 25
                 && diag4PolarCoords.getRadius() >= ballPolarCoords.getRadius()) {
-            ((Diag4RobotPort) commandPort).spamKick();
+            ((SpammingKickRobotPort) commandPort).spamKick();
         }
 
 	/* case A: path on a straight line; check if there is
