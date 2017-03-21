@@ -99,7 +99,7 @@ public class SDPConsole extends JFrame {
     JFileChooser fileChooser = new JFileChooser();
     // RK: User home is pretty annoying, especially on windows
     //fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-    fileChooser.setCurrentDirectory(new File("./vision_settings/"));
+    fileChooser.setCurrentDirectory(new File("."));
     // And having a proper title would be good.
     fileChooser.setDialogTitle(dialogWindowTitle);
     int result = fileChooser.showOpenDialog(SDPConsole.console);

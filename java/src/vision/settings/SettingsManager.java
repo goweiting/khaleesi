@@ -1,6 +1,7 @@
 package vision.settings;
 
 import vision.colorAnalysis.SDPColor;
+import vision.colorAnalysis.SDPColorInstance;
 import vision.colorAnalysis.SDPColors;
 import vision.distortion.Distortion;
 import vision.gui.MiscellaneousSettings;
@@ -14,256 +15,123 @@ import static vision.colorAnalysis.SDPColor._BALL;
  * Created by Simon Rovder
  *
  * <p>SDP2017NOTE This class takes care of storing and loading settings. If you add any new features
- * that need callibration or take a long time to set up, edit this class to also save those
+ * that need calibration or take a long time to set up, edit this class to also save those
  * settings.
  */
 public class SettingsManager {
 
-  public static void saveSettings() throws Exception {
-    String fileName = SDPConsole.chooseFile("SAVE SETTINGS");
-    if (fileName != null) {
-      PrintWriter writer = new PrintWriter(fileName, "UTF-8");
-      writer.write("^COLORS\n");
-      for (SDPColor key : SDPColor.values()) {
-        writer.write(key.toString() + "\r\n");
-        writer.write(SDPColors.colors.get(key).saveSettings() + "\r\n");
-      }
-      writer.write("^MISC\r\n");
-      writer.write(MiscellaneousSettings.miscSettings.saveSettings() + "\r\n");
-
-      writer.write("^DISTORTION\r\n");
-      writer.write(Distortion.distortion.saveSettings() + "\r\n");
-      writer.write("^END");
-      writer.close();
+    public static void saveSettings() throws Exception {
+        String fileName = SDPConsole.chooseFile("SAVE SETTINGS");
+        saveSettingsToFile(fileName);
     }
-  }
 
-  public static void reloadSettings(String fileName, String ballPath) {
-    if (fileName != null) {
+    public static void saveSettingsToFile(String fileName) throws Exception {
+        if (fileName != null) {
+            PrintWriter writer = new PrintWriter(fileName, "UTF-8");
+            writer.write("^COLORS\n");
+            for (SDPColor key : SDPColor.values()) {
+                writer.write(key.toString() + "\r\n");
+                writer.write(SDPColors.colors.get(key).saveSettings() + "\r\n");
+            }
+            writer.write("^MISC\r\n");
+            writer.write(MiscellaneousSettings.miscSettings.saveSettings() + "\r\n");
 
-      BufferedReader r = null;
-      try {
-        r = new BufferedReader(new FileReader(new File(fileName)));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-      String next = null;
-      try {
-        next = r.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      while (!next.equals("^COLORS")) {
-        try {
-          next = r.readLine();
-        } catch (IOException e) {
-          e.printStackTrace();
+            writer.write("^DISTORTION\r\n");
+            writer.write(Distortion.distortion.saveSettings() + "\r\n");
+            writer.write("^END");
+            writer.close();
         }
-      }
-      try {
-        next = r.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      while (!next.equals("^MISC")) {
-        try {
-          SDPColors.colors.get(SDPColor.valueOf(next)).loadSettings(r.readLine());
-        } catch (IOException e) {
-          e.printStackTrace();
+    }
+
+    public static void reloadSettings(String fileName, String ballPath, int ourRegion, int ballRegion) throws Exception {
+        if (fileName == null) return;
+
+        BufferedReader r = new BufferedReader(new FileReader(new File(fileName)));
+        String next = r.readLine();
+        while (!next.equals("^COLORS")) {
+            next = r.readLine();
         }
-        try {
-          next = r.readLine();
-        } catch (IOException e) {
-          e.printStackTrace();
+        next = r.readLine();
+        while (!next.equals("^MISC")) {
+            SDPColorInstance col = SDPColors.colors.get(SDPColor.valueOf(next));
+            col.loadSettings(r.readLine());
+            col.setRegionInTitle(ourRegion);
+            next = r.readLine();
         }
-      }
-      try {
         next = r.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      while (!next.equals("^DISTORTION")) {
-       // MiscellaneousSettings.miscSettings.loadSettings(next);
-        try {
-          next = r.readLine();
-        } catch (IOException e) {
-          e.printStackTrace();
+        while (!next.equals("^DISTORTION")) {
+            // MiscellaneousSettings.miscSettings.loadSettings(next);
+            next = r.readLine();
         }
-      }
-      try {
         next = r.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-     // Distortion.distortion.loadSettings(next);
-      while (!next.equals("^END")) try {
-        next = r.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      try {
+        // Distortion.distortion.loadSettings(next);
+        while (!next.equals("^END")) {
+            next = r.readLine();
+        }
         r.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-    if (ballPath != null && !ballPath.equals("")) {
 
-      BufferedReader r2 = null;
-      try {
-        r2 = new BufferedReader(new FileReader(new File(ballPath)));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
 
-      String next = null;
-      try {
+        if (!(ballPath != null && !ballPath.equals(""))) return;
+
+        BufferedReader r2 = new BufferedReader(new FileReader(new File(ballPath)));
         next = r2.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-
-      while (!next.contains("_BALL")) {
-        try {
-          next = r2.readLine();
-        } catch (IOException e) {
-          e.printStackTrace();
+        while (!next.contains("_BALL")) {
+            next = r2.readLine();
         }
-      }
-
-      String ball = null;
-      try {
-        ball = r2.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      System.out.println(ball);
-      SDPColors.colors.get(_BALL).loadSettings(ball);
-
-      try {
+        String ball = r2.readLine();
+        SDPColors.colors.get(_BALL).loadSettings(ball);
+        SDPColors.colors.get(_BALL).setRegionInTitle(ballRegion);
         r2.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
-  }
 
-  public static void loadSettings(String fileName, String ballPath)  {
-    if (fileName != null) {
+    public static void loadSettings(String fileName, String ballPath) throws Exception {
+        if (fileName == null) return;
 
-      BufferedReader r = null;
-      try {
-        r = new BufferedReader(new FileReader(new File(fileName)));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-      String next = null;
-      try {
-        next = r.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      while (!next.equals("^COLORS")) {
-        try {
-          next = r.readLine();
-        } catch (IOException e) {
-          e.printStackTrace();
+        BufferedReader r = new BufferedReader(new FileReader(new File(fileName)));
+        String next = r.readLine();
+        while (!next.equals("^COLORS")) {
+            next = r.readLine();
         }
-      }
-      try {
         next = r.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      while (!next.equals("^MISC")) {
-        try {
-          SDPColors.colors.get(SDPColor.valueOf(next)).loadSettings(r.readLine());
-        } catch (IOException e) {
-          e.printStackTrace();
+        while (!next.equals("^MISC")) {
+            SDPColorInstance col = SDPColors.colors.get(SDPColor.valueOf(next));
+            col.loadSettings(r.readLine());
+            col.setRegionInTitle(-1);
+            next = r.readLine();
         }
-        try {
-          next = r.readLine();
-        } catch (IOException e) {
-          e.printStackTrace();
+        next = r.readLine();
+        while (!next.equals("^DISTORTION")) {
+            MiscellaneousSettings.miscSettings.loadSettings(next);
+            next = r.readLine();
         }
-      }
-      try {
         next = r.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      while (!next.equals("^DISTORTION")) {
-        MiscellaneousSettings.miscSettings.loadSettings(next);
-        try {
-          next = r.readLine();
-        } catch (IOException e) {
-          e.printStackTrace();
+        Distortion.distortion.loadSettings(next);
+        while (!next.equals("^END")) {
+            next = r.readLine();
         }
-      }
-      try {
-        next = r.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      Distortion.distortion.loadSettings(next);
-      while (!next.equals("^END")) try {
-        next = r.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      try {
         r.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-    if (ballPath != null && !ballPath.equals("")) {
 
-      BufferedReader r2 = null;
-      try {
-        r2 = new BufferedReader(new FileReader(new File(ballPath)));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
+        if (!(ballPath != null && !ballPath.equals(""))) return;
 
-      String next = null;
-      try {
+        BufferedReader r2 = new BufferedReader(new FileReader(new File(ballPath)));
         next = r2.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-
-      while (!next.contains("_BALL")) {
-        try {
-          next = r2.readLine();
-        } catch (IOException e) {
-          e.printStackTrace();
+        while (!next.contains("_BALL")) {
+            next = r2.readLine();
         }
-      }
-
-      String ball = null;
-      try {
-        ball = r2.readLine();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      System.out.println(ball);
-      SDPColors.colors.get(_BALL).loadSettings(ball);
-
-      try {
+        String ball = r2.readLine();
+        System.out.println(ball);
+        SDPColors.colors.get(_BALL).loadSettings(ball);
+        SDPColors.colors.get(_BALL).setRegionInTitle(-1);
         r2.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-  }
 
-  public static void loadSettings(String filename2) throws Exception {
-    String fileName = SDPConsole.chooseFile("LOAD SETTINGS");
-    if (fileName != null) {
-      loadSettings(fileName, filename2);
     }
-  }
+
+    public static void loadSettings(String filename2) throws Exception {
+        String fileName = SDPConsole.chooseFile("LOAD SETTINGS");
+        if (fileName != null) {
+            loadSettings(fileName, filename2);
+        }
+    }
 
 //  public static void loadBallSettings(String fileName) throws Exception {
 //    if (fileName != null) {

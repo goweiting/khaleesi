@@ -28,7 +28,7 @@ public class DefaultBehaviour extends BehaviourBase {
         // ├────────────┘             │             └────────────┤
         // │                          │                          │
         // │                          │                          │
-        // │                          │                          │(-W/2, -H/2)
+        // │                          │                          │(W/2, -H/2)
         // └──────────────────────────┴──────────────────────────┘  x -->
 
         // As decided, we're sticking to the LEFT side, our own.
