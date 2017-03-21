@@ -2,14 +2,18 @@ package strategy.points;
 
 import PolarCoordNavigation.Coordinates.CartesianCoordinate;
 import PolarCoordNavigation.Coordinates.PolarCoordinate;
+import communication.ports.robotPorts.KhaleesiRobotPort;
 import strategy.Strategy;
 import vision.Ball;
 import vision.Robot;
 import vision.RobotType;
 import vision.constants.Constants;
 
-/** Created by levif on 14/03/17. */
+/**
+ * Created by levif on 14/03/17.
+ */
 public class ImportantPoints {
+
 
   /**
    * TODO: important note --- one possibility would be to have a global variable called origin in
@@ -28,8 +32,6 @@ public class ImportantPoints {
 
   /**
    * Ball positions
-   *
-   * @return
    */
   public static CartesianCoordinate getBallCartesian() {
     Ball ball = Strategy.world.getBall();
@@ -57,8 +59,6 @@ public class ImportantPoints {
 
   /**
    * Enemy Goal Positions
-   *
-   * @return
    */
   public static CartesianCoordinate getEnemyGoalCartesian() {
     return new CartesianCoordinate(Constants.PITCH_WIDTH / 2, 0);
@@ -72,7 +72,23 @@ public class ImportantPoints {
     Robot friend = Strategy.world.getRobot(type);
 
     //TODO: we should return the last known position
-    if (friend == null) return new CartesianCoordinate(-1, -1);
+    if (friend == null) {
+      return new CartesianCoordinate(-1, -1);
+    } else if (type == RobotType.FRIEND_2) {
+      // GWT: trying to do predictive positioning here:
+
+      // effectiveForward is +ve when bot moves straight headwards
+      // effectiveSideward is +ve when bot moves rightwards!
+      double[] lastSpeed = KhaleesiRobotPort.getLastSentSpeed(); // F B L R
+      double meanEffectiveForward = (-lastSpeed[2] + lastSpeed[3]) / 2;
+      double meanEffectiveSidewards = (-lastSpeed[0] + lastSpeed[1]) / 2;
+
+      // Might need to change the constant, speed is never linear, but this is a good estimator!
+      double newX = friend.location.x + meanEffectiveSidewards * Strategy.TICK_INTERVAL_MSEC / 1000;
+      double newY = friend.location.y + meanEffectiveForward * Strategy.TICK_INTERVAL_MSEC / 1000;
+      return new CartesianCoordinate((float) newX, (float) newY);
+
+    }
 
     return new CartesianCoordinate((float) friend.location.x, (float) friend.location.y);
   }
