@@ -10,7 +10,7 @@ import communication.ports.interfaces.SpammingKickRobotPort;
 public class KhaleesiRobotPort extends RobotPort implements
     FourWheelHolonomicRobotPort, SpammingKickRobotPort {
 
-  private static double[] lastSentSpeed = new double[5];
+  private static double[] lastSentSpeed = new double[4];
 
   public KhaleesiRobotPort() {
     super("pang");
