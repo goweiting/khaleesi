@@ -1,4 +1,5 @@
 package vision.constants;
+
 /** Created by Simon Rovder SDP2017NOTE Edit these if the camera or pitch change. */
 public class Constants {
   public static final int INPUT_WIDTH = 640; // In pixels

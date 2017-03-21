@@ -1,23 +1,5 @@
 package vision.distortion;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import vision.colorAnalysis.SDPColor;
 import vision.constants.Constants;
 import vision.rawInput.RawInputListener;
@@ -26,6 +8,20 @@ import vision.spotAnalysis.NextSpotsListener;
 import vision.spotAnalysis.approximatedSpotAnalysis.Spot;
 import vision.tools.Point;
 import vision.tools.VectorGeometry;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+
 /** Created by Simon Rovder */
 public class Distortion extends JPanel
     implements SaveLoadCapable,

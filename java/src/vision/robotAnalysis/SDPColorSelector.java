@@ -1,8 +1,10 @@
 package vision.robotAnalysis;
 
-import javax.swing.JComboBox;
 import vision.colorAnalysis.SDPColor;
 import vision.colorAnalysis.SDPColorInstance;
+
+import javax.swing.*;
+
 /** Created by Simon Rovder */
 public class SDPColorSelector extends JComboBox<String> {
 

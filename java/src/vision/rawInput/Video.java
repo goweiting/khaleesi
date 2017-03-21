@@ -5,9 +5,11 @@ import au.edu.jcu.v4l4j.FrameGrabber;
 import au.edu.jcu.v4l4j.ImageFormat;
 import au.edu.jcu.v4l4j.VideoDevice;
 import au.edu.jcu.v4l4j.exceptions.V4L4JException;
-import java.awt.Component;
-import java.awt.event.WindowAdapter;
 import vision.gui.SDPConsole;
+
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+
 /**
  * This class demonstrates how to tik a simple push-mode capture. It starts the capture and display
  * the video stream in a JLabel

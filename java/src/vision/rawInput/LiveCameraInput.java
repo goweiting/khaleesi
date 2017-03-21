@@ -1,24 +1,17 @@
 package vision.rawInput;
 
-import au.edu.jcu.v4l4j.CaptureCallback;
-import au.edu.jcu.v4l4j.FrameGrabber;
-import au.edu.jcu.v4l4j.V4L4JConstants;
-import au.edu.jcu.v4l4j.VideoDevice;
-import au.edu.jcu.v4l4j.VideoFrame;
+import au.edu.jcu.v4l4j.*;
 import au.edu.jcu.v4l4j.exceptions.StateException;
 import au.edu.jcu.v4l4j.exceptions.V4L4JException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import vision.constants.Constants;
 import vision.gui.Preview;
 import vision.gui.SDPConsole;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+
 /** Created by Simon Rovder */
 public class LiveCameraInput extends AbstractRawInput implements CaptureCallback, ActionListener {
 

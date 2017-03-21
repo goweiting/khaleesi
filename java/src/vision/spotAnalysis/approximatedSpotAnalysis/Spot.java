@@ -5,6 +5,7 @@ import vision.colorAnalysis.SDPColorInstance;
 import vision.colorAnalysis.SDPColors;
 import vision.constants.Constants;
 import vision.tools.VectorGeometry;
+
 /** Created by Simon Rovder */
 public class Spot extends VectorGeometry implements Comparable {
   public int magnitude;

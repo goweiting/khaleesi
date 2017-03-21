@@ -1,6 +1,7 @@
 package vision.rawInput;
 
-import javax.swing.JPanel;
+import javax.swing.*;
+
 /** Created by Simon Rovder */
 abstract class AbstractRawInput extends JPanel implements RawInputInterface {
 

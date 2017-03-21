@@ -5,6 +5,7 @@ import vision.constants.Constants;
 import vision.gui.SDPConsole;
 import vision.rawInput.RawInput;
 import vision.settings.SettingsManager;
+
 /** Created by Simon Rovder */
 public class CommandLineParser {
 

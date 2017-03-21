@@ -1,9 +1,5 @@
 package vision.robotAnalysis.oldAnalysis;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import vision.Ball;
 import vision.DynamicWorld;
 import vision.Robot;
@@ -14,6 +10,12 @@ import vision.robotAnalysis.RobotAnalysisBase;
 import vision.robotAnalysis.RobotPreview;
 import vision.spotAnalysis.approximatedSpotAnalysis.Spot;
 import vision.tools.VectorGeometry;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+
 /** Created by Simon Rovder */
 public class RobotAnalysis extends RobotAnalysisBase {
 

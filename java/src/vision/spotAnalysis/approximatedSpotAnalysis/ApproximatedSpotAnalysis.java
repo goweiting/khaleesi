@@ -1,19 +1,19 @@
 package vision.spotAnalysis.approximatedSpotAnalysis;
 
-import static vision.tools.ImageTools.rgbToHsv;
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import vision.colorAnalysis.SDPColor;
 import vision.constants.Constants;
 import vision.gui.Preview;
 import vision.rawInput.RawInputListener;
 import vision.spotAnalysis.SpotAnalysisBase;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
+import static vision.tools.ImageTools.rgbToHsv;
 
 /**
  * Created by Simon Rovder

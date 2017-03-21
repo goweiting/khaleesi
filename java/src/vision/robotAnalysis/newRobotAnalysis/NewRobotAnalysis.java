@@ -1,7 +1,5 @@
 package vision.robotAnalysis.newRobotAnalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import vision.Ball;
 import vision.DynamicWorld;
 import vision.Robot;
@@ -12,6 +10,9 @@ import vision.robotAnalysis.RobotColorSettings;
 import vision.spotAnalysis.approximatedSpotAnalysis.Spot;
 import vision.tools.DirectedPoint;
 import vision.tools.VectorGeometry;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /** Created by Simon Rovder */
 public class NewRobotAnalysis extends RobotAnalysisBase {

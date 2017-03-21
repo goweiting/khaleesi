@@ -1,7 +1,8 @@
 package vision.tools;
 
-import java.awt.Color;
 import vision.constants.Constants;
+
+import java.awt.*;
 
 /** Created by Simon Rovder */
 public class ImageTools {

@@ -2,6 +2,7 @@ package vision.robotAnalysis.oldAnalysis;
 
 import vision.RobotType;
 import vision.tools.DirectedPoint;
+
 /** Created by Simon Rovder */
 public class DetectedRobot {
   public final RobotType robotType;

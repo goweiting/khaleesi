@@ -1,17 +1,16 @@
 package vision.rawInput;
 
+import vision.constants.Constants;
+import vision.gui.Preview;
+import vision.gui.SDPConsole;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import javax.imageio.ImageIO;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.Timer;
-import vision.constants.Constants;
-import vision.gui.Preview;
-import vision.gui.SDPConsole;
+
 /** Created by Simon Rovder */
 public class StaticImage extends AbstractRawInput implements ActionListener {
   public static final StaticImage staticImage = new StaticImage();
@@ -70,7 +69,7 @@ public class StaticImage extends AbstractRawInput implements ActionListener {
     } else if (e.getSource() == this.btnStopInput) {
       this.stop();
     } else if (e.getSource() == this.btnBrowse) {
-      String newFilePath = SDPConsole.chooseFile();
+      String newFilePath = SDPConsole.chooseFile("Open file");
       if (newFilePath != null) {
         this.filePath = newFilePath;
         this.textField.setText(this.filePath);

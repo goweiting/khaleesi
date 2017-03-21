@@ -1,11 +1,12 @@
 package vision.distortion;
 
+import vision.constants.Constants;
+
+import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.LinkedList;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import vision.constants.Constants;
+
 /** Created by Simon Rovder */
 public class DistortionPreview extends JFrame {
 

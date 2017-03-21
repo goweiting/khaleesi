@@ -1,10 +1,10 @@
 package vision.colorAnalysis;
 
-import java.awt.List;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JPanel;
+
 /** Created by Simon Rovder */
 public class ColorCalibration extends JPanel implements ActionListener {
 

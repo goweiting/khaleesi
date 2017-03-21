@@ -1,8 +1,10 @@
 package vision.robotAnalysis.newRobotAnalysis;
 
-import java.util.ArrayList;
 import vision.spotAnalysis.approximatedSpotAnalysis.Spot;
 import vision.tools.VectorGeometry;
+
+import java.util.ArrayList;
+
 /** Created by Simon Rovder */
 public class PatternMatcher {
   public static void patternMatch(ArrayList<Spot> spots, ArrayList<RobotPlate> plates) {

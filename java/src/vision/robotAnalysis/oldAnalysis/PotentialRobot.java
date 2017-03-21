@@ -1,11 +1,13 @@
 package vision.robotAnalysis.oldAnalysis;
 
-import java.util.LinkedList;
 import vision.RobotType;
 import vision.colorAnalysis.SDPColor;
 import vision.spotAnalysis.approximatedSpotAnalysis.Spot;
 import vision.tools.DirectedPoint;
 import vision.tools.VectorGeometry;
+
+import java.util.LinkedList;
+
 /** Created by Simon Rovder */
 public class PotentialRobot {
 

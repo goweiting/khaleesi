@@ -1,6 +1,7 @@
 package vision.tools;
 
-import java.awt.Color;
+import java.awt.*;
+
 /** Created by Simon Rovder */
 public class ColoredPoint extends Point {
 

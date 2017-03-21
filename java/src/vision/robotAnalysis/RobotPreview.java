@@ -1,22 +1,19 @@
 package vision.robotAnalysis;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.HashMap;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import vision.Ball;
-import vision.DynamicWorld;
+import vision.*;
 import vision.Robot;
-import vision.RobotAlias;
-import vision.RobotType;
 import vision.colorAnalysis.SDPColor;
 import vision.colorAnalysis.SDPColors;
 import vision.constants.Constants;
 import vision.distortion.DistortionListener;
 import vision.spotAnalysis.approximatedSpotAnalysis.Spot;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /** Created by Simon Rovder */
 public class RobotPreview extends JFrame implements DistortionListener, DynamicWorldListener {
 
@@ -133,8 +130,7 @@ public class RobotPreview extends JFrame implements DistortionListener, DynamicW
 
       dp = state.getRobot(type);
       if (dp != null) {
-        //this.drawRect((int)dp.location.x, (int)dp.location.y, 20, 20, Color.WHITE);
-        this.drawArc((int) dp.location.x, (int) dp.location.y, 20, Color.WHITE);
+        this.drawRect((int) dp.location.x, (int) dp.location.y, 20, 20, Color.WHITE);
         if (dp.alias == RobotAlias.UNKNOWN)
           this.drawString(type.toString(), (int) dp.location.x + 10, (int) dp.location.y + 10);
         else

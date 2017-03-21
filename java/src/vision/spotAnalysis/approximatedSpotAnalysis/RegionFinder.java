@@ -1,12 +1,14 @@
 package vision.spotAnalysis.approximatedSpotAnalysis;
 
-import java.awt.Graphics;
-import java.util.ArrayList;
 import vision.colorAnalysis.SDPColor;
 import vision.colorAnalysis.SDPColorInstance;
 import vision.colorAnalysis.SDPColors;
 import vision.constants.Constants;
 import vision.gui.Preview;
+
+import java.awt.*;
+import java.util.ArrayList;
+
 /** Created by Simon Rovder */
 public class RegionFinder {
   public final SDPColorInstance colorInstance;

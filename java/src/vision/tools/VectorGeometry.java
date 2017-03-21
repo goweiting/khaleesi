@@ -7,6 +7,7 @@ package vision.tools;
  * calculations.
  */
 public class VectorGeometry {
+
   public double x;
   public double y;
 
@@ -28,7 +29,9 @@ public class VectorGeometry {
   }
 
   public static VectorGeometry fromAngular(double d, double distance, VectorGeometry vg) {
-    if (vg == null) vg = new VectorGeometry();
+    if (vg == null) {
+      vg = new VectorGeometry();
+    }
     return vg.fromAngular(d, distance);
   }
 
@@ -52,25 +55,26 @@ public class VectorGeometry {
 
   public static double angle(double x1, double y1, double x2, double y2) {
     double cos = (x1 * x2 + y1 * y2) / (length(x1, y1) * length(x2, y2));
-    if (cos > 1) return 0;
-    if (cos < -1) return Math.PI;
+    if (cos > 1) {
+      return 0;
+    }
+    if (cos < -1) {
+      return Math.PI;
+    }
     return Math.acos(cos);
   }
 
   public static double angle(double x, double y) {
     double res = angle(1, 0, x, y);
-    if (y < 0) return -res;
+    if (y < 0) {
+      return -res;
+    }
     return res;
   }
 
   /**
    * If we had a line crossing through point 'base' and having the direction 'dir', this function
    * returns the positional vector of the closest point on the line to the point 'point'
-   *
-   * @param base
-   * @param dir
-   * @param point
-   * @return
    */
   public static VectorGeometry closestPointToLine(
       VectorGeometry base, VectorGeometry dir, VectorGeometry point) {
@@ -87,11 +91,6 @@ public class VectorGeometry {
    * If we had a line crossing through point 'base' and having the direction 'dir', this method
    * returns true if the point 'p' could be considered as being "In the general direction" of the
    * line. Very relative to what you consider "general direction", but works.
-   *
-   * @param base
-   * @param dir
-   * @param point
-   * @return
    */
   public static boolean isInGeneralDirection(
       VectorGeometry base, VectorGeometry dir, VectorGeometry point) {
@@ -103,11 +102,6 @@ public class VectorGeometry {
   /**
    * If we had a finite line from point 'a' to point 'b', this method returns the positional vector
    * to the closest point on this finite line to 'point'.
-   *
-   * @param a
-   * @param b
-   * @param point
-   * @return
    */
   public static VectorGeometry vectorToClosestPointOnFiniteLine(
       VectorGeometry a, VectorGeometry b, VectorGeometry point) {
@@ -130,17 +124,13 @@ public class VectorGeometry {
    * If we had an infinite line passing through point 'base' in the direction of 'dir', this method
    * returns the positional vector to the point where this line intersects the finite line between
    * points 'a' and 'b'. Very useful for working with the goal posts and robots' aim.
-   *
-   * @param base
-   * @param dir
-   * @param a
-   * @param b
-   * @return
    */
   public static VectorGeometry intersectionWithFiniteLine(
       VectorGeometry base, VectorGeometry dir, VectorGeometry a, VectorGeometry b) {
     VectorGeometry intersection = intersectionOfLines(base, dir, a, VectorGeometry.fromTo(a, b));
-    if (intersection == null) return null;
+    if (intersection == null) {
+      return null;
+    }
     if (isBetweenPoints(intersection, a, b)) {
       return intersection;
     }
@@ -169,17 +159,13 @@ public class VectorGeometry {
   /**
    * If we had a line base2 + t*dir2 and a line base2 + k*dir2 (for all t and k), this method
    * returns the point of their intersection (if there is one).
-   *
-   * @param base1
-   * @param dir1
-   * @param base2
-   * @param dir2
-   * @return
    */
   public static VectorGeometry intersectionOfLines(
       VectorGeometry base1, VectorGeometry dir1, VectorGeometry base2, VectorGeometry dir2) {
     double discriminant = dir1.y * dir2.x - dir1.x * dir2.y;
-    if (discriminant == 0) return null;
+    if (discriminant == 0) {
+      return null;
+    }
     double t = (-dir2.y * (base2.x - base1.x) + dir2.x * (base2.y - base1.y)) / discriminant;
     VectorGeometry res = new VectorGeometry();
     res.x = base1.x + t * dir1.x;
@@ -216,13 +202,7 @@ public class VectorGeometry {
     return res < 0;
   }
 
-  /**
-   * Returns angle from b to a. Signed.
-   *
-   * @param a
-   * @param b
-   * @return
-   */
+  /** Returns angle from b to a. Signed. */
   public static double signedAngle(VectorGeometry a, VectorGeometry b) {
     double angle = VectorGeometry.angle(a, b);
     boolean sign = crossProductDirection(a, b);
@@ -240,6 +220,14 @@ public class VectorGeometry {
 
   public static VectorGeometry fromTo(double x, double y, int x1, int y1) {
     return fromTo(new VectorGeometry(x, y), new VectorGeometry(x1, y1));
+  }
+
+  public double getX() {
+    return x;
+  }
+
+  public double getY() {
+    return y;
   }
 
   @Override
@@ -278,14 +266,7 @@ public class VectorGeometry {
     return this;
   }
 
-  /**
-   * Scale UP the vector by 1 + the given factor
-   *
-   * @param factor
-   * @return
-   */
   public VectorGeometry factor(double factor) {
-    //        this.multiply(1 + factor);
     this.x = this.x * (1 + factor);
     this.y = this.y * (1 + factor);
     return this;
@@ -295,12 +276,6 @@ public class VectorGeometry {
     return this.minus(vector.x, vector.y);
   }
 
-  /**
-   * scale the vector by the given factor
-   *
-   * @param factor
-   * @return
-   */
   public VectorGeometry multiply(double factor) {
     this.x = this.x * factor;
     this.y = this.y * factor;
@@ -323,7 +298,9 @@ public class VectorGeometry {
 
   public VectorGeometry setLength(double len) {
     double length = this.length();
-    if (length == 0) return this;
+    if (length == 0) {
+      return this;
+    }
     double factor = len / length;
     this.x = this.x * factor;
     this.y = this.y * factor;
@@ -356,7 +333,6 @@ public class VectorGeometry {
    * coordinate system.
    *
    * @param phi Angle of the superimposed coordinate system.
-   * @return
    */
   public VectorGeometry coordinateRotation(double phi) {
     double length = this.length();
@@ -374,7 +350,6 @@ public class VectorGeometry {
    *
    * @param deltaX Magic
    * @param deltaY More magic
-   * @return
    */
   public VectorGeometry tilt3D(double deltaX, double deltaY) {
     this.x = this.x * (1 + deltaX * this.y);
@@ -387,7 +362,6 @@ public class VectorGeometry {
    * this if you want to know more.
    *
    * @param barrelConstant Barrel constant
-   * @return
    */
   public VectorGeometry barrelUndistort(double barrelConstant) {
     double distortedDistance = this.length();

@@ -1,11 +1,12 @@
 package vision.spotAnalysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import vision.colorAnalysis.SDPColor;
 import vision.rawInput.RawInputListener;
 import vision.spotAnalysis.approximatedSpotAnalysis.Spot;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 /** Created by Simon Rovder */
 public abstract class SpotAnalysisBase implements RawInputListener {

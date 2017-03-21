@@ -1,9 +1,10 @@
 package vision;
 
-import java.util.Collection;
-import java.util.HashMap;
 import vision.gui.SDPConsole;
 import vision.tools.DirectedPoint;
+
+import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * Created by Simon Rovder

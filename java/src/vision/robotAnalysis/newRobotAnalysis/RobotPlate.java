@@ -1,6 +1,5 @@
 package vision.robotAnalysis.newRobotAnalysis;
 
-import java.util.ArrayList;
 import vision.Robot;
 import vision.RobotAlias;
 import vision.colorAnalysis.SDPColor;
@@ -10,6 +9,9 @@ import vision.spotAnalysis.approximatedSpotAnalysis.Spot;
 import vision.spotAnalysis.recursiveSpotAnalysis.XYCumulativeAverage;
 import vision.tools.DirectedPoint;
 import vision.tools.VectorGeometry;
+
+import java.util.ArrayList;
+
 /** Created by Simon Rovder */
 public class RobotPlate {
 
@@ -81,6 +83,8 @@ public class RobotPlate {
 
   private double getHeading() {
     return this.actualDeterminer.angle() - Math.PI + MAGIC_ANGLE_NUMBER_PLEASE_CHANGE_ME;
+    //double deg = Math.toDegrees(radians % 360);
+    //  return Math.abs(deg);
   }
 
   private void addSpot(Spot s) {

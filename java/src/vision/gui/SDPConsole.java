@@ -1,17 +1,13 @@
 package vision.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
+import vision.constants.Constants;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import vision.constants.Constants;
+
 /** Created by Simon Rovder */
 public class SDPConsole extends JFrame {
 
@@ -99,9 +95,13 @@ public class SDPConsole extends JFrame {
     JOptionPane.showMessageDialog(focus, s);
   }
 
-  public static String chooseFile() {
+  public static String chooseFile(String dialogWindowTitle) {
     JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+    // RK: User home is pretty annoying, especially on windows
+    //fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+    fileChooser.setCurrentDirectory(new File("./vision_settings/"));
+    // And having a proper title would be good.
+    fileChooser.setDialogTitle(dialogWindowTitle);
     int result = fileChooser.showOpenDialog(SDPConsole.console);
     if (result == JFileChooser.APPROVE_OPTION) {
       File selectedFile = fileChooser.getSelectedFile();

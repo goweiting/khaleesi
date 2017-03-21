@@ -1,27 +1,26 @@
 package vision.gui;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import vision.constants.Constants;
+import vision.rawInput.RawInputListener;
+import vision.tools.ColoredPoint;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import vision.constants.Constants;
-import vision.rawInput.RawInputListener;
-import vision.tools.ColoredPoint;
 
 /** Created by Simon Rovder */
 public class Preview extends JFrame implements RawInputListener {
 
   public static final Preview preview = new Preview();
-  public BufferedImage drawnImage;
-  public BufferedImage originalImage;
   public JLabel imageLabel;
   private ArrayList<PreviewSelectionListener> listeners;
+  private BufferedImage drawnImage;
+  private BufferedImage originalImage;
 
   private Preview() {
     super("Preview");
@@ -38,14 +37,6 @@ public class Preview extends JFrame implements RawInputListener {
           @Override
           public void mouseClicked(MouseEvent e) {
             Preview.selection(e.getX(), e.getY());
-            if (Preview.preview.originalImage != null) {
-              Color c = new Color(255, 255, 255);
-              for (int i = 0; i < 100; ++i) {
-                for (int j = 0; j < 100; ++j) {
-                  Preview.preview.originalImage.setRGB(i, j, c.getRGB());
-                }
-              }
-            }
           }
 
           @Override

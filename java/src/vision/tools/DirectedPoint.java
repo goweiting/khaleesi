@@ -1,12 +1,17 @@
 package vision.tools;
+
 /** Created by Simon Rovder */
 public class DirectedPoint extends VectorGeometry {
 
   public double direction;
 
-  public DirectedPoint(double x, double y, double d) {
+  /**
+   * @param x,y current coordinates on the field
+   * @param theta The direction of the vector point
+   */
+  public DirectedPoint(double x, double y, double theta) {
     super(x, y);
-    this.direction = d;
+    this.direction = theta;
   }
 
   public DirectedPoint clone() {
@@ -16,5 +21,17 @@ public class DirectedPoint extends VectorGeometry {
   @Override
   public String toString() {
     return "[ " + this.x + " , " + this.y + " ] - " + this.direction;
+  }
+
+  public double getDirection() {
+    return this.direction;
+  }
+
+  public double getX() {
+    return this.x;
+  }
+
+  public double getY() {
+    return this.y;
   }
 }

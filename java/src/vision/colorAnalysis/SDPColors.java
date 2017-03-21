@@ -1,7 +1,8 @@
 package vision.colorAnalysis;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.HashMap;
+
 /** Created by Simon Rovder */
 public class SDPColors {
 

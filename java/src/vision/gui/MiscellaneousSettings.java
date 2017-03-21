@@ -1,18 +1,5 @@
 package vision.gui;
 
-import static vision.RobotType.FOE_1;
-import static vision.RobotType.FOE_2;
-import static vision.RobotType.FRIEND_1;
-import static vision.RobotType.FRIEND_2;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import vision.RobotAlias;
 import vision.RobotType;
 import vision.colorAnalysis.SDPColor;
@@ -20,6 +7,13 @@ import vision.distortion.Distortion;
 import vision.robotAnalysis.RobotColorSettings;
 import vision.settings.SaveLoadCapable;
 import vision.settings.SettingsManager;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+
+import static vision.RobotType.*;
 
 /** Created by Simon Rovder */
 public class MiscellaneousSettings extends JPanel implements ActionListener, SaveLoadCapable {
@@ -116,7 +110,7 @@ public class MiscellaneousSettings extends JPanel implements ActionListener, Sav
       }
     } else if (e.getSource() == this.loadSettings) {
       try {
-        SettingsManager.loadSettings();
+        SettingsManager.loadSettings("");
       } catch (Exception e1) {
         e1.printStackTrace();
         SDPConsole.message("Cannot load settings.", this);

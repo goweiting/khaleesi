@@ -1,14 +1,5 @@
 package vision.spotAnalysis.recursiveSpotAnalysis;
 
-import static vision.tools.ImageTools.rgbToHsv;
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import vision.colorAnalysis.SDPColor;
 import vision.colorAnalysis.SDPColorInstance;
 import vision.colorAnalysis.SDPColors;
@@ -16,6 +7,15 @@ import vision.constants.Constants;
 import vision.gui.Preview;
 import vision.spotAnalysis.SpotAnalysisBase;
 import vision.spotAnalysis.approximatedSpotAnalysis.Spot;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
+import static vision.tools.ImageTools.rgbToHsv;
 
 /** Created by Simon Rovder */
 public class RecursiveSpotAnalysis extends SpotAnalysisBase {

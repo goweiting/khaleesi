@@ -1,4 +1,5 @@
 package vision.spotAnalysis.approximatedSpotAnalysis;
+
 /** Created by Simon Rovder */
 public class Region2D extends Region1D {
   public final int y1;

@@ -1,9 +1,5 @@
 package vision;
 
-import java.awt.BorderLayout;
-import java.util.LinkedList;
-import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
 import vision.colorAnalysis.ColorCalibration;
 import vision.distortion.Distortion;
 import vision.distortion.DistortionPreview;
@@ -19,6 +15,10 @@ import vision.spotAnalysis.SpotAnalysisBase;
 import vision.spotAnalysis.approximatedSpotAnalysis.ApproximatedSpotAnalysis;
 import vision.spotAnalysis.recursiveSpotAnalysis.RecursiveSpotAnalysis;
 import vision.tools.CommandLineParser;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.LinkedList;
 
 /**
  * Created by Simon Rovder
@@ -55,9 +55,6 @@ public class Vision extends JFrame implements DynamicWorldListener {
     Distortion.addDistortionListener(robotAnalysis);
     robotAnalysis.addDynamicWorldListener(RobotPreview.preview);
     robotAnalysis.addDynamicWorldListener(this);
-
-    // Active vision listener
-    //		RawInput.addRawInputListener(new ActiveVisionBase());
 
     tabbedPane.addTab("Input Selection", null, RawInput.rawInputMultiplexer, null);
     tabbedPane.addTab("Color Calibration", null, ColorCalibration.colorCalibration, null);

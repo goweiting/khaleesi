@@ -1,8 +1,9 @@
 package vision.robotAnalysis;
 
-import java.util.LinkedList;
 import vision.DynamicWorld;
 import vision.distortion.DistortionListener;
+
+import java.util.LinkedList;
 
 /** Created by Simon Rovder */
 public abstract class RobotAnalysisBase implements DistortionListener {
