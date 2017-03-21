@@ -23,7 +23,7 @@ import java.io.InputStreamReader;
 /** Created by Simon Rovder */
 public class Strategy implements VisionListener, PortListener, ActionListener {
 
-    private static final int TICK_INTERVAL_MSEC = 200;
+    public static final int TICK_INTERVAL_MSEC = 200;
     /**
      * SDP2017NOTE The following variable is a static variable always containing the very last known
      * state of the world. It is accessible from anywhere in the project at any time as Strategy.world
