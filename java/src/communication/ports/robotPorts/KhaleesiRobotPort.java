@@ -4,22 +4,31 @@ import communication.ports.interfaces.FourWheelHolonomicRobotPort;
 import communication.ports.interfaces.RobotPort;
 import communication.ports.interfaces.SpammingKickRobotPort;
 
-/** Created by Rado Kirilchev */
+/**
+ * Created by Rado Kirilchev
+ */
 public class KhaleesiRobotPort extends RobotPort implements
-        FourWheelHolonomicRobotPort, SpammingKickRobotPort {
+    FourWheelHolonomicRobotPort, SpammingKickRobotPort {
 
-    public KhaleesiRobotPort() {
-        super("pang");
-    }
+  private static double[] lastSentSpeed = new double[5];
 
-    @Override
-    public void fourWheelHolonomicMotion(double front, double back, double left, double right) {
-        this.sdpPort.commandSender("r", (int)front, (int)back, (int)left, (int)right);
-    }
+  public KhaleesiRobotPort() {
+    super("pang");
+  }
 
-    @Override
-    public void spamKick() {
-        this.sdpPort.commandSender("k");
-    }
+  public static double[] getLastSentSpeed() {
+    return lastSentSpeed;
+  }
+
+  @Override
+  public void fourWheelHolonomicMotion(double front, double back, double left, double right) {
+    this.sdpPort.commandSender("r", (int) front, (int) back, (int) left, (int) right);
+    lastSentSpeed = new double[]{front, back, left, right};
+  }
+
+  @Override
+  public void spamKick() {
+    this.sdpPort.commandSender("k");
+  }
 
 }
