@@ -8,6 +8,7 @@ import strategy.Strategy;
  * <p>When the robot fails, it shall Contemplate...
  */
 public class Contemplating extends ActionBase {
+
   public Contemplating() {
     this.rawDescription = "Contemplating...";
   }
@@ -20,5 +21,6 @@ public class Contemplating extends ActionBase {
   }
 
   @Override
-  public void update() {}
+  public void update() {
+  }
 }
