@@ -11,6 +11,7 @@ import javax.swing.JTabbedPane;
 
 import vision.RobotType;
 import vision.constants.Constants;
+import vision.distortion.Distortion;
 import vision.settings.SettingsManager;
 
 /**
@@ -104,6 +105,7 @@ public class RawInput extends JPanel {
     //CALCULATE POLAR DISTANCE
 
     public int closestPlateRegion(double x, double y) {
+
         double r1 = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
         double theta1 = Math.atan2(y, x);
         double min = 10000000;
@@ -115,8 +117,20 @@ public class RawInput extends JPanel {
                 min_index = panelLocations.indexOf(panel);
             }
         }
-        if (min_index > 0 && min < 10000000) {
-            return min_index;
+        if (min_index >= 0 && min < 10000000) {
+            if (Distortion.ROTATE_PITCH) {
+                switch (min_index) {
+                    case 0: return 12;
+                    case 1: return 13;
+                    case 2: return 14;
+                    case 3: return 9;
+                    case 4: return 10;
+                    case 5: return 11;
+                    default: return min_index;
+                }
+            } else {
+                return min_index;
+            }
         }
         return -1;
     }
