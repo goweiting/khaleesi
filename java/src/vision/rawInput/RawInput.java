@@ -36,11 +36,11 @@ public class RawInput extends JPanel {
         this.tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         this.imageListeners = new LinkedList<RawInputListener>();
 
-        panelLocations.add(0, new PanelLocation(120, 80));
-        panelLocations.add(1, new PanelLocation(120, -80));
+        panelLocations.add(0, new PanelLocation(100, 70));
+        panelLocations.add(1, new PanelLocation(100, -70));
         panelLocations.add(2, new PanelLocation(0, 0));
-        panelLocations.add(3, new PanelLocation(-120, 80));
-        panelLocations.add(4, new PanelLocation(-120, -80));
+        panelLocations.add(3, new PanelLocation(-100, 70));
+        panelLocations.add(4, new PanelLocation(-100, -70));
 
         this.add(this.tabbedPane);
 
