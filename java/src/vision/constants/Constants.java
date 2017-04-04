@@ -18,6 +18,6 @@ public class Constants {
     public static String settingsFilePath(int region) {
         if (region < 0 || region > 14) return "";
         String roomID = (RawInput.IS_IN_ROOM_1) ? "room1" : "room2";
-        return System.getProperty("user.dir") + "/vision_settings/" + roomID + "/" + Integer.toString(region);
+        return System.getProperty("user.dir") + "/../vision_settings/" + roomID + "/" + Integer.toString(region);
     }
 }

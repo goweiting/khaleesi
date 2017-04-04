@@ -37,20 +37,10 @@ public class RawInput extends JPanel {
         this.imageListeners = new LinkedList<RawInputListener>();
 
         panelLocations.add(0, new PanelLocation(120, 80));
-        panelLocations.add(1, new PanelLocation(130, 0));
-        panelLocations.add(2, new PanelLocation(120, -80));
-        panelLocations.add(3, new PanelLocation(70, 55));
-        panelLocations.add(4, new PanelLocation(70, 0));
-        panelLocations.add(5, new PanelLocation(70, -60));
-        panelLocations.add(6, new PanelLocation(0, 90));
-        panelLocations.add(7, new PanelLocation(0, 0));
-        panelLocations.add(8, new PanelLocation(0, -80));
-        panelLocations.add(9, new PanelLocation(-80, 50));
-        panelLocations.add(10, new PanelLocation(-80, 0));
-        panelLocations.add(11, new PanelLocation(-80, 60));
-        panelLocations.add(12, new PanelLocation(-120, 80));
-        panelLocations.add(13, new PanelLocation(-120, 0));
-        panelLocations.add(14, new PanelLocation(-120, -80));
+        panelLocations.add(1, new PanelLocation(120, -80));
+        panelLocations.add(2, new PanelLocation(0, 0));
+        panelLocations.add(3, new PanelLocation(-120, 80));
+        panelLocations.add(4, new PanelLocation(-120, -80));
 
         this.add(this.tabbedPane);
 
@@ -91,6 +81,7 @@ public class RawInput extends JPanel {
 //      SettingsManager.loadBallSettings(ballPath);
 
         } catch (Exception x) {
+            System.out.println(x.getMessage());
         }
 
         for (RawInputListener ril : this.imageListeners) {
@@ -120,13 +111,18 @@ public class RawInput extends JPanel {
         if (min_index >= 0 && min < 10000000) {
             if (Distortion.ROTATE_PITCH) {
                 switch (min_index) {
-                    case 0: return 12;
-                    case 1: return 13;
-                    case 2: return 14;
-                    case 3: return 9;
-                    case 4: return 10;
-                    case 5: return 11;
-                    default: return min_index;
+                    case 0:
+                        return 4;
+                    case 1:
+                        return 3;
+                    case 2:
+                        return 2;
+                    case 3:
+                        return 1;
+                    case 4:
+                        return 0;
+                    default:
+                        return min_index;
                 }
             } else {
                 return min_index;
