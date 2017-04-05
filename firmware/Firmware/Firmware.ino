@@ -36,8 +36,8 @@ void rationalMotors() {
     int left = atoi(sCmd.next());
     int right = atoi(sCmd.next());
     motorControl(FRONT, front);
-    motorControl(BACK, -back);
-    motorControl(LEFT, -left);
+    motorControl(BACK, back);
+    motorControl(LEFT, left);
     motorControl(RIGHT, right);
 }
 
