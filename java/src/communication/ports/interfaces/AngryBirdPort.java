@@ -5,7 +5,7 @@ package communication.ports.interfaces;
  */
 public interface AngryBirdPort {
     // This interface implements the flapping actions
-    public void toggle();
+    public void toggle(boolean status);
     public void flap();
 
 

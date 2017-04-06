@@ -30,8 +30,8 @@ public class KhaleesiRobotPort extends RobotPort implements
     }
 
     @Override
-    public void toggle() {
-        wingState = !wingState; // change the state
+    public void toggle(boolean status) {
+        wingState = status; // change the state
         this.sdpPort.commandSender("toggle"); // triple triggered
         this.sdpPort.commandSender("toggle");
         this.sdpPort.commandSender("toggle");
