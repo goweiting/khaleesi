@@ -3,6 +3,8 @@ package vision.gui;
 import vision.constants.Constants;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -58,6 +60,10 @@ public class SDPConsole extends JFrame {
 
     this.consoleTextArea = new JTextArea();
     this.consoleTextArea.setBackground(Color.WHITE);
+    DefaultCaret caret = (DefaultCaret)consoleTextArea.getCaret();
+    caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+    Document doc = consoleTextArea.getDocument();
+    doc.addDocumentListener(new ScrollingDocumentListener(scrollPane, consoleTextArea));
     this.consoleTextArea.setEditable(false);
     this.scrollPane.setViewportView(this.consoleTextArea);
 
