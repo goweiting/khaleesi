@@ -53,23 +53,14 @@ void motorControl(int motor, int power) {
 }
 
 void rationalMotors() {
-
-  int front = atoi(sCmd.next());
-
-  int back  = atoi(sCmd.next());
-
-  int left  = atoi(sCmd.next());
-
-  int right = atoi(sCmd.next());
-
-  motorControl(FRONT, front);
-
-  motorControl(BACK, -back);
-
-  motorControl(LEFT, -left);
-
-  motorControl(RIGHT, right);
-
+    int front = atoi(sCmd.next());
+    int back = atoi(sCmd.next());
+    int left = atoi(sCmd.next());
+    int right = atoi(sCmd.next());
+    motorControl(FRONT, front);
+    motorControl(BACK, back);
+    motorControl(LEFT, left);
+    motorControl(RIGHT, right);
 }
 
 void pingMethod() {
