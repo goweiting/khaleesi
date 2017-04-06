@@ -1,27 +1,23 @@
 package vision.gui;
 
-import static vision.RobotType.FOE_1;
-import static vision.RobotType.FOE_2;
-import static vision.RobotType.FRIEND_1;
-import static vision.RobotType.FRIEND_2;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import vision.RobotAlias;
 import vision.RobotType;
 import vision.colorAnalysis.SDPColor;
 import vision.distortion.Distortion;
+import vision.rawInput.RawInput;
 import vision.robotAnalysis.RobotColorSettings;
 import vision.settings.SaveLoadCapable;
 import vision.settings.SettingsManager;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+
+import static vision.RobotType.*;
+
 /** Created by Simon Rovder */
+// RK: Modified to include checkbox for current room
 public class MiscellaneousSettings extends JPanel implements ActionListener, SaveLoadCapable {
 
   public static final HashMap<RobotType, JComboBox<RobotAlias>> aliases = new HashMap<>();
@@ -35,6 +31,7 @@ public class MiscellaneousSettings extends JPanel implements ActionListener, Sav
   private JCheckBox friendOneIsGreen;
   private JCheckBox foeOneIsGreen;
   private JCheckBox assumeYellow;
+  private JCheckBox room1checkbox;
 
   private MiscellaneousSettings() {
     super();
@@ -75,6 +72,11 @@ public class MiscellaneousSettings extends JPanel implements ActionListener, Sav
     this.assumeYellow.addActionListener(this);
     this.add(this.assumeYellow);
 
+    this.room1checkbox = new JCheckBox("In Room 1");
+    this.room1checkbox.setBounds(220, 140, 200, 30);
+    this.room1checkbox.addActionListener(this);
+    this.add(this.room1checkbox);
+
     int offset = 0;
 
     for (RobotType type : RobotType.values()) {
@@ -97,12 +99,14 @@ public class MiscellaneousSettings extends JPanel implements ActionListener, Sav
   private void checkBoxesToValues() {
     Distortion.ROTATE_PITCH = this.flipPitch.isSelected();
     RobotColorSettings.FRIEND_COLOR =
-        this.friendsAreYellow.isSelected() ? SDPColor.YELLOW : SDPColor.BLUE;
+            this.friendsAreYellow.isSelected() ? SDPColor.YELLOW : SDPColor.BLUE;
     RobotColorSettings.FOE_COLOR =
-        this.friendsAreYellow.isSelected() ? SDPColor.BLUE : SDPColor.YELLOW;
+            this.friendsAreYellow.isSelected() ? SDPColor.BLUE : SDPColor.YELLOW;
     RobotColorSettings.FRIEND_1_IS_GREEN = this.friendOneIsGreen.isSelected();
     RobotColorSettings.FOE_1_IS_GREEN = this.foeOneIsGreen.isSelected();
     RobotColorSettings.ASSUME_YELLOW = this.assumeYellow.isSelected();
+
+    RawInput.IS_IN_ROOM_1 = this.room1checkbox.isSelected();
   }
 
   @Override
@@ -116,7 +120,7 @@ public class MiscellaneousSettings extends JPanel implements ActionListener, Sav
       }
     } else if (e.getSource() == this.loadSettings) {
       try {
-        SettingsManager.loadSettings();
+        SettingsManager.loadSettings("");
       } catch (Exception e1) {
         e1.printStackTrace();
         SDPConsole.message("Cannot load settings.", this);

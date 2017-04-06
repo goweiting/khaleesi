@@ -1,4 +1,7 @@
 package vision.constants;
+
+import vision.rawInput.RawInput;
+
 /** Created by Simon Rovder SDP2017NOTE Edit these if the camera or pitch change. */
 public class Constants {
   public static final int INPUT_WIDTH = 640; // In pixels
@@ -9,4 +12,10 @@ public class Constants {
   public static boolean GUI = true;
   public static boolean TIMER = false;
   //	public static final int PREVIEW_FACTOR = 2;
+
+  public static String settingsFilePath(int region) {
+    if (region < 0 || region > 14) return "";
+    String roomID = (RawInput.IS_IN_ROOM_1) ? "room1" : "room2";
+    return System.getProperty("user.dir") + "/../vision_settings/" + roomID + "/" + Integer.toString(region);
+  }
 }

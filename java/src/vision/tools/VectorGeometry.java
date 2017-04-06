@@ -396,4 +396,12 @@ public class VectorGeometry {
     this.fromAngular(this.angle(), undistortedDistance);
     return this;
   }
+
+  public double getX() {
+    return x;
+  }
+
+  public double getY() {
+    return y;
+  }
 }

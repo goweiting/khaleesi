@@ -15,7 +15,9 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-/** Created by Simon Rovder */
+/**
+ * Created by Simon Rovder
+ */
 public class GUI extends JFrame implements KeyListener {
 
     public static final GUI gui = new GUI();
@@ -99,10 +101,12 @@ public class GUI extends JFrame implements KeyListener {
         r.addKeyListener(this);
     }
 
-    public void doesNothingButIsNecessarySoDontDelete() {}
+    public void doesNothingButIsNecessarySoDontDelete() {
+    }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     public void setRobot(RobotBase robot) {
         this.robot = robot;
@@ -203,7 +207,7 @@ public class GUI extends JFrame implements KeyListener {
 
             // Actually update the label which is supposed to display current behaviour
             BehaviourBase behaviour = Strategy.getCurrentBehaviour();
-            String info = (behaviour == null) ? "UNDEFINED behaviour" :  behaviour.description();
+            String info = (behaviour == null) ? "UNDEFINED behaviour" : behaviour.description();
             info += ": ";
             if (behaviour == null) info += "UNDEFINED action";
             else {

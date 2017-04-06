@@ -70,7 +70,7 @@ public class StaticImage extends AbstractRawInput implements ActionListener {
     } else if (e.getSource() == this.btnStopInput) {
       this.stop();
     } else if (e.getSource() == this.btnBrowse) {
-      String newFilePath = SDPConsole.chooseFile();
+      String newFilePath = SDPConsole.chooseFile("Open File");
       if (newFilePath != null) {
         this.filePath = newFilePath;
         this.textField.setText(this.filePath);
