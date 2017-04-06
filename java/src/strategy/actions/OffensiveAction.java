@@ -1,7 +1,9 @@
 package strategy.actions;
 
+import communication.ports.interfaces.AngryBirdPort;
 import strategy.Strategy;
 import strategy.points.ImportantPoints;
+
 
 /** Created by Simon Rovder */
 public class OffensiveAction extends ActionBase {
