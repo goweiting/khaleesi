@@ -3,6 +3,7 @@ package strategy.drives;
 import PolarCoordNavigation.Coordinates.CartesianCoordinate;
 import PolarCoordNavigation.Coordinates.PolarCoordinate;
 import PolarCoordNavigation.PolarNavigator;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Import;
 import communication.SDPPort;
 import communication.ports.interfaces.FourWheelHolonomicRobotPort;
 import communication.ports.interfaces.RobotPort;
@@ -79,15 +80,24 @@ public class HorizVertSimpleDrive implements DriveInterface {
         // KICK the ball
         double radiusThreshold = 30.0;
         double radiusOffset = 0.0;
-        if (ImportantPoints.getBallPolar().getRadius() < 120) {
+        float THE_ANGLE = ImportantPoints.getBallPolar().getAngle();
+        float THE_RADIUS = ImportantPoints.getBallPolar().getRadius();
+        if (THE_RADIUS < 120) {
             // If the ball is far away (i.e. near to the enemy goal, let JinShip do his thing.
             // We go really close to our own goal post.
-            SDPConsole.writeln(" BALL IS FAR AWAY. GOING BACK TO MY POST - DEFENDING!"); // DEBUG
-            radiusThreshold = 100.0;
-            radiusOffset = -100.0;
-            // TODO: CHECK FOR LOCATION OF THE ROBOT!
-            ((AngryBirdPort) commandPort).toggle(false); // OFF THE IR Sensors!
+            if (THE_ANGLE > 0.8 && THE_ANGLE < 2) {
+                radiusThreshold = 100.0;
+                radiusOffset = -20.0;
+                ((AngryBirdPort) commandPort).toggle(false); // OFF THE IR Sensors!
+            } else {
+                // GO TO HOUSE
+                SDPConsole.writeln(" BALL IS FAR AWAY. GOING BACK TO MY POST - DEFENDING!"); // DEBUG
+                polarNavigator.SetTargetState(200, (float) 1.577);
+                ((AngryBirdPort) commandPort).toggle(true); // TRIGGER the IR sensors
+                return BallTrackState.GO_TO_HOUSE;
+            }
         } else {
+            SDPConsole.writeln("BALL NEAR OUR HOUSE DETECTED!");
             ((AngryBirdPort) commandPort).toggle(true); // TRIGGER the IR sensors
         }
 
@@ -169,7 +179,6 @@ public class HorizVertSimpleDrive implements DriveInterface {
             polarNavigator.SetTargetState((float) actionTargetRadius, (float) actionTargetAngle);
             return BallTrackState.UNKNOWN;
         }
-
     }
 
     public double[] getActionBallTrackedState(double usAngleDirection) {
@@ -195,11 +204,11 @@ public class HorizVertSimpleDrive implements DriveInterface {
         }
 
         // First flap to reset the wings:
-        if (firstFlap){
-            ((AngryBirdPort) commandPort).flap();
-            System.out.println("FLIPPED ONCE TO RESET");
-            firstFlap = false; //
-        }
+//        if (firstFlap){
+//            ((AngryBirdPort) commandPort).flap();
+//            System.out.println("FLIPPED ONCE TO RESET");
+//            firstFlap = false; //
+//        }
 
         //FIRST WE UPDATE OUR ORIGIN OF POLAR COORDS TO THE ENEMY GOAL
         // (just incase for some reason this has changed)
@@ -226,6 +235,7 @@ public class HorizVertSimpleDrive implements DriveInterface {
         GO_BEHIND_BALL,
         GO_NEXT_TO_BALL,
         GO_TO_BALL,
+        GO_TO_HOUSE,
         UNKNOWN
     }
 }
