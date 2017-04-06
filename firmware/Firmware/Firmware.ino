@@ -26,7 +26,7 @@ int kickCounter = 0;
 //servos for wings
 Servo winchServo;
 Servo catchServo;
-boolean canFlap = true;
+boolean canFlap = false;
 
 
 //  ==================== MOTORS ==============================
@@ -98,12 +98,6 @@ void catchTest() {
 
 void toggleFlap() {
   canFlap = atoi(sCmd.next());
-//  if (canFlap) {
-//    canFlap = false;
-//  } else {
-//    canFlap = true;
-//  }
-  Serial.println(canFlap);
 }
 
 void flap() {
@@ -145,12 +139,11 @@ void setup() {
     sCmd.addCommand("r", rationalMotors);
     sCmd.addCommand("ping", pingMethod);
     sCmd.addCommand("k", startKick);
-    sCmd.addCommand("g", grabTest);
+    sCmd.addCommand("flap", flap);
+    sCmd.addCommand("toggle", toggleFlap);
     SDPsetup();
     helloWorld();
     completeHalt();
-    // grabber.attach(9);
-    // grabber.write(180);
     winchServo.attach(WINCH);
     catchServo.attach(CATCH);
 
@@ -158,15 +151,20 @@ void setup() {
 }
 
 void loop() {
-    sCmd.readSerial();
-    if (kicking && (millis() % 3000 == 0)) {
-        kickCounter++;
-        Serial.print("kickCounter @ ");
-        Serial.println(kickCounter);
-    }
+  sCmd.readSerial();
+  if (canFlap) {
+    sensor();
+  }
+  
+  if (kicking && (millis()%1000==0)){
+    kickCounter++;
+    Serial.print("kickCounter @ ");
+    Serial.println(kickCounter);
 
+  }
 
-    if (kickCounter == 10) {
-        stopKick();
-    }
+  
+  if (kickCounter==7){
+    stopKick(); 
+  }
 }
