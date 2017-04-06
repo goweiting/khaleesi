@@ -6,7 +6,7 @@ import communication.ports.interfaces.RobotPort;
 import communication.ports.interfaces.SpammingKickRobotPort;
 
 /**
- * Created by Rado Kirilchev
+ * Created by Rado Kirilchev and GWT and Justin R
  */
 public class KhaleesiRobotPort extends RobotPort implements
         FourWheelHolonomicRobotPort, SpammingKickRobotPort, AngryBirdPort {
@@ -31,10 +31,15 @@ public class KhaleesiRobotPort extends RobotPort implements
 
     @Override
     public void toggle(boolean status) {
+        if (wingState != status) return; // prevent spamming of toggle command
         wingState = status; // change the state
         if (wingState){
             this.sdpPort.commandSender("toggle", 1); // triple triggered
+            this.sdpPort.commandSender("toggle", 1); // triple triggered
+            this.sdpPort.commandSender("toggle", 1); // triple triggered
         } else {
+            this.sdpPort.commandSender("toggle", 0); // triple triggered
+            this.sdpPort.commandSender("toggle", 0); // triple triggered
             this.sdpPort.commandSender("toggle", 0); // triple triggered
         }
     }
@@ -43,5 +48,4 @@ public class KhaleesiRobotPort extends RobotPort implements
     public void flap() {
         this.sdpPort.commandSender("flap");
     }
-
 }

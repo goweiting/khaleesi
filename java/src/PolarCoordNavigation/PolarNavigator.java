@@ -97,9 +97,9 @@ public class PolarNavigator {
             }
             //
             if (totalPowerDrive[i] > 0) {
-                totalPowerDrive[i] += 70;
+                totalPowerDrive[i] += 75;
             } else if (totalPowerDrive[i] < 0) {
-                totalPowerDrive[i] -= 70;
+                totalPowerDrive[i] -= 75;
             }
         }
 

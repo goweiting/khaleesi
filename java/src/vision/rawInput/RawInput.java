@@ -76,7 +76,7 @@ public class RawInput extends JPanel {
             }
 
             // Actively reload the settings for this current frame!
-            SettingsManager.reloadSettings(path, ballPath, CURRENT_REGION, ballRegion);
+//            SettingsManager.reloadSettings(path, ballPath, CURRENT_REGION, ballRegion);
             //      SettingsManager.loadBallSettings(ballPath);
 
         } catch (Exception x) {

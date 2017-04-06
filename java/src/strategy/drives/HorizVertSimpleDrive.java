@@ -87,11 +87,11 @@ public class HorizVertSimpleDrive implements DriveInterface {
             // We go really close to our own goal post.
             if (THE_ANGLE > 0.8 && THE_ANGLE < 2) {
                 radiusThreshold = 100.0;
-                radiusOffset = -20.0;
+                radiusOffset = -100.0;
                 ((AngryBirdPort) commandPort).toggle(false); // OFF THE IR Sensors!
             } else {
                 // GO TO HOUSE
-                SDPConsole.writeln(" BALL IS FAR AWAY. GOING BACK TO MY POST - DEFENDING!"); // DEBUG
+                SDPConsole.writeln(" GOING BACK TO MY HOUSE!"); // DEBUG
                 polarNavigator.SetTargetState(200, (float) 1.577);
                 ((AngryBirdPort) commandPort).toggle(true); // TRIGGER the IR sensors
                 return BallTrackState.GO_TO_HOUSE;
