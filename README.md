@@ -3,7 +3,7 @@ Codebase, documents, designs, etc. for the SDP 2017 Edinburgh Uni course.
 
 ### Khaleesi's Log
 
-####BRAKING NEWS! 
+#### BRAKING NEWS
 Khaleesi has won third place in the SDP Final Match. 
 
 
