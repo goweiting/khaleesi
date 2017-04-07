@@ -13,3 +13,4 @@ Khaleesi has won third place in the SDP Final Match.
 
 21 March 2017:
 - Remove multiple vision related branches
+. 
